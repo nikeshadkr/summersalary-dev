@@ -1,0 +1,198 @@
+@import "./layout.scss";
+
+#content {
+    @include clearFix;
+    float: left;
+    width: 100%;
+    margin: 10px 0;
+
+    #main {
+        @include clearFix;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    & * {
+        box-sizing: border-box;
+    }
+
+    #app {
+        @include clearFix;
+        margin: 0;
+        padding: 12px;
+    }
+}
+
+.header {
+    display: block;
+    @include clearFix;
+
+    .second-row {
+        float: left;
+        margin-top: 15px;
+    }
+}
+
+.form-row {
+    margin-left: -6px;
+    margin-right: -6px;
+    margin-bottom: 15px;
+
+    &:last-child {
+        margin-bottom: 0px;
+    }
+
+    [class^="col-"],
+    [class*=" col-"],
+    .form-group {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+
+.form-group {
+    float: left;
+
+    input,
+    select,
+    textarea {
+        float: left;
+        width: 100%;
+        margin: 0;
+        padding: 4px 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    select option:first {
+        color: #999;
+    }
+
+    label {
+        float: left;
+        width: 100%;
+        padding: 0;
+        margin: 0 0 3px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+        width: auto;
+    }
+
+    label.radio-box,
+    label.check-box {
+        clear: none;
+        font-weight: normal;
+        position: relative;
+        padding-left: 18px;
+        padding-right: 15px;
+
+        &:last-child {
+            padding-right: 0;
+        }
+
+        &.at-header {
+            width: auto;
+            margin: 5px 0 0;
+            cursor: pointer;
+        }
+
+        input {
+            position: absolute;
+            left: 0;
+            top: 1px;
+        }
+
+        &.active {
+            font-weight: bold;
+        }
+    }
+
+    .error {
+        float: left;
+        color: #f00;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+}
+
+.toggle-radio {
+    display: table;
+    width: 200px;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid #bbb;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+
+    & > label {
+        cursor: pointer;
+        float: none;
+        display: table-cell;
+        width: auto;
+        vertical-align: middle;
+        padding: 6px 7px;
+        text-align: center;
+
+        &:first-child {
+            border-right: 1px solid #bbb;
+        }
+
+        &.active {
+            background: #2daebf;
+            color: #fff;
+            border-color: #2daebf !important;
+        }
+
+        &.half-size {
+            width: 50%;
+        }
+    }
+}
+
+.table-layout {
+    table {
+        table-layout: fixed;
+        width: 100%;
+        margin: 0 !important;
+        border: 0px;
+
+        th {
+            text-align: left;
+            background: #bcd0dd;
+            border-color: rgb(202, 222, 236);
+        }
+
+        .check {
+            width: 30px;
+        }
+
+        td {
+            border-color: #bbb;
+
+            a {
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        tfoot tr {
+            td {
+                font-weight: bold;
+                border: 0;
+
+                &.with-bg {
+                    background: rgb(255, 218, 116);
+                    border: 1px solid rgb(212, 179, 88);
+                }
+            }
+        }
+    }
+}
