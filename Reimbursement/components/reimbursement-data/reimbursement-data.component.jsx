@@ -1,12 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import { AppContext } from "../../app/app.provider";
 import { Utils } from "../../app/app.utils";
 
-const ReimbursementData = ({ item, checkOne, index }) => {
+const ReimbursementData = ({
+    item,
+    checkOne,
+    index,
+    isPaymentNumberOpen,
+    disableCheckBox
+}) => {
     const { initModal } = useContext(AppContext);
 
-    const loadData = (e, item) => {
+    const openModal = (e, item) => {
         e.preventDefault();
         initModal({
             data: [item],
@@ -15,6 +21,15 @@ const ReimbursementData = ({ item, checkOne, index }) => {
             showModal: true
         });
     };
+
+    const isDisabled =
+        !isPaymentNumberOpen ||
+        item.EffortCertStatus === "X" ||
+        item.NotYTDPaid === 0;
+
+    useEffect(() => {
+        disableCheckBox("isDisabled", isDisabled, index);
+    }, []);
 
     return (
         <tr>
@@ -26,6 +41,7 @@ const ReimbursementData = ({ item, checkOne, index }) => {
                     value={true}
                     onChange={checkOne}
                     checked={item.isChecked}
+                    disabled={isDisabled}
                 />
             </td>
             <td>
@@ -42,7 +58,7 @@ const ReimbursementData = ({ item, checkOne, index }) => {
                 {Utils.Currency(item.PreviousReimbursement)}
             </td>
             <td className='text-right'>
-                <a href='#' onClick={e => loadData(e, item)}>
+                <a href='#' onClick={e => openModal(e, item)}>
                     {Utils.Currency(item.EligibleBalanceToReimburse)}
                 </a>
             </td>

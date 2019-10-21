@@ -13,6 +13,8 @@
         ]
     },
     "scripts": {
+        "reimbursement-build": "webpack --config-name reimbursement --mode development",
+        "effortcertification-build": "webpack --config-name effortcertification --mode development",
         "reimbursement-dev": "webpack --config-name reimbursement --mode development --watch",
         "effortcertification-dev": "webpack --config-name effortcertification --mode development --watch"
     },

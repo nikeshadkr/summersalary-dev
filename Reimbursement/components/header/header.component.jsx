@@ -74,17 +74,18 @@ const Header = () => {
 
         setAppData(appData => ({
             ...appData,
-            ...newValidatedFields
+            ...newValidatedFields,
+            selectAllCheckBox: false
         }));
 
         setFilters({
-            isFilterValid: isValid /*,
+            isFilterValid: isValid,
 
             isPending: appData.isPending,
             certificationStatus: appData.certificationStatus,
             paymentStatus: appData.paymentStatus,
 
-            ...newfilterParams*/
+            ...newfilterParams
         });
     };
 
@@ -136,6 +137,7 @@ const Header = () => {
             className={`header ${isReimbursementLoaded ? "mbottom-12" : ""}`}
         >
             <div className='row form-row'>
+                {/* Reimbursement Status */}
                 <div className='form-group' style={{ width: "180px" }}>
                     <label>Reimbursement Status</label>
                     <label
@@ -168,6 +170,7 @@ const Header = () => {
                     </label>
                 </div>
 
+                {/* Reimbursement Summer */}
                 <div className='form-group' style={{ width: "180px" }}>
                     <label>Reimbursement Summer</label>
                     <select
@@ -196,6 +199,7 @@ const Header = () => {
                         ))}
                 </div>
 
+                {/* Payment Number */}
                 <div className='form-group' style={{ width: "180px" }}>
                     <label>Payment Number</label>
                     <select
@@ -224,6 +228,7 @@ const Header = () => {
                         ))}
                 </div>
 
+                {/* College */}
                 <div className='form-group' style={{ width: "180px" }}>
                     <label>College</label>
                     <select
@@ -254,6 +259,7 @@ const Header = () => {
             </div>
 
             <div className='row form-row'>
+                {/* Effort Certification Status */}
                 <div className='form-group' style={{ width: "180px" }}>
                     <label>Effort Certification Status</label>
                     <select
@@ -272,6 +278,7 @@ const Header = () => {
                     </select>
                 </div>
 
+                {/* Cuny Pasyment Status */}
                 <div className='form-group' style={{ width: "180px" }}>
                     <label>Cuny Payment Status</label>
                     <select
@@ -290,6 +297,7 @@ const Header = () => {
                     </select>
                 </div>
 
+                {/* Filter Button */}
                 <div className='form-group'>
                     <label>&nbsp;</label>
                     <button

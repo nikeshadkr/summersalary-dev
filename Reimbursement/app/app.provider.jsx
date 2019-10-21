@@ -76,7 +76,8 @@ const AppProvider = ({ children }) => {
         paymentStatus: "",
 
         listReimbursement: [],
-        isReimbursementLoaded: false
+        isReimbursementLoaded: false,
+        selectAllCheckBox: false
     });
 
     const [isLoading, setLoader] = useState(false);
@@ -108,13 +109,13 @@ const AppProvider = ({ children }) => {
     });
 
     const [filters, setFilters] = useState({
-        isFilterValid: false /*,
+        isFilterValid: false,
         isPending: true,
         summerYear: "",
         college: "",
         paymentNumber: "",
         certificationStatus: "",
-        paymentStatus: ""*/
+        paymentStatus: ""
     });
 
     const loadReimbursements = async fromFilter => {
@@ -125,27 +126,29 @@ const AppProvider = ({ children }) => {
         try {
             let listReimbursement = await axios.get(
                 `${Paths.apiPath}/${
-                    appData.isPending
+                    filters.isPending
                         ? "GetPendingReimbursements"
                         : "GetProcessedReimbursements"
-                }?year=${appData.summerYear.value}&paymentNumber=${
-                    appData.paymentNumber.value
-                }&collegeCode=${appData.college.value}&effortCertStatus=${
-                    appData.certificationStatus
-                }&paymentStatus=${appData.paymentStatus}&pageIndex=${
+                }?year=${filters.summerYear}&paymentNumber=${
+                    filters.paymentNumber
+                }&collegeCode=${filters.college}&effortCertStatus=${
+                    filters.certificationStatus
+                }&paymentStatus=${filters.paymentStatus}&pageIndex=${
                     pagination.pageIndex
                 }&pageSize=${pagination.pageSize}`
             );
 
             listReimbursement.data.forEach(item => {
                 item.isChecked = false;
+                item.isDisabled = false;
             });
 
             setAppData(appData => {
                 return {
                     ...appData,
                     listReimbursement: listReimbursement.data,
-                    isReimbursementLoaded: true
+                    isReimbursementLoaded: true,
+                    selectAllCheckBox: false
                 };
             });
 

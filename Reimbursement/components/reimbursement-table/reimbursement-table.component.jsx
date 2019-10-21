@@ -9,7 +9,12 @@ import { Utils } from "../../app/app.utils";
 
 const ReimbursementTable = () => {
     const {
-        appData: { listReimbursement },
+        appData: {
+            listReimbursement,
+            paymentNumber,
+            listPaymentNumber,
+            selectAllCheckBox
+        },
         setAppData,
 
         loadReimbursements,
@@ -22,10 +27,14 @@ const ReimbursementTable = () => {
             ? listReimbursement[0].TotalRecords
             : 0;
 
+    const [isPaymentNumberOpen] = listPaymentNumber.map(obj =>
+        obj.PaymentNumber == paymentNumber.value ? obj.IsOpen : null
+    );
+
     const checkOne = e => {
         e.persist();
         setAppData(appData => {
-            let { listReimbursement } = appData;
+            let listReimbursement = [...appData.listReimbursement];
             listReimbursement[e.target.dataset.id][
                 e.target.name
             ] = Utils.ConvertToBool(e.target.checked);
@@ -40,10 +49,23 @@ const ReimbursementTable = () => {
     const checkAll = e => {
         e.persist();
         setAppData(appData => {
-            let { listReimbursement } = appData;
-            listReimbursement.forEach(
-                item => (item.isChecked = Utils.ConvertToBool(e.target.checked))
-            );
+            let listReimbursement = [...appData.listReimbursement];
+            listReimbursement.forEach(item => {
+                if (!item.isDisabled) item.isChecked = !item.isChecked;
+            });
+
+            return {
+                ...appData,
+                listReimbursement,
+                selectAllCheckBox: e.target.checked
+            };
+        });
+    };
+
+    const disableCheckBox = (name, value, i) => {
+        setAppData(appData => {
+            let listReimbursement = [...appData.listReimbursement];
+            listReimbursement[i][name] = value;
 
             return {
                 ...appData,
@@ -78,6 +100,8 @@ const ReimbursementTable = () => {
                                             type='checkbox'
                                             name='checkAll'
                                             onChange={checkAll}
+                                            checked={selectAllCheckBox}
+                                            disabled={!isPaymentNumberOpen}
                                         />
                                     </th>
                                     <th>Employee Name</th>
@@ -106,6 +130,10 @@ const ReimbursementTable = () => {
                                         item={item}
                                         checkOne={checkOne}
                                         index={i}
+                                        isPaymentNumberOpen={
+                                            isPaymentNumberOpen
+                                        }
+                                        disableCheckBox={disableCheckBox}
                                     />
                                 ))}
                             </tbody>

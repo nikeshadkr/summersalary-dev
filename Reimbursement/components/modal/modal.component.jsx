@@ -17,7 +17,11 @@ const Modal = ({ data, title, type }) => {
                             <button onClick={() => hideModal()}>Close</button>
                         </div>
 
-                        <div className='mc-body'>{JSON.stringify(data[0])}</div>
+                        <div className='mc-body'>
+                            <pre>
+                                <code>{JSON.stringify(data[0])}</code>
+                            </pre>
+                        </div>
                     </div>
                 </div>
             </div>

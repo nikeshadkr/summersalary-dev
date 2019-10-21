@@ -30,7 +30,7 @@
     width: 800px;
 
     &.large {
-        width: 1200px;
+        width: 1000px;
     }
 
     &.small {
@@ -86,6 +86,19 @@
     }
 
     .mc-body {
+        &::before,
+        &::after {
+            content: "";
+            clear: both;
+            display: block;
+        }
         padding: 10px;
     }
+}
+
+code,
+pre {
+    float: left;
+    width: 100%;
+    white-space: normal;
 }
