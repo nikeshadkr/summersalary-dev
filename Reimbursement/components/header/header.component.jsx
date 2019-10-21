@@ -76,7 +76,8 @@ const Header = () => {
             ...appData,
             ...newValidatedFields,
 
-            // Rerender list and checkbox
+            // Re-render List and checkbox
+            listReimbursement: [],
             selectAllCheckBox: false,
             isReimbursementLoaded: false
         }));
