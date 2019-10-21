@@ -75,7 +75,10 @@ const Header = () => {
         setAppData(appData => ({
             ...appData,
             ...newValidatedFields,
-            selectAllCheckBox: false
+
+            // Rerender list and checkbox
+            selectAllCheckBox: false,
+            isReimbursementLoaded: false
         }));
 
         setFilters({
