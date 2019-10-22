@@ -300,4 +300,24 @@ class AppProvider extends React.Component {
     }
 }
 
+// High Order Component
+// For Consuming Context
+export const withAppData = Component => {
+    return class ContextConsumer extends React.Component {
+        constructor() {
+            super();
+        }
+
+        render() {
+            return (
+                <AppContext.Consumer>
+                    {values => (
+                        <Component {...this.props} AppContext={values} />
+                    )}
+                </AppContext.Consumer>
+            );
+        }
+    };
+};
+
 export default AppProvider;

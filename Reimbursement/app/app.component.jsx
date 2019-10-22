@@ -7,19 +7,17 @@ import ReimbursementTable from "../components/reimbursement-table/reimbursement-
 import Modal from "../components/modal/modal.component";
 import Loader from "../components/loader/loader.component";
 
-import { AppContext } from "./app.provider";
+import { withAppData } from "./app.provider";
 import { Paths } from "./app.utils";
 
-const App = () => {
-    const {
-        appData,
-        setAppData,
-        isLoading,
-        showHideLoader,
-        myModal
-    } = useContext(AppContext);
+class App extends React.Component {
+    constructor() {
+        super();
+    }
 
-    const loadUtilApis = async () => {
+    loadUtils = async () => {
+        const { appData, setAppData, showHideLoader } = this.props.AppContext;
+
         showHideLoader(true);
 
         try {
@@ -40,24 +38,27 @@ const App = () => {
         }
     };
 
-    useEffect(() => {
-        loadUtilApis();
-    }, []);
+    componentDidMount() {
+        this.loadUtils();
+    }
 
-    return (
-        <>
-            <Header />
-            {appData.isReimbursementLoaded && <ReimbursementTable />}
-            {isLoading && <Loader />}
-            {myModal && myModal.showModal && (
-                <Modal
-                    data={myModal.data}
-                    title={myModal.title}
-                    type={myModal.type}
-                />
-            )}
-        </>
-    );
-};
+    render() {
+        const { appData, myModal, isLoading } = this.props.AppContext;
+        return (
+            <>
+                <Header />
+                {appData.isReimbursementLoaded && <ReimbursementTable />}
+                {isLoading && <Loader />}
+                {myModal && myModal.showModal && (
+                    <Modal
+                        data={myModal.data}
+                        title={myModal.title}
+                        type={myModal.type}
+                    />
+                )}
+            </>
+        );
+    }
+}
 
-export default App;
+export default withAppData(App);

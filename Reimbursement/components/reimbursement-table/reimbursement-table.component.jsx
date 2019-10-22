@@ -1,35 +1,29 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import Pagination from "react-js-pagination";
 
 import ReimbursementData from "../reimbursement-data/reimbursement-data.component";
 import ColumnTotal from "../column-total/column-total.component";
 
-import { AppContext } from "../../app/app.provider";
+import { withAppData } from "../../app/app.provider";
 import { Utils } from "../../app/app.utils";
 
-const ReimbursementTable = () => {
-    const {
-        appData,
-        setAppData,
+class ReimbursementTable extends React.Component {
+    constructor(props) {
+        super(props);
 
-        loadReimbursements,
-        pagination,
-        setPagination
-    } = useContext(AppContext);
+        const {
+            appData: { listReimbursement }
+        } = this.props.AppContext;
 
-    const {
-        listReimbursement,
-        selectAllCheckBox,
-        isPaymentNumberOpen
-    } = appData;
+        this.totalRecord =
+            listReimbursement && listReimbursement.length > 0
+                ? listReimbursement[0].TotalRecords
+                : 0;
+    }
 
-    let totalRecord =
-        listReimbursement && listReimbursement.length > 0
-            ? listReimbursement[0].TotalRecords
-            : 0;
-
-    const checkOne = e => {
+    checkOne = e => {
         e.persist();
+        const { appData, setAppData } = this.props.AppContext;
 
         let listReimbursement = [...appData.listReimbursement];
         listReimbursement[e.target.dataset.id][
@@ -42,8 +36,9 @@ const ReimbursementTable = () => {
         });
     };
 
-    const checkAll = e => {
+    checkAll = e => {
         e.persist();
+        const { appData, setAppData } = this.props.AppContext;
 
         let listReimbursement = [...appData.listReimbursement];
         listReimbursement.forEach(item => {
@@ -57,7 +52,13 @@ const ReimbursementTable = () => {
         });
     };
 
-    const handlePageChange = pageIndex => {
+    handlePageChange = pageIndex => {
+        const {
+            loadReimbursements,
+            pagination,
+            setPagination
+        } = this.props.AppContext;
+
         if (pageIndex != pagination.pageIndex)
             setPagination(
                 {
@@ -71,134 +72,150 @@ const ReimbursementTable = () => {
             );
     };
 
-    return (
-        <>
-            {listReimbursement && listReimbursement.length > 0 ? (
-                <>
-                    <div className='table-layout'>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th className='check'>
-                                        <input
-                                            type='checkbox'
-                                            name='checkAll'
-                                            onChange={checkAll}
-                                            checked={selectAllCheckBox}
-                                            disabled={!isPaymentNumberOpen}
-                                        />
-                                    </th>
-                                    <th>Employee Name</th>
-                                    <th>CUNY ID</th>
-                                    <th>Effort Certification</th>
-                                    <th className='text-right'>
-                                        Salary Authorized
-                                    </th>
-                                    <th className='text-right'>
-                                        CUNY YTD Paid
-                                    </th>
-                                    <th className='text-right'>Difference</th>
-                                    <th className='text-right'>
-                                        Previous Reimbursement
-                                    </th>
-                                    <th className='text-right'>
-                                        Eligible Balance to Reimburse
-                                    </th>
-                                </tr>
-                            </thead>
+    render() {
+        const {
+            appData: {
+                listReimbursement,
+                selectAllCheckBox,
+                isPaymentNumberOpen
+            },
+            pagination
+        } = this.props.AppContext;
 
-                            <tbody>
-                                {listReimbursement.map((item, i) => (
-                                    <ReimbursementData
-                                        key={item.EmployeeId}
-                                        item={item}
-                                        checkOne={checkOne}
-                                        index={i}
-                                    />
-                                ))}
-                            </tbody>
+        return (
+            <>
+                {listReimbursement && listReimbursement.length > 0 ? (
+                    <>
+                        <div className='table-layout'>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th className='check'>
+                                            <input
+                                                type='checkbox'
+                                                name='checkAll'
+                                                onChange={this.checkAll}
+                                                checked={selectAllCheckBox}
+                                                disabled={!isPaymentNumberOpen}
+                                            />
+                                        </th>
+                                        <th>Employee Name</th>
+                                        <th>CUNY ID</th>
+                                        <th>Effort Certification</th>
+                                        <th className='text-right'>
+                                            Salary Authorized
+                                        </th>
+                                        <th className='text-right'>
+                                            CUNY YTD Paid
+                                        </th>
+                                        <th className='text-right'>
+                                            Difference
+                                        </th>
+                                        <th className='text-right'>
+                                            Previous Reimbursement
+                                        </th>
+                                        <th className='text-right'>
+                                            Eligible Balance to Reimburse
+                                        </th>
+                                    </tr>
+                                </thead>
 
-                            <tfoot>
-                                <tr>
-                                    <td colSpan='4'>&nbsp;</td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={"SalaryAuthorized"}
+                                <tbody>
+                                    {listReimbursement.map((item, i) => (
+                                        <ReimbursementData
+                                            key={item.EmployeeId}
+                                            item={item}
+                                            checkOne={this.checkOne}
+                                            index={i}
                                         />
-                                    </td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={"CUNYYTDPaid"}
-                                        />
-                                    </td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={"NotYTDPaid"}
-                                        />
-                                    </td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={"PreviousReimbursement"}
-                                        />
-                                    </td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={
-                                                "EligibleBalanceToReimburse"
-                                            }
-                                        />
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                                    ))}
+                                </tbody>
 
-                    <div className='pagination-container'>
-                        <span className='page-count'>
-                            {`Showing ${
-                                pagination.pageIndex === 1
-                                    ? pagination.pageIndex
-                                    : (pagination.pageIndex - 1) *
-                                          pagination.pageSize +
-                                      1
-                            } - ${
-                                pagination.pageSize * pagination.pageIndex >
-                                totalRecord
-                                    ? totalRecord
-                                    : pagination.pageSize * pagination.pageIndex
-                            } out of ${totalRecord}`}
-                        </span>
-                        <Pagination
-                            firstPageText={<span>&laquo;</span>}
-                            lastPageText={<span>&raquo;</span>}
-                            prevPageText='Prev'
-                            nextPageText='Next'
-                            activePage={pagination.pageIndex}
-                            itemsCountPerPage={pagination.pageSize}
-                            totalItemsCount={totalRecord}
-                            pageRangeDisplayed={5}
-                            onChange={handlePageChange}
-                            disabledClass='p-disabled'
-                            itemClass='p-item'
-                            itemClassFirst='p-first'
-                            itemClassPrev='p-prev'
-                            itemClassNext='p-next'
-                            itemClassLast='p-last'
-                        />
-                    </div>
-                </>
-            ) : (
-                <>
-                    <h1>No Records found</h1>
-                </>
-            )}
-        </>
-    );
-};
+                                <tfoot>
+                                    <tr>
+                                        <td colSpan='4'>&nbsp;</td>
+                                        <td className='with-bg text-right'>
+                                            <ColumnTotal
+                                                list={listReimbursement}
+                                                columnName={"SalaryAuthorized"}
+                                            />
+                                        </td>
+                                        <td className='with-bg text-right'>
+                                            <ColumnTotal
+                                                list={listReimbursement}
+                                                columnName={"CUNYYTDPaid"}
+                                            />
+                                        </td>
+                                        <td className='with-bg text-right'>
+                                            <ColumnTotal
+                                                list={listReimbursement}
+                                                columnName={"NotYTDPaid"}
+                                            />
+                                        </td>
+                                        <td className='with-bg text-right'>
+                                            <ColumnTotal
+                                                list={listReimbursement}
+                                                columnName={
+                                                    "PreviousReimbursement"
+                                                }
+                                            />
+                                        </td>
+                                        <td className='with-bg text-right'>
+                                            <ColumnTotal
+                                                list={listReimbursement}
+                                                columnName={
+                                                    "EligibleBalanceToReimburse"
+                                                }
+                                            />
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
 
-export default ReimbursementTable;
+                        <div className='pagination-container'>
+                            <span className='page-count'>
+                                {`Showing ${
+                                    pagination.pageIndex === 1
+                                        ? pagination.pageIndex
+                                        : (pagination.pageIndex - 1) *
+                                              pagination.pageSize +
+                                          1
+                                } - ${
+                                    pagination.pageSize * pagination.pageIndex >
+                                    this.totalRecord
+                                        ? this.totalRecord
+                                        : pagination.pageSize *
+                                          pagination.pageIndex
+                                } out of ${this.totalRecord}`}
+                            </span>
+                            <Pagination
+                                firstPageText={<span>&laquo;</span>}
+                                lastPageText={<span>&raquo;</span>}
+                                prevPageText='Prev'
+                                nextPageText='Next'
+                                activePage={pagination.pageIndex}
+                                itemsCountPerPage={pagination.pageSize}
+                                totalItemsCount={this.totalRecord}
+                                pageRangeDisplayed={5}
+                                onChange={this.handlePageChange}
+                                disabledClass='p-disabled'
+                                itemClass='p-item'
+                                itemClassFirst='p-first'
+                                itemClassPrev='p-prev'
+                                itemClassNext='p-next'
+                                itemClassLast='p-last'
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <h1>No Records found</h1>
+                    </>
+                )}
+            </>
+        );
+    }
+}
+
+export default withAppData(ReimbursementTable);
