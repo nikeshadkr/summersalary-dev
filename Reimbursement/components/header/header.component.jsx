@@ -129,14 +129,11 @@ const Header = () => {
                 }
             },
             updatedState => {
-                if (updatedState.isFilterValid) loadReimbursements(true);
+                if (updatedState.filters.isFilterValid)
+                    loadReimbursements(true);
             }
         );
     };
-
-    useEffect(() => {
-        console.log(appData);
-    }, [appData]);
 
     return (
         <section
