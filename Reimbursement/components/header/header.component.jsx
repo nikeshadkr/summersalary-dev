@@ -89,7 +89,9 @@ const Header = () => {
             certificationStatus: appData.certificationStatus,
             paymentStatus: appData.paymentStatus,
 
-            ...newfilterParams
+            ...newfilterParams,
+
+            listPaymentNumber: appData.listPaymentNumber // Copying list of payment numbers when filtering
         });
     };
 

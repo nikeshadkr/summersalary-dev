@@ -9,12 +9,7 @@ import { Utils } from "../../app/app.utils";
 
 const ReimbursementTable = () => {
     const {
-        appData: {
-            listReimbursement,
-            paymentNumber,
-            listPaymentNumber,
-            selectAllCheckBox
-        },
+        appData: { listReimbursement, selectAllCheckBox, isPaymentNumberOpen },
         setAppData,
 
         loadReimbursements,
@@ -26,10 +21,6 @@ const ReimbursementTable = () => {
         listReimbursement && listReimbursement.length > 0
             ? listReimbursement[0].TotalRecords
             : 0;
-
-    const [isPaymentNumberOpen] = listPaymentNumber.map(obj =>
-        obj.PaymentNumber == paymentNumber.value ? obj.IsOpen : null
-    );
 
     const checkOne = e => {
         e.persist();
@@ -58,18 +49,6 @@ const ReimbursementTable = () => {
                 ...appData,
                 listReimbursement,
                 selectAllCheckBox: e.target.checked
-            };
-        });
-    };
-
-    const disableCheckBox = (name, value, i) => {
-        setAppData(appData => {
-            let listReimbursement = [...appData.listReimbursement];
-            listReimbursement[i][name] = value;
-
-            return {
-                ...appData,
-                listReimbursement
             };
         });
     };
@@ -130,10 +109,6 @@ const ReimbursementTable = () => {
                                         item={item}
                                         checkOne={checkOne}
                                         index={i}
-                                        isPaymentNumberOpen={
-                                            isPaymentNumberOpen
-                                        }
-                                        disableCheckBox={disableCheckBox}
                                     />
                                 ))}
                             </tbody>

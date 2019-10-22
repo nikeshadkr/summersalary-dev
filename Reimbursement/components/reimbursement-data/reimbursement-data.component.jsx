@@ -3,13 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { AppContext } from "../../app/app.provider";
 import { Utils } from "../../app/app.utils";
 
-const ReimbursementData = ({
-    item,
-    checkOne,
-    index,
-    isPaymentNumberOpen,
-    disableCheckBox
-}) => {
+const ReimbursementData = ({ item, checkOne, index }) => {
     const { initModal } = useContext(AppContext);
 
     const openModal = (e, item) => {
@@ -22,15 +16,6 @@ const ReimbursementData = ({
         });
     };
 
-    const isDisabled =
-        !isPaymentNumberOpen ||
-        item.EffortCertStatus === "X" ||
-        item.NotYTDPaid === 0;
-
-    useEffect(() => {
-        disableCheckBox("isDisabled", isDisabled, index);
-    }, []);
-
     return (
         <tr>
             <td className='check'>
@@ -41,7 +26,7 @@ const ReimbursementData = ({
                     value={true}
                     onChange={checkOne}
                     checked={item.isChecked}
-                    disabled={isDisabled}
+                    disabled={item.isDisabled}
                 />
             </td>
             <td>

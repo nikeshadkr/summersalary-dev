@@ -77,7 +77,8 @@ const AppProvider = ({ children }) => {
 
         listReimbursement: [],
         isReimbursementLoaded: false,
-        selectAllCheckBox: false
+        selectAllCheckBox: false,
+        isPaymentNumberOpen: false
     });
 
     const [isLoading, setLoader] = useState(false);
@@ -115,7 +116,11 @@ const AppProvider = ({ children }) => {
         college: "",
         paymentNumber: "",
         certificationStatus: "",
-        paymentStatus: ""
+        paymentStatus: "",
+
+        // List payment Numbers changes dynamically when changing year so we loose the old list
+        // That is why we need to back up the list on filter
+        listPaymentNumber: []
     });
 
     const loadReimbursements = async fromFilter => {
@@ -138,9 +143,19 @@ const AppProvider = ({ children }) => {
                 }&pageSize=${pagination.pageSize}`
             );
 
+            let [isPaymentNumberOpen] = filters.listPaymentNumber.map(obj =>
+                obj.PaymentNumber == filters.paymentNumber ? obj.IsOpen : null
+            );
+
+            //console.log(filters.listPaymentNumber);
+            //console.log(isPaymentNumberOpen);
+
             listReimbursement.data.forEach(item => {
                 item.isChecked = false;
-                item.isDisabled = false;
+                item.isDisabled =
+                    !isPaymentNumberOpen ||
+                    item.EffortCertStatus === "X" ||
+                    item.NotYTDPaid !== 0;
             });
 
             setAppData(appData => {
@@ -148,7 +163,8 @@ const AppProvider = ({ children }) => {
                     ...appData,
                     listReimbursement: listReimbursement.data,
                     isReimbursementLoaded: true,
-                    selectAllCheckBox: false
+                    selectAllCheckBox: false,
+                    isPaymentNumberOpen
                 };
             });
 
