@@ -6,14 +6,13 @@ import { Utils, Paths } from "../../app/app.utils";
 
 const Header = () => {
     const {
+        setMainState,
         appData,
         setAppData,
         loadReimbursements,
         showHideLoader,
         validateForm,
-        validateField,
-        filters,
-        setFilters
+        validateField
     } = useContext(AppContext);
 
     const {
@@ -65,7 +64,6 @@ const Header = () => {
                     [e.target.name]: newValidatedField
                 },
                 updatedState => {
-                    console.log(updatedState);
                     if (e.target.name === "summerYear")
                         onSummerYearChange(
                             newValidatedField.value,
@@ -107,27 +105,28 @@ const Header = () => {
     const handleSubmit = () => {
         const [newValidatedFields, newfilterParams, isValid] = validateForm();
 
-        setAppData({
-            ...appData,
-            ...newValidatedFields,
-
-            // Re-render List and checkbox
-            listReimbursement: [],
-            selectAllCheckBox: false,
-            isReimbursementLoaded: false
-        });
-
-        setFilters(
+        setMainState(
             {
-                isFilterValid: isValid,
+                appData: {
+                    ...appData,
+                    ...newValidatedFields,
 
-                isPending: appData.isPending,
-                certificationStatus: appData.certificationStatus,
-                paymentStatus: appData.paymentStatus,
+                    // Re-render List and checkbox
+                    listReimbursement: [],
+                    selectAllCheckBox: false,
+                    isReimbursementLoaded: false
+                },
+                filters: {
+                    isFilterValid: isValid,
 
-                ...newfilterParams,
+                    isPending: appData.isPending,
+                    certificationStatus: appData.certificationStatus,
+                    paymentStatus: appData.paymentStatus,
 
-                listPaymentNumber: appData.listPaymentNumber // Copying list of payment numbers when filtering
+                    ...newfilterParams,
+
+                    listPaymentNumber: appData.listPaymentNumber // Copying list of payment numbers when filtering
+                }
             },
             updatedState => {
                 if (updatedState.isFilterValid) loadReimbursements(true);
@@ -136,7 +135,7 @@ const Header = () => {
     };
 
     useEffect(() => {
-        //console.log(appData);
+        console.log(appData);
     }, [appData]);
 
     return (

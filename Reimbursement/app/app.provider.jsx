@@ -8,6 +8,7 @@ const validationRules = {
 };
 
 export const AppContext = React.createContext({
+    setMainState: () => {},
     appData: {},
     setAppData: () => {},
 
@@ -167,6 +168,17 @@ class AppProvider extends React.Component {
             }
         );
 
+    setMainState = (updates, callback) =>
+        this.setState(
+            state => ({
+                ...state,
+                ...updates
+            }),
+            () => {
+                callback && callback(this.state);
+            }
+        );
+
     loadReimbursements = async fromFilter => {
         this.showHideLoader(true);
 
@@ -261,6 +273,7 @@ class AppProvider extends React.Component {
         return (
             <AppContext.Provider
                 value={{
+                    setMainState: this.setMainState,
                     appData,
                     setAppData: this.setAppData,
 
