@@ -5,6 +5,8 @@ export const Paths = {
 };
 
 export const Utils = {
+    PageSize: 15,
+
     ConvertToBool: value => {
         if (value && typeof value === "string") {
             if (value.toLowerCase() === "true") return true;
@@ -41,7 +43,5 @@ export const Utils = {
                     : ""
             }`;
         } else return `$${amount}`;
-    },
-
-    PageSize: window.pageSize
+    }
 };

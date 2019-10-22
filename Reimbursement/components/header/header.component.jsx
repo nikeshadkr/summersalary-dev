@@ -41,10 +41,10 @@ const Header = () => {
         { value: "", name: "All" }
     ];
 
-    const handleChange = (e, validate) => {
+    const handleChange = (e, mainFilter) => {
         e.persist();
 
-        if (typeof validate === "undefined")
+        if (typeof mainFilter === "undefined")
             setAppData({
                 ...appData,
                 [e.target.name]:
@@ -56,19 +56,16 @@ const Header = () => {
             let field = { ...appData[e.target.name] };
             field.value = e.target.value;
 
-            let newValidatedField = validateField(field);
+            //let newValidatedField = validateField(field);
 
             setAppData(
                 {
                     ...appData,
-                    [e.target.name]: newValidatedField
+                    [e.target.name]: field
                 },
                 updatedState => {
                     if (e.target.name === "summerYear")
-                        onSummerYearChange(
-                            newValidatedField.value,
-                            updatedState
-                        );
+                        onSummerYearChange(field.value, updatedState);
                 }
             );
         }
