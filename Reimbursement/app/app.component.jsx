@@ -28,12 +28,10 @@ const App = () => {
                 axios.get(`${Paths.apiPath}/GetSummerSalaryYears`)
             ]);
 
-            setAppData(appData => {
-                return {
-                    ...appData,
-                    listCollege: getCollegeRes.data,
-                    listSummerSalaryYear: getYearsRes.data
-                };
+            setAppData({
+                ...appData,
+                listCollege: getCollegeRes.data,
+                listSummerSalaryYear: getYearsRes.data
             });
 
             showHideLoader(false);

@@ -46,33 +46,68 @@ const Header = () => {
         e.persist();
 
         if (typeof validate === "undefined")
-            setAppData(appData => ({
+            setAppData({
                 ...appData,
                 [e.target.name]:
                     e.target.name === "isPending"
                         ? Utils.ConvertToBool(e.target.value)
                         : e.target.value
-            }));
+            });
         else {
             let field = { ...appData[e.target.name] };
             field.value = e.target.value;
 
             let newValidatedField = validateField(field);
 
-            if (e.target.name === "summerYear")
-                onSummerYearChange(newValidatedField.value);
+            setAppData(
+                {
+                    ...appData,
+                    [e.target.name]: newValidatedField
+                },
+                updatedState => {
+                    console.log(updatedState);
+                    if (e.target.name === "summerYear")
+                        onSummerYearChange(
+                            newValidatedField.value,
+                            updatedState
+                        );
+                }
+            );
+        }
+    };
 
-            setAppData(appData => ({
-                ...appData,
-                [e.target.name]: newValidatedField
-            }));
+    const onSummerYearChange = async (summerYear, updatedState) => {
+        let paymentNumber = { ...updatedState.paymentNumber };
+        paymentNumber.value = "";
+
+        try {
+            showHideLoader(true);
+            const getCollegeRes = await axios.get(
+                `${Paths.apiPath}/GetReimbursementPeriods?year=${summerYear}`
+            );
+
+            setAppData({
+                ...updatedState,
+                paymentNumber,
+                listPaymentNumber: getCollegeRes.data
+            });
+
+            showHideLoader(false);
+        } catch (error) {
+            showHideLoader(false);
+
+            setAppData({
+                ...updatedState,
+                paymentNumber,
+                listPaymentNumber: []
+            });
         }
     };
 
     const handleSubmit = () => {
         const [newValidatedFields, newfilterParams, isValid] = validateForm();
 
-        setAppData(appData => ({
+        setAppData({
             ...appData,
             ...newValidatedFields,
 
@@ -80,63 +115,29 @@ const Header = () => {
             listReimbursement: [],
             selectAllCheckBox: false,
             isReimbursementLoaded: false
-        }));
-
-        setFilters({
-            isFilterValid: isValid,
-
-            isPending: appData.isPending,
-            certificationStatus: appData.certificationStatus,
-            paymentStatus: appData.paymentStatus,
-
-            ...newfilterParams,
-
-            listPaymentNumber: appData.listPaymentNumber // Copying list of payment numbers when filtering
         });
-    };
 
-    const onSummerYearChange = async summerYear => {
-        try {
-            showHideLoader(true);
-            const getCollegeRes = await axios.get(
-                `${Paths.apiPath}/GetReimbursementPeriods?year=${summerYear}`
-            );
+        setFilters(
+            {
+                isFilterValid: isValid,
 
-            setAppData(appData => {
-                let paymentNumber = { ...appData.paymentNumber };
-                paymentNumber.value = "";
+                isPending: appData.isPending,
+                certificationStatus: appData.certificationStatus,
+                paymentStatus: appData.paymentStatus,
 
-                return {
-                    ...appData,
-                    paymentNumber,
-                    listPaymentNumber: getCollegeRes.data
-                };
+                ...newfilterParams,
 
-                /*listReimbursement: [],
-                    isReimbursementLoaded: false,
-                    certificationStatus: "",
-                    paymentStatus: ""*/
-            });
-
-            showHideLoader(false);
-        } catch (error) {
-            showHideLoader(false);
-            setAppData(appData => {
-                let paymentNumber = { ...appData.paymentNumber };
-                paymentNumber.value = "";
-
-                return {
-                    ...appData,
-                    paymentNumber,
-                    listPaymentNumber: []
-                };
-            });
-        }
+                listPaymentNumber: appData.listPaymentNumber // Copying list of payment numbers when filtering
+            },
+            updatedState => {
+                if (updatedState.isFilterValid) loadReimbursements(true);
+            }
+        );
     };
 
     useEffect(() => {
-        filters.isFilterValid && loadReimbursements(true);
-    }, [filters]);
+        //console.log(appData);
+    }, [appData]);
 
     return (
         <section
