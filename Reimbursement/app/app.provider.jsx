@@ -1,9 +1,14 @@
-import React, { createContext, useState } from "react";
+import React from "react";
 import axios from "axios";
 
 import { Paths, Utils } from "./app.utils";
 
-export const AppContext = createContext({
+const validationRules = {
+    required: val => val !== null && val !== undefined && val !== ""
+};
+
+export const AppContext = React.createContext({
+    setMainState: () => {},
     appData: {},
     setAppData: () => {},
 
@@ -24,109 +29,162 @@ export const AppContext = createContext({
     validateField: () => {}
 });
 
-const validationRules = {
-    required: val => val !== null && val !== undefined && val !== ""
-};
+class AppProvider extends React.Component {
+    constructor() {
+        super();
 
-const AppProvider = ({ children }) => {
-    const [appData, setAppData] = useState({
-        college: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            validationRules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        },
-        summerYear: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            validationRules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        },
-        paymentNumber: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            validationRules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        },
+        this.state = {
+            appData: {
+                college: {
+                    value: "",
+                    isTouched: false,
+                    isValid: false,
+                    errors: [],
+                    validationRules: [
+                        {
+                            rule: validationRules.required,
+                            message: "This field is required"
+                        }
+                    ]
+                },
+                summerYear: {
+                    value: "",
+                    isTouched: false,
+                    isValid: false,
+                    errors: [],
+                    validationRules: [
+                        {
+                            rule: validationRules.required,
+                            message: "This field is required"
+                        }
+                    ]
+                },
+                paymentNumber: {
+                    value: "",
+                    isTouched: false,
+                    isValid: false,
+                    errors: [],
+                    validationRules: [
+                        {
+                            rule: validationRules.required,
+                            message: "This field is required"
+                        }
+                    ]
+                },
 
-        listCollege: [],
-        listSummerSalaryYear: [],
-        listPaymentNumber: [],
-        isPending: true,
+                listCollege: [],
+                listSummerSalaryYear: [],
+                listPaymentNumber: [],
+                isPending: true,
 
-        certificationStatus: "",
-        paymentStatus: "",
+                certificationStatus: "",
+                paymentStatus: "",
 
-        listReimbursement: [],
-        isReimbursementLoaded: false,
-        selectAllCheckBox: false,
-        isPaymentNumberOpen: false
-    });
+                listReimbursement: [],
+                isReimbursementLoaded: false,
+                selectAllCheckBox: false,
+                isPaymentNumberOpen: false
+            },
+            isLoading: false,
+            myModal: {
+                data: [],
+                title: "",
+                type: "",
+                showModal: false
+            },
+            pagination: {
+                pageIndex: 1,
+                pageSize: Utils.PageSize,
+                reloadPage: false
+            },
+            filters: {
+                isFilterValid: false,
+                isPending: true,
+                summerYear: "",
+                college: "",
+                paymentNumber: "",
+                certificationStatus: "",
+                paymentStatus: "",
 
-    const [isLoading, setLoader] = useState(false);
-    const showHideLoader = val => setLoader(val);
+                // List payment Numbers changes dynamically when changing year so we loose the old list
+                // That is why we need to back up the list on filter
+                listPaymentNumber: []
+            }
+        };
+    }
 
-    const [myModal, setModal] = useState({
-        data: [],
-        title: "",
-        type: "",
-        showModal: false
-    });
-    const initModal = obj => {
+    showHideLoader = (isLoading, callback) =>
+        this.setState(
+            state => ({ ...state, isLoading }),
+            () => {
+                callback && callback(this.state.isLoading);
+            }
+        );
+
+    initModal = myModal => {
         document.body.classList.add("modal-open");
-        setModal({
-            ...obj
-        });
+        this.setState(state => ({ ...state, myModal }));
     };
-    const hideModal = () => {
+    hideModal = () => {
         document.body.classList.remove("modal-open");
-        setModal({
-            showModal: false
-        });
+        this.setState(state => ({
+            ...state,
+            myModal: {
+                showModal: false
+            }
+        }));
     };
 
-    const [pagination, setPagination] = useState({
-        pageIndex: 1,
-        pageSize: Utils.PageSize,
-        reloadPage: false
-    });
+    setPagination = (pagination, callback) =>
+        this.setState(
+            state => ({
+                ...state,
+                pagination
+            }),
+            () => {
+                callback && callback(this.state.pagination);
+            }
+        );
 
-    const [filters, setFilters] = useState({
-        isFilterValid: false,
-        isPending: true,
-        summerYear: "",
-        college: "",
-        paymentNumber: "",
-        certificationStatus: "",
-        paymentStatus: "",
+    setFilters = (filters, callback) =>
+        this.setState(
+            state => ({
+                ...state,
+                filters
+            }),
+            () => {
+                callback && callback(this.state.filters);
+            }
+        );
 
-        // List payment Numbers changes dynamically when changing year so we loose the old list
-        // That is why we need to back up the list on filter
-        listPaymentNumber: []
-    });
+    setAppData = (appData, callback) =>
+        this.setState(
+            state => ({
+                ...state,
+                appData
+            }),
+            () => {
+                callback && callback(this.state.appData);
+            }
+        );
 
-    const loadReimbursements = async fromFilter => {
-        showHideLoader(true);
+    setMainState = (updates, callback) =>
+        this.setState(
+            state => ({
+                ...state,
+                ...updates
+            }),
+            () => {
+                callback && callback(this.state);
+            }
+        );
 
-        if (fromFilter) setPagination(state => ({ ...state, pageIndex: 1 }));
+    loadReimbursements = async fromFilter => {
+        this.showHideLoader(true);
+
+        const { pagination, filters, appData } = this.state;
+
+        if (fromFilter) this.setPagination({ ...pagination, pageIndex: 1 });
 
         try {
             let listReimbursement = await axios.get(
@@ -158,32 +216,32 @@ const AppProvider = ({ children }) => {
                     item.NotYTDPaid !== 0;
             });
 
-            setAppData(appData => {
-                return {
-                    ...appData,
-                    listReimbursement: listReimbursement.data,
-                    isReimbursementLoaded: true,
-                    selectAllCheckBox: false,
-                    isPaymentNumberOpen
-                };
+            this.setAppData({
+                ...appData,
+                listReimbursement: listReimbursement.data,
+                isReimbursementLoaded: true,
+                selectAllCheckBox: false,
+                isPaymentNumberOpen
             });
 
-            showHideLoader(false);
+            this.showHideLoader(false);
         } catch (error) {
-            showHideLoader(false);
+            this.showHideLoader(false);
             console.log(error.message);
         }
     };
 
-    const requiredFields = ["college", "summerYear", "paymentNumber"];
-    const validateForm = () => {
+    requiredFields = ["college", "summerYear", "paymentNumber"];
+    validateForm = () => {
+        const { appData } = this.state;
+
         let isValid = true;
         let newfilterParams = {};
         let newValidatedFields = {};
 
-        requiredFields.map(fieldName => {
+        this.requiredFields.map(fieldName => {
             let field = { ...appData[fieldName] };
-            let newValidatedField = validateField(field);
+            let newValidatedField = this.validateField(field);
 
             if (newValidatedField.isValid === false) isValid = false;
             newValidatedFields[fieldName] = newValidatedField;
@@ -195,7 +253,7 @@ const AppProvider = ({ children }) => {
         return [newValidatedFields, newfilterParams, isValid];
     };
 
-    const validateField = field => {
+    validateField = field => {
         field.errors = [];
         field.isValid = true;
 
@@ -209,32 +267,37 @@ const AppProvider = ({ children }) => {
         return field;
     };
 
-    return (
-        <AppContext.Provider
-            value={{
-                appData,
-                setAppData,
+    render() {
+        const { pagination, filters, appData, isLoading, myModal } = this.state;
 
-                isLoading,
-                showHideLoader,
+        return (
+            <AppContext.Provider
+                value={{
+                    setMainState: this.setMainState,
+                    appData,
+                    setAppData: this.setAppData,
 
-                myModal,
-                initModal,
-                hideModal,
+                    isLoading,
+                    showHideLoader: this.showHideLoader,
 
-                loadReimbursements,
-                pagination,
-                setPagination,
-                filters,
-                setFilters,
+                    myModal,
+                    initModal: this.initModal,
+                    hideModal: this.hideModal,
 
-                validateForm,
-                validateField
-            }}
-        >
-            {children}
-        </AppContext.Provider>
-    );
-};
+                    loadReimbursements: this.loadReimbursements,
+                    pagination,
+                    setPagination: this.setPagination,
+                    filters,
+                    setFilters: this.setFilters,
+
+                    validateForm: this.validateForm,
+                    validateField: this.validateField
+                }}
+            >
+                {this.props.children}
+            </AppContext.Provider>
+        );
+    }
+}
 
 export default AppProvider;

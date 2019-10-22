@@ -9,13 +9,19 @@ import { Utils } from "../../app/app.utils";
 
 const ReimbursementTable = () => {
     const {
-        appData: { listReimbursement, selectAllCheckBox, isPaymentNumberOpen },
+        appData,
         setAppData,
 
         loadReimbursements,
         pagination,
         setPagination
     } = useContext(AppContext);
+
+    const {
+        listReimbursement,
+        selectAllCheckBox,
+        isPaymentNumberOpen
+    } = appData;
 
     let totalRecord =
         listReimbursement && listReimbursement.length > 0
@@ -24,47 +30,46 @@ const ReimbursementTable = () => {
 
     const checkOne = e => {
         e.persist();
-        setAppData(appData => {
-            let listReimbursement = [...appData.listReimbursement];
-            listReimbursement[e.target.dataset.id][
-                e.target.name
-            ] = Utils.ConvertToBool(e.target.checked);
 
-            return {
-                ...appData,
-                listReimbursement
-            };
+        let listReimbursement = [...appData.listReimbursement];
+        listReimbursement[e.target.dataset.id][
+            e.target.name
+        ] = Utils.ConvertToBool(e.target.checked);
+
+        setAppData({
+            ...appData,
+            listReimbursement
         });
     };
 
     const checkAll = e => {
         e.persist();
-        setAppData(appData => {
-            let listReimbursement = [...appData.listReimbursement];
-            listReimbursement.forEach(item => {
-                if (!item.isDisabled) item.isChecked = !item.isChecked;
-            });
 
-            return {
-                ...appData,
-                listReimbursement,
-                selectAllCheckBox: e.target.checked
-            };
+        let listReimbursement = [...appData.listReimbursement];
+        listReimbursement.forEach(item => {
+            if (!item.isDisabled) item.isChecked = !item.isChecked;
+        });
+
+        setAppData({
+            ...appData,
+            listReimbursement,
+            selectAllCheckBox: e.target.checked
         });
     };
 
     const handlePageChange = pageIndex => {
         if (pageIndex != pagination.pageIndex)
-            setPagination(state => ({
-                ...state,
-                pageIndex,
-                reloadPage: true
-            }));
+            setPagination(
+                {
+                    ...pagination,
+                    pageIndex,
+                    reloadPage: true
+                },
+                () => {
+                    loadReimbursements();
+                }
+            );
     };
-
-    useEffect(() => {
-        if (pagination.reloadPage) loadReimbursements();
-    }, [pagination]);
 
     return (
         <>
