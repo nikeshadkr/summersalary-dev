@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 
 import { AppContext } from "../../app/app.provider";
@@ -9,6 +9,7 @@ const Header = () => {
         setMainState,
         appData,
         setAppData,
+        pagination,
         loadReimbursements,
         showHideLoader,
         validateForm,
@@ -99,7 +100,7 @@ const Header = () => {
         }
     };
 
-    const handleSubmit = () => {
+    const handleFilter = () => {
         const [newValidatedFields, newfilterParams, isValid] = validateForm();
 
         setMainState(
@@ -122,12 +123,15 @@ const Header = () => {
 
                     ...newfilterParams,
 
-                    listPaymentNumber: appData.listPaymentNumber // Copying list of payment numbers when filtering
+                    listPaymentNumber: appData.listPaymentNumber // Copying list of payment numbers
+                },
+                pagination: {
+                    ...pagination,
+                    pageIndex: 1 // Setting page no to 1
                 }
             },
             updatedState => {
-                if (updatedState.filters.isFilterValid)
-                    loadReimbursements(true);
+                if (updatedState.filters.isFilterValid) loadReimbursements();
             }
         );
     };
@@ -243,7 +247,7 @@ const Header = () => {
                             listCollege.map((obj, i) => {
                                 return (
                                     <option key={i} value={obj.Code}>
-                                        {obj.CunyDescription}
+                                        {obj.Description}
                                     </option>
                                 );
                             })}
@@ -302,7 +306,7 @@ const Header = () => {
                     <label>&nbsp;</label>
                     <button
                         type='button'
-                        onClick={handleSubmit}
+                        onClick={handleFilter}
                         className='button'
                     >
                         Filter

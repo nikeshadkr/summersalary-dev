@@ -179,12 +179,10 @@ class AppProvider extends React.Component {
             }
         );
 
-    loadReimbursements = async fromFilter => {
+    loadReimbursements = async () => {
         this.showHideLoader(true);
 
         const { pagination, filters, appData } = this.state;
-
-        if (fromFilter) this.setPagination({ ...pagination, pageIndex: 1 });
 
         try {
             let listReimbursement = await axios.get(
@@ -212,7 +210,7 @@ class AppProvider extends React.Component {
                 item.isChecked = false;
                 item.isDisabled =
                     !isPaymentNumberOpen ||
-                    item.EffortCertStatus === "X" ||
+                    item.EffortCertStatus !== "F" ||
                     item.NotYTDPaid !== 0;
             });
 
