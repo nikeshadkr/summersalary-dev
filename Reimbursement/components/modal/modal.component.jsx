@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { AppContext } from "../../app/app.provider";
 
-import DistributionTable from "../../components/distribution/distribution-table.component";
+import DistributionTable from "../distribution-table/distribution-table.component";
 
 import "./modal.component.scss";
 

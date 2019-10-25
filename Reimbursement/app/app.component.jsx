@@ -8,7 +8,7 @@ import Modal from "../components/modal/modal.component";
 import Loader from "../components/loader/loader.component";
 
 // For Testing
-import DistributionTable from "../components/distribution/distribution-table.component";
+import DistributionTable from "../components/distribution-table/distribution-table.component";
 
 import { AppContext } from "./app.provider";
 import { config } from "../utilities/utils";
