@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import axios from "axios";
 
 import { AppContext } from "../../app/app.provider";
-import { Utils, Paths } from "../../app/app.utils";
+import { utils, config } from "../../utilities/utils";
 
 const Header = () => {
     const {
@@ -31,15 +31,15 @@ const Header = () => {
     } = appData;
 
     const listCertificationStatus = [
-        { value: "F", name: "Done" },
-        { value: "X", name: "Not Done" },
-        { value: "", name: "All" }
+        { value: config.effortCertStatus.done, name: "Done" },
+        { value: config.effortCertStatus.notDone, name: "Not Done" },
+        { value: config.effortCertStatus.all, name: "All" }
     ];
 
     const listPaymentStatus = [
-        { value: "0", name: "Fully Paid" },
-        { value: "1", name: "Not Fully Paid" },
-        { value: "", name: "All" }
+        { value: config.paymentStatus.done, name: "Fully Paid" },
+        { value: config.paymentStatus.notDone, name: "Not Fully Paid" },
+        { value: config.paymentStatus.all, name: "All" }
     ];
 
     const handleChange = (e, mainFilter) => {
@@ -50,7 +50,7 @@ const Header = () => {
                 ...appData,
                 [e.target.name]:
                     e.target.name === "isPending"
-                        ? Utils.ConvertToBool(e.target.value)
+                        ? utils.convertToBool(e.target.value)
                         : e.target.value
             });
         else {
@@ -79,7 +79,7 @@ const Header = () => {
         try {
             showHideLoader(true);
             const getCollegeRes = await axios.get(
-                `${Paths.apiPath}/GetReimbursementPeriods?year=${summerYear}`
+                `${config.apiPath}/GetReimbursementPeriods?year=${summerYear}`
             );
 
             setAppData({

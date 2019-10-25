@@ -1,11 +1,7 @@
 import React from "react";
 import axios from "axios";
 
-import { Paths, Utils } from "./app.utils";
-
-const validationRules = {
-    required: val => val !== null && val !== undefined && val !== ""
-};
+import { config, validationRules } from "../utilities/utils";
 
 export const AppContext = React.createContext({
     setMainState: () => {},
@@ -40,7 +36,7 @@ class AppProvider extends React.Component {
                     isTouched: false,
                     isValid: false,
                     errors: [],
-                    validationRules: [
+                    rules: [
                         {
                             rule: validationRules.required,
                             message: "This field is required"
@@ -52,7 +48,7 @@ class AppProvider extends React.Component {
                     isTouched: false,
                     isValid: false,
                     errors: [],
-                    validationRules: [
+                    rules: [
                         {
                             rule: validationRules.required,
                             message: "This field is required"
@@ -64,7 +60,7 @@ class AppProvider extends React.Component {
                     isTouched: false,
                     isValid: false,
                     errors: [],
-                    validationRules: [
+                    rules: [
                         {
                             rule: validationRules.required,
                             message: "This field is required"
@@ -87,14 +83,14 @@ class AppProvider extends React.Component {
             },
             isLoading: false,
             myModal: {
-                data: [],
-                title: "",
+                data: {},
                 type: "",
+                size: "",
                 showModal: false
             },
             pagination: {
                 pageIndex: 1,
-                pageSize: Utils.PageSize,
+                pageSize: config.pageSize,
                 reloadPage: false
             },
             filters: {
@@ -186,7 +182,7 @@ class AppProvider extends React.Component {
 
         try {
             let listReimbursement = await axios.get(
-                `${Paths.apiPath}/${
+                `${config.apiPath}/${
                     filters.isPending
                         ? "GetPendingReimbursements"
                         : "GetProcessedReimbursements"
@@ -210,7 +206,7 @@ class AppProvider extends React.Component {
                 item.isChecked = false;
                 item.isDisabled =
                     !isPaymentNumberOpen ||
-                    item.EffortCertStatus !== "F" ||
+                    item.EffortCertStatus !== config.effortCertStatus.done ||
                     item.NotYTDPaid !== 0;
             });
 
@@ -255,9 +251,9 @@ class AppProvider extends React.Component {
         field.errors = [];
         field.isValid = true;
 
-        field.validationRules.map(vRule => {
-            if (!vRule.rule(field.value)) {
-                field.errors.push(vRule.message);
+        field.rules.map(o => {
+            if (!o.rule(field.value)) {
+                field.errors.push(o.message);
                 field.isValid = false;
             }
         });

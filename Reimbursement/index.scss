@@ -154,6 +154,76 @@
     }
 }
 
+.modal-common {
+    .mc-title {
+        position: relative;
+        border-radius: 0;
+        border: 1px solid #4297d7;
+        background: #5c9ccc;
+        padding: 14px 15px;
+
+        div {
+            display: block;
+            color: #fff !important;
+            font-size: 16px;
+        }
+    }
+
+    .mc-body {
+        &::before,
+        &::after {
+            content: "";
+            clear: both;
+            display: block;
+        }
+        padding: 14px 15px;
+    }
+
+    .mc-footer {
+        &::before,
+        &::after {
+            content: "";
+            clear: both;
+            display: block;
+        }
+
+        padding: 14px 15px;
+        border-top: 1px solid #bbb;
+    }
+}
+
+/* Button CSS */
+.new-btn {
+    cursor: pointer;
+    border: 1px solid #80e7f5;
+    background: #2daebf;
+    font-weight: bold;
+    color: #fff;
+    outline: none;
+
+    padding: 6px 12px;
+    border-radius: 4px;
+
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    transition: 0.25s ease-in-out;
+
+    &:hover {
+        background: #187b88;
+        border-color: #2daebf;
+    }
+
+    &.cancel {
+        background: #b80900;
+        border-color: #ff4b4b;
+
+        &:hover {
+            background: #8a0f09;
+            border-color: #b80900;
+        }
+    }
+}
+
+/* Tabular Layout */
 .table-layout {
     table {
         table-layout: fixed;
@@ -165,6 +235,7 @@
             text-align: left;
             background: #bcd0dd;
             border-color: rgb(202, 222, 236);
+            vertical-align: top;
         }
 
         .check {
@@ -173,6 +244,7 @@
 
         td {
             border-color: #bbb;
+            vertical-align: top;
 
             a {
                 text-decoration: none;
@@ -194,5 +266,23 @@
                 }
             }
         }
+    }
+
+    &.inside-modal {
+        table th {
+            border-color: #bbb;
+            background: #ebebeb;
+        }
+        table tfoot tr td.with-bg {
+            background: aliceblue;
+        }
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 4px 5px;
+        border: 1px solid #ccc;
+        margin: 0;
     }
 }

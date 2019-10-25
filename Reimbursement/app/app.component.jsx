@@ -7,8 +7,11 @@ import ReimbursementTable from "../components/reimbursement-table/reimbursement-
 import Modal from "../components/modal/modal.component";
 import Loader from "../components/loader/loader.component";
 
+// For Testing
+import DistributionTable from "../components/distribution/distribution-table.component";
+
 import { AppContext } from "./app.provider";
-import { Paths } from "./app.utils";
+import { config } from "../utilities/utils";
 
 const App = () => {
     const {
@@ -24,8 +27,8 @@ const App = () => {
 
         try {
             const [getCollegeRes, getYearsRes] = await Promise.all([
-                axios.get(`${Paths.apiPath}/getcolleges`),
-                axios.get(`${Paths.apiPath}/GetSummerSalaryYears`)
+                axios.get(`${config.apiPath}/getcolleges`),
+                axios.get(`${config.apiPath}/GetSummerSalaryYears`)
             ]);
 
             setAppData({
@@ -52,10 +55,32 @@ const App = () => {
             {myModal && myModal.showModal && (
                 <Modal
                     data={myModal.data}
-                    title={myModal.title}
                     type={myModal.type}
+                    size={myModal.size}
                 />
             )}
+            {/* For Testing */}
+            <div className='mtop-30'>
+                <DistributionTable
+                    data={{
+                        CUNYYTDPaid: 12734,
+                        CollegeCode: "BM",
+                        EffortCertStatus: "F",
+                        EligibleBalanceToReimburse: 0,
+                        EmployeeId: "10898356 ",
+                        FirstName: "DAVID",
+                        LastName: "ALLEN",
+                        NotYTDPaid: 0,
+                        PaymentNumber: 1,
+                        PreviousReimbursement: 0,
+                        ReimbursementYear: 2018,
+                        SalaryAuthorized: 12734,
+                        TotalRecords: 110,
+                        isPending: true
+                    }}
+                    hideModal={() => console.log("this is dummy Modal")}
+                />
+            </div>
         </>
     );
 };

@@ -14,9 +14,11 @@
     },
     "scripts": {
         "reimbursement-build": "webpack --config-name reimbursement --mode development",
-        "effortcertification-build": "webpack --config-name effortcertification --mode development",
         "reimbursement-dev": "webpack --config-name reimbursement --mode development --watch",
-        "effortcertification-dev": "webpack --config-name effortcertification --mode development --watch"
+        "reimbursement-prod": "webpack --config-name reimbursement --mode production",
+        "effortcertification-build": "webpack --config-name effortcertification --mode development",
+        "effortcertification-dev": "webpack --config-name effortcertification --mode development --watch",
+        "effortcertification-prod": "webpack --config-name effortcertification --mode production"
     },
     "devDependencies": {
         "@babel/cli": "^7.6.2",
@@ -38,6 +40,7 @@
     },
     "dependencies": {
         "axios": "^0.19.0",
+        "moment": "^2.24.0",
         "react": "^16.10.2",
         "react-dom": "^16.10.2",
         "react-js-pagination": "^3.0.2"

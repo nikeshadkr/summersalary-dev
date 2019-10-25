@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import { Utils } from "../../app/app.utils";
+import { utils } from "../../utilities/utils";
 
 const ColumnTotal = ({ list, columnName }) => {
     let total = 0;
@@ -9,7 +9,7 @@ const ColumnTotal = ({ list, columnName }) => {
         total = total + item[columnName];
     });
 
-    return Utils.Currency(total);
+    return utils.currency(total);
 };
 
 ColumnTotal.propTypes = {

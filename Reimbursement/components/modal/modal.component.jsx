@@ -2,27 +2,37 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 
 import { AppContext } from "../../app/app.provider";
+
+import DistributionTable from "../../components/distribution/distribution-table.component";
+
 import "./modal.component.scss";
 
-const Modal = ({ data, title, type }) => {
+const Modal = ({ data, type, size }) => {
     const { hideModal } = useContext(AppContext);
+
+    let Component;
+    switch (type) {
+        case "eligible-balance":
+            Component = DistributionTable;
+
+        default:
+            Component = DistributionTable;
+    }
+
+    return (
+        <ModalOuter size={size}>
+            <Component data={data} hideModal={hideModal} />
+        </ModalOuter>
+    );
+};
+
+const ModalOuter = props => {
     return (
         <>
             <div className='modal-backdrop'></div>
             <div className='modal-dialog'>
-                <div className='modal-widget large'>
-                    <div className='modal-common'>
-                        <div className='mc-title'>
-                            <div>{title}</div>
-                            <button onClick={() => hideModal()}>Close</button>
-                        </div>
-
-                        <div className='mc-body'>
-                            <pre>
-                                <code>{JSON.stringify(data[0])}</code>
-                            </pre>
-                        </div>
-                    </div>
+                <div className={`modal-widget ${props.size}`}>
+                    {props.children}
                 </div>
             </div>
         </>
@@ -30,9 +40,9 @@ const Modal = ({ data, title, type }) => {
 };
 
 Modal.propTypes = {
-    data: PropTypes.array.isRequired,
-    title: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
+    data: PropTypes.object.isRequired,
+    type: PropTypes.string.isRequired,
+    size: PropTypes.string.isRequired
 };
 
 export default Modal;

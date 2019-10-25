@@ -5,7 +5,7 @@ import ReimbursementData from "../reimbursement-data/reimbursement-data.componen
 import ColumnTotal from "../column-total/column-total.component";
 
 import { AppContext } from "../../app/app.provider";
-import { Utils } from "../../app/app.utils";
+import { utils } from "../../utilities/utils";
 
 const ReimbursementTable = () => {
     const {
@@ -18,6 +18,7 @@ const ReimbursementTable = () => {
     } = useContext(AppContext);
 
     const {
+        isPending,
         listReimbursement,
         selectAllCheckBox,
         isPaymentNumberOpen
@@ -34,7 +35,7 @@ const ReimbursementTable = () => {
         let listReimbursement = [...appData.listReimbursement];
         listReimbursement[e.target.dataset.id][
             e.target.name
-        ] = Utils.ConvertToBool(e.target.checked);
+        ] = utils.convertToBool(e.target.checked);
 
         setAppData({
             ...appData,
@@ -114,6 +115,7 @@ const ReimbursementTable = () => {
                                         item={item}
                                         checkOne={checkOne}
                                         index={i}
+                                        isPending={isPending}
                                     />
                                 ))}
                             </tbody>
