@@ -199,9 +199,6 @@ class AppProvider extends React.Component {
                 obj.PaymentNumber == filters.paymentNumber ? obj.IsOpen : null
             );
 
-            //console.log(filters.listPaymentNumber);
-            //console.log(isPaymentNumberOpen);
-
             listReimbursement.data.forEach(item => {
                 item.isChecked = false;
 

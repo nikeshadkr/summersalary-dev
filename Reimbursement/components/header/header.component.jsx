@@ -37,8 +37,8 @@ const Header = () => {
     ];
 
     const listPaymentStatus = [
-        { value: config.paymentStatus.done, name: "Fully Paid" },
-        { value: config.paymentStatus.notDone, name: "Not Fully Paid" },
+        { value: config.paymentStatus.fullyPaid, name: "Fully Paid" },
+        { value: config.paymentStatus.notFullyPaid, name: "Not Fully Paid" },
         { value: config.paymentStatus.all, name: "All" }
     ];
 

@@ -121,8 +121,6 @@ class DistributionTable extends React.Component {
         )
             return;
 
-        if (total === 0) return;
-
         console.log("Approve will be called");
     };
 
