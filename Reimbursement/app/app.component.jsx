@@ -59,7 +59,7 @@ const App = () => {
                     size={myModal.size}
                 />
             )}
-            {/* For Testing */}
+            {/* For Testing 
             <div className='mtop-30'>
                 <DistributionTable
                     data={{
@@ -81,6 +81,7 @@ const App = () => {
                     hideModal={() => console.log("this is dummy Modal")}
                 />
             </div>
+            */}
         </>
     );
 };

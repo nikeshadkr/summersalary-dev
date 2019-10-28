@@ -3,12 +3,7 @@ import PropTypes from "prop-types";
 import { utils } from "../../utilities/utils";
 
 const ColumnTotal = ({ list, columnName }) => {
-    let total = 0;
-
-    list.map(item => {
-        total = total + item[columnName];
-    });
-
+    let total = utils.getColumnTotal(list, columnName);
     return utils.currency(total);
 };
 

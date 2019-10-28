@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Fragment } from "react";
 import axios from "axios";
 
 import ColumnTotal from "../column-total/column-total.component";
+import DistributionInput from "../distribution-input/distribution-input.component";
 
 import { utils, config } from "../../utilities/utils";
 
@@ -39,10 +40,20 @@ class DistributionTable extends React.Component {
         let changeField = {
             ...this.state.listDistribution[e.target.dataset.id]
         };
-        changeField[e.target.name] =
-            e.target.name === "SalaryReimbursed"
-                ? utils.convertToInt(e.target.value)
-                : e.target.value;
+        changeField[e.target.name] = e.target.value;
+
+        // Set Error
+        if (e.target.name === "SalaryReimbursed") {
+            let amount =
+                parseFloat(changeField["SalaryAuthorized"]) -
+                parseFloat(changeField["PreviousReimbursement"]);
+
+            changeField["Error"] =
+                parseFloat(e.target.value) > amount
+                    ? '"Reimbursement Amount" should not exceed difference of "Salary Authorized" and "Previously Reimbursed" Amount.'
+                    : "";
+        }
+
         listDistribution[e.target.dataset.id] = changeField;
 
         this.setDistribution({
@@ -75,6 +86,8 @@ class DistributionTable extends React.Component {
                     "DD/MM/YYYY"
                 );
 
+                obj.Error = "";
+
                 if (data.EffortCertStatus !== config.effortCertStatus.done) {
                     obj.SalaryReimbursed = 0;
                     obj.DisableSalaryReimburse = true;
@@ -96,8 +109,34 @@ class DistributionTable extends React.Component {
         this.loadDistribution();
     }
 
+    aprooveDistribution = () => {
+        let total = utils.getColumnTotal(
+            this.state.listDistribution,
+            "SalaryReimbursed"
+        );
+
+        if (
+            total >
+            this.props.data.CUNYYTDPaid - this.props.data.PreviousReimbursement
+        )
+            return;
+
+        if (total === 0) return;
+
+        console.log("Approve will be called");
+    };
+
     render() {
-        const { FirstName, LastName, CUNYYTDPaid } = this.props.data;
+        const {
+            FirstName,
+            LastName,
+            CUNYYTDPaid,
+            EffortCertStatus
+        } = this.props.data;
+
+        const disableApproveButton =
+            EffortCertStatus !== config.effortCertStatus.done;
+
         return (
             <div className='modal-common'>
                 <div className='mc-title'>
@@ -120,101 +159,140 @@ class DistributionTable extends React.Component {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th width='70'>Summer Year</th>
-                                            <th>Project</th>
-                                            <th>Budget End Date</th>
-                                            <th width='150'>Project Name</th>
-                                            <th width='70'>Fund Group</th>
-                                            <th
-                                                width='90'
-                                                className='text-right'
-                                            >
-                                                Salary Authorized
+                                            <th width='75'>
+                                                Summer
+                                                <br />
+                                                Year
+                                            </th>
+                                            <th width='180'>Project</th>
+                                            <th width='85'>
+                                                Budget <br />
+                                                End Date
+                                            </th>
+                                            <th width='60'>
+                                                Fund
+                                                <br />
+                                                Group
                                             </th>
                                             <th
-                                                width='90'
+                                                width='115'
                                                 className='text-right'
                                             >
-                                                Previously Reimbursed
+                                                Salary
+                                                <br />
+                                                Authorized
                                             </th>
                                             <th
-                                                width='110'
+                                                width='115'
                                                 className='text-right'
                                             >
-                                                Reimbursement Amount
+                                                Previously
+                                                <br />
+                                                Reimbursed
                                             </th>
-                                            <th width='150'>Comments</th>
+                                            <th
+                                                width='115'
+                                                className='text-right'
+                                            >
+                                                Reimbursement
+                                                <br />
+                                                Amount
+                                            </th>
+                                            <th width='230'>Comments</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         {this.state.listDistribution.map(
                                             (item, i) => (
-                                                <tr key={i}>
-                                                    <td>{item.SummerYear}</td>
-                                                    <td>{item.Prsy}</td>
-                                                    <td>
-                                                        {item.BudgetEndDate}
-                                                    </td>
-                                                    <td>{item.PrsyName}</td>
-                                                    <td>{item.FundGroup}</td>
-                                                    <td className='text-right'>
-                                                        {utils.currency(
-                                                            item.SalaryAuthorized
-                                                        )}
-                                                    </td>
-                                                    <td className='text-right'>
-                                                        {utils.currency(
-                                                            item.PreviousReimbursement
-                                                        )}
-                                                    </td>
-                                                    <td className='text-right'>
-                                                        {/* {utils.currency(
-                                                            item.SalaryReimbursed
-                                                        )} */}
-                                                        <input
-                                                            className='text-right'
-                                                            data-id={i}
-                                                            type='text'
-                                                            name='SalaryReimbursed'
-                                                            value={
-                                                                item.SalaryReimbursed ||
-                                                                0
-                                                            }
-                                                            onChange={
-                                                                this
-                                                                    .handleChange
-                                                            }
-                                                            disabled={
-                                                                item.DisableSalaryReimburse
-                                                            }
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <textarea
-                                                            data-id={i}
-                                                            name='Comments'
-                                                            value={
-                                                                item.Comments ||
-                                                                ""
-                                                            }
-                                                            onChange={
-                                                                this
-                                                                    .handleChange
-                                                            }
-                                                            disabled={
-                                                                item.DisableComment
-                                                            }
-                                                        ></textarea>
-                                                    </td>
-                                                </tr>
+                                                <Fragment key={i}>
+                                                    {/* Error row */}
+                                                    {item.Error.length > 0 && (
+                                                        <tr className='error-row'>
+                                                            <td colSpan='8'>
+                                                                {item.Error}
+                                                            </td>
+                                                        </tr>
+                                                    )}
+
+                                                    <tr
+                                                        className={`${
+                                                            item.Error.length >
+                                                            0
+                                                                ? "has-error"
+                                                                : ""
+                                                        }`}
+                                                    >
+                                                        <td>
+                                                            {item.SummerYear}
+                                                        </td>
+                                                        <td>
+                                                            {item.Prsy} |{" "}
+                                                            {item.PrsyName}
+                                                        </td>
+                                                        <td>
+                                                            {item.BudgetEndDate}
+                                                        </td>
+                                                        <td>
+                                                            {item.FundGroup}
+                                                        </td>
+                                                        <td className='text-right'>
+                                                            {utils.currency(
+                                                                item.SalaryAuthorized
+                                                            )}
+                                                        </td>
+                                                        <td className='text-right'>
+                                                            {utils.currency(
+                                                                item.PreviousReimbursement
+                                                            )}
+                                                        </td>
+                                                        <td className='text-right'>
+                                                            <DistributionInput
+                                                                data-id={i}
+                                                                type='text'
+                                                                name='SalaryReimbursed'
+                                                                autoComplete='off'
+                                                                value={
+                                                                    item.DisableSalaryReimburse
+                                                                        ? item.SalaryReimbursed
+                                                                        : item.SalaryReimbursed ||
+                                                                          ""
+                                                                }
+                                                                disabled={
+                                                                    item.DisableSalaryReimburse
+                                                                }
+                                                                handleChange={
+                                                                    this
+                                                                        .handleChange
+                                                                }
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <textarea
+                                                                data-id={i}
+                                                                name='Comments'
+                                                                value={
+                                                                    item.Comments ||
+                                                                    ""
+                                                                }
+                                                                onChange={
+                                                                    this
+                                                                        .handleChange
+                                                                }
+                                                                disabled={
+                                                                    item.DisableComment
+                                                                }
+                                                            ></textarea>
+                                                        </td>
+                                                    </tr>
+                                                </Fragment>
                                             )
                                         )}
                                     </tbody>
                                     {this.state.listDistribution.length > 1 && (
                                         <tfoot>
                                             <tr>
-                                                <td colSpan='5'>&nbsp;</td>
+                                                <td colSpan='4'>&nbsp;</td>
                                                 <td className='with-bg text-right'>
                                                     <ColumnTotal
                                                         list={
@@ -277,7 +355,15 @@ class DistributionTable extends React.Component {
                         Cancel
                     </button>
                     {this.state.listDistribution.length > 0 && (
-                        <button className='new-btn pull-right'>Approve</button>
+                        <button
+                            className={`new-btn pull-right ${
+                                disableApproveButton ? "disabled" : ""
+                            }`}
+                            onClick={this.aprooveDistribution}
+                            disabled={disableApproveButton}
+                        >
+                            Approve
+                        </button>
                     )}
                 </div>
             </div>

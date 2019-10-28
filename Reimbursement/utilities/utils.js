@@ -56,12 +56,17 @@ export const utils = {
         } else return `$${amount}`;
     },
 
-    convertToInt: val => {
-        return val && typeof val === "string" ? parseFloat(val) : val;
-    },
-
     formatDate: (date, format) => {
         return moment(date).format(format);
+    },
+
+    getColumnTotal: (list, columnName) => {
+        let total = 0;
+        list.map(item => {
+            let floatValue = parseFloat(item[columnName]);
+            total += !isNaN(floatValue) ? floatValue : 0;
+        });
+        return total;
     }
 };
 

@@ -80,7 +80,7 @@ const ReimbursementTable = () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th className='check'>
+                                    <th width='30' className='check'>
                                         <input
                                             type='checkbox'
                                             name='checkAll'
@@ -89,21 +89,27 @@ const ReimbursementTable = () => {
                                             disabled={!isPaymentNumberOpen}
                                         />
                                     </th>
-                                    <th>Employee Name</th>
-                                    <th>CUNY ID</th>
-                                    <th>Effort Certification</th>
-                                    <th className='text-right'>
-                                        Salary Authorized
+                                    <th width='180'>Employee Name</th>
+                                    <th width='80'>
+                                        CUNY <br /> ID
                                     </th>
-                                    <th className='text-right'>
-                                        CUNY YTD Paid
+                                    <th width='80'>
+                                        Effort <br /> Certification
                                     </th>
-                                    <th className='text-right'>Difference</th>
-                                    <th className='text-right'>
-                                        Previous Reimbursement
+                                    <th width='120' className='text-right'>
+                                        Salary <br /> Authorized
                                     </th>
-                                    <th className='text-right'>
-                                        Eligible Balance to Reimburse
+                                    <th width='120' className='text-right'>
+                                        CUNY YTD <br /> Paid
+                                    </th>
+                                    <th width='120' className='text-right'>
+                                        Difference
+                                    </th>
+                                    <th width='120' className='text-right'>
+                                        Previous <br /> Reimbursement
+                                    </th>
+                                    <th width='120' className='text-right'>
+                                        Eligible Balance <br /> to Reimburse
                                     </th>
                                 </tr>
                             </thead>

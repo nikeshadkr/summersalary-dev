@@ -34,6 +34,15 @@
     }
 }
 
+@mixin error() {
+    .error {
+        float: left;
+        color: #f00;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+}
+
 .form-row {
     margin-left: -6px;
     margin-right: -6px;
@@ -112,12 +121,7 @@
         }
     }
 
-    .error {
-        float: left;
-        color: #f00;
-        font-size: 12px;
-        margin-top: 3px;
-    }
+    @include error;
 }
 
 .toggle-radio {
@@ -197,7 +201,7 @@
     cursor: pointer;
     border: 1px solid #80e7f5;
     background: #2daebf;
-    font-weight: bold;
+    font-weight: normal;
     color: #fff;
     outline: none;
 
@@ -221,13 +225,20 @@
             border-color: #b80900;
         }
     }
+
+    &.disabled,
+    &:disabled {
+        border-color: #ddd;
+        background: #ebebeb;
+        color: #aaa;
+        cursor: not-allowed;
+    }
 }
 
 /* Tabular Layout */
 .table-layout {
     table {
         table-layout: fixed;
-        width: 100%;
         margin: 0 !important;
         border: 0px;
 
@@ -252,6 +263,22 @@
                 &:hover {
                     text-decoration: underline;
                 }
+            }
+        }
+
+        tr {
+            &.error-row {
+                background: #b80900;
+
+                td {
+                    padding: 5px;
+                    color: #fff;
+                    border-color: #b80900;
+                }
+            }
+
+            &.has-error {
+                background: #ffe6e6;
             }
         }
 
