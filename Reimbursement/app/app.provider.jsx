@@ -204,10 +204,18 @@ class AppProvider extends React.Component {
 
             listReimbursement.data.forEach(item => {
                 item.isChecked = false;
+
                 item.isDisabled =
                     !isPaymentNumberOpen ||
                     item.EffortCertStatus !== config.effortCertStatus.done ||
                     item.NotYTDPaid !== 0;
+
+                item.enableDistributionModal =
+                    item.EffortCertStatus === config.effortCertStatus.done &&
+                    (item.NotYTDPaid !== 0 ||
+                        (item.EligibleBalanceToReimburse > 0 &&
+                            item.EligibleBalanceToReimburse !==
+                                item.SalaryAuthorized));
             });
 
             this.setAppData({

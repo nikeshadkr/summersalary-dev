@@ -47,9 +47,13 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
                 {utils.currency(item.PreviousReimbursement)}
             </td>
             <td className='text-right'>
-                <a href='#' onClick={e => openModal(e, item)}>
-                    {utils.currency(item.EligibleBalanceToReimburse)}
-                </a>
+                {item.enableDistributionModal ? (
+                    <a href='#' onClick={e => openModal(e, item)}>
+                        {utils.currency(item.EligibleBalanceToReimburse)}
+                    </a>
+                ) : (
+                    <>{utils.currency(item.EligibleBalanceToReimburse)}</>
+                )}
             </td>
         </tr>
     );

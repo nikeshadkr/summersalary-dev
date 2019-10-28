@@ -80,8 +80,7 @@ const App = () => {
                     }}
                     hideModal={() => console.log("this is dummy Modal")}
                 />
-            </div>
-            */}
+            </div>*/}
         </>
     );
 };
