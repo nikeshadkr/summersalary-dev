@@ -60,6 +60,20 @@ export const utils = {
         return moment(date).format(format);
     },
 
+    isBefore: (date, date2) => {
+        /*console.log(utils.formatDate(new Date(date), "MM/DD/YYYY"));
+        console.log(utils.formatDate(date2, "MM/DD/YYYY"));
+        console.log(
+            "isBefore :",
+            moment(new Date(date)).isBefore(new Date(date2), "day")
+        );*/
+        return moment(new Date(date)).isBefore(new Date(date2), "day");
+    },
+
+    isAfter: (date, date2) => {
+        return moment(new Date(date)).isAfter(new Date(date2), "day");
+    },
+
     getColumnTotal: (list, columnName) => {
         let total = 0;
         list.map(item => {

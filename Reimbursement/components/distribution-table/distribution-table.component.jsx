@@ -79,11 +79,16 @@ class DistributionTable extends React.Component {
             listDistributionRes.data.forEach(obj => {
                 obj.BudgetEndDate = utils.formatDate(
                     obj.BudgetEndDate,
-                    "DD/MM/YYYY"
+                    "MM/DD/YYYY"
                 );
                 obj.BudgetStartDate = utils.formatDate(
                     obj.BudgetStartDate,
-                    "DD/MM/YYYY"
+                    "MM/DD/YYYY"
+                );
+
+                obj.isBudgetEndDateBeforeToday = utils.isBefore(
+                    obj.BudgetEndDate,
+                    new Date()
                 );
 
                 obj.Error = "";
@@ -92,7 +97,9 @@ class DistributionTable extends React.Component {
                     obj.SalaryReimbursed = 0;
                     obj.DisableSalaryReimburse = true;
                     obj.DisableComment = true;
-                }
+                } else
+                    obj.SalaryReimbursed =
+                        obj.SalaryAuthorized - obj.PreviousReimbursement;
             });
 
             this.setDistribution({
@@ -110,18 +117,30 @@ class DistributionTable extends React.Component {
     }
 
     aprooveDistribution = () => {
-        let total = utils.getColumnTotal(
+        let SalaryReimbursedTotal = utils.getColumnTotal(
             this.state.listDistribution,
             "SalaryReimbursed"
         );
 
-        if (
-            total >
-            this.props.data.CUNYYTDPaid - this.props.data.PreviousReimbursement
-        )
-            return;
+        let flag = false;
+        this.state.listDistribution.forEach(item => {
+            let amount =
+                parseFloat(item["SalaryAuthorized"]) -
+                parseFloat(item["PreviousReimbursement"]);
 
-        console.log("Approve will be called");
+            flag = parseFloat(item["SalaryReimbursed"]) > amount ? true : false;
+        });
+
+        if (
+            flag ||
+            SalaryReimbursedTotal >
+                this.props.data.CUNYYTDPaid -
+                    this.props.data.PreviousReimbursement
+        ) {
+            console.log("error");
+        } else {
+            console.log("approve");
+        }
     };
 
     render() {
@@ -228,7 +247,13 @@ class DistributionTable extends React.Component {
                                                             {item.Prsy} |{" "}
                                                             {item.PrsyName}
                                                         </td>
-                                                        <td>
+                                                        <td
+                                                            className={`${
+                                                                item.isBudgetEndDateBeforeToday
+                                                                    ? "red-text"
+                                                                    : ""
+                                                            }`}
+                                                        >
                                                             {item.BudgetEndDate}
                                                         </td>
                                                         <td>
