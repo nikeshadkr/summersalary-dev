@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import axios from "axios";
+import axios from "../../axios";
 
 import ColumnTotal from "../column-total/column-total.component";
 import DistributionInput from "../distribution-input/distribution-input.component";

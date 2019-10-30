@@ -1,21 +1,32 @@
 ﻿import React, { useContext, useEffect } from "react";
-import axios from "axios";
+import axios from "../axios";
 import ReimbursementsPeriodsTable from "../components/reimbursement-periods-table/reimbursement-periods-table.component";
-import { AppContext } from "./app.provider"
+import { AppContext } from "./app.provider";
+import Header from "../components/header/header.component";
 
 const App = () => {
-    const {listReimbursementPeriods, setReimbursementPeriods, isLoading, toggleLoader} = useContext(AppContext);
+    const {
+        listReimbursementPeriods,
+        setReimbursementPeriods,
+        isLoading,
+        toggleLoader
+    } = useContext(AppContext);
 
-    const loadReimbursementPeriods = async()=> {
+    const loadReimbursementPeriods = async () => {
         try {
             toggleLoader(true);
-            let listPeriods = await axios.get(window.applicationPath + "ReimbursementPeriod/GetReimbursementPeriods");
-            
-            listPeriods.data.forEach(item=> {
+            let listPeriods = await axios.get(
+                window.applicationPath +
+                    "ReimbursementPeriod/GetReimbursementPeriods"
+            );
+
+            listPeriods.data.forEach(item => {
                 item.IsEditing = false;
             });
             //setReimbursementPeriods({...listReimbursementPeriods, listReimbursementPeriods: listPeriods.data});
-            setReimbursementPeriods(listPeriods.data, ()=> toggleLoader(false));
+            setReimbursementPeriods(listPeriods.data, () =>
+                toggleLoader(false)
+            );
         } catch (error) {
             console.log(error.message);
         }
@@ -25,11 +36,12 @@ const App = () => {
         loadReimbursementPeriods();
     }, []);
 
-    return(        
-        <>             
-             {<ReimbursementsPeriodsTable></ReimbursementsPeriodsTable>} 
+    return (
+        <>
+            <Header></Header>
+            <ReimbursementsPeriodsTable></ReimbursementsPeriodsTable>
         </>
     );
-}
+};
 
 export default App;

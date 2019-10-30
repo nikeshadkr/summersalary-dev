@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import axios from "axios";
+import axios from "../axios";
 
 import Header from "../components/header/header.component";
 import ReimbursementTable from "../components/reimbursement-table/reimbursement-table.component";

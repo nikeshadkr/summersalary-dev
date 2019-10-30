@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import axios from "axios";
+import axios from "../../axios";
 
 import { AppContext } from "../../app/app.provider";
 import { utils, config } from "../../utilities/utils";

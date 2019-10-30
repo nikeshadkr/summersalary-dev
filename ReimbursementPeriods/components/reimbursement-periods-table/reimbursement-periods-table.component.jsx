@@ -31,6 +31,9 @@ const ReimbursementsPeriodsTable = () => {
                                 <th>Payment Number</th>
                                 <th>Status</th>
                                 <th>Pay Period End From Date</th>
+                                <th>Pay Period End To Date</th>
+                                <th>CUNY Pay Period End Date</th>
+                                <th>GL Posting Date</th>
                                 <th></th>
                             </tr>
                         </thead>
