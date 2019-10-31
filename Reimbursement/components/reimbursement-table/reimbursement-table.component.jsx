@@ -11,6 +11,7 @@ const ReimbursementTable = () => {
     const {
         appData,
         setAppData,
+        filters,
 
         loadReimbursements,
         pagination,
@@ -18,11 +19,12 @@ const ReimbursementTable = () => {
     } = useContext(AppContext);
 
     const {
-        isPending,
         listReimbursement,
         selectAllCheckBox,
         isPaymentNumberOpen
     } = appData;
+
+    const { isPending } = filters;
 
     let totalRecord =
         listReimbursement && listReimbursement.length > 0
@@ -108,9 +110,15 @@ const ReimbursementTable = () => {
                                     <th width='120' className='text-right'>
                                         Previous <br /> Reimbursement
                                     </th>
-                                    <th width='120' className='text-right'>
-                                        Eligible Balance <br /> to Reimburse
-                                    </th>
+                                    {isPending ? (
+                                        <th width='120' className='text-right'>
+                                            Eligible Balance <br /> to Reimburse
+                                        </th>
+                                    ) : (
+                                        <th width='120' className='text-right'>
+                                            Salary <br /> Reimbursed
+                                        </th>
+                                    )}
                                 </tr>
                             </thead>
 
@@ -157,7 +165,9 @@ const ReimbursementTable = () => {
                                         <ColumnTotal
                                             list={listReimbursement}
                                             columnName={
-                                                "EligibleBalanceToReimburse"
+                                                isPending
+                                                    ? "EligibleBalanceToReimburse"
+                                                    : "SalaryReimbursed"
                                             }
                                         />
                                     </td>

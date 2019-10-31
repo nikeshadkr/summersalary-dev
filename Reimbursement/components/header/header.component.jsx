@@ -233,7 +233,7 @@ const Header = () => {
                 </div>
 
                 {/* College */}
-                <div className='form-group' style={{ width: "180px" }}>
+                <div className='form-group' style={{ width: "430px" }}>
                     <label>College</label>
                     <select
                         name='college'

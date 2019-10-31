@@ -68,12 +68,14 @@ class DistributionTable extends React.Component {
         try {
             let listDistributionRes = await axios.get(
                 `${config.apiPath}/${
-                    data.isPending ? "GetPendingReimbursementsDistribution" : ""
-                }/?employeeId=${data.EmployeeId}&reimbursementYear=${
-                    data.ReimbursementYear
-                }&paymentNumber=${data.PaymentNumber}&collegeCode=${
-                    data.CollegeCode
-                }`
+                    data.isPending
+                        ? "GetPendingReimbursementsDistribution"
+                        : "GetProcessedReimbursementsDistribution"
+                }/?employeeId=${data.EmployeeId}${
+                    !data.isPending ? "&indexKey=" + data.IndexKey : ""
+                }&reimbursementYear=${data.ReimbursementYear}&paymentNumber=${
+                    data.PaymentNumber
+                }&collegeCode=${data.CollegeCode}`
             );
 
             listDistributionRes.data.forEach(obj => {
@@ -116,11 +118,11 @@ class DistributionTable extends React.Component {
         this.loadDistribution();
     }
 
-    aprooveDistribution = () => {
-        let SalaryReimbursedTotal = utils.getColumnTotal(
+    approveDistribution = async () => {
+        /*let SalaryReimbursedTotal = utils.getColumnTotal(
             this.state.listDistribution,
             "SalaryReimbursed"
-        );
+        );*/
 
         let flag = false;
         this.state.listDistribution.forEach(item => {
@@ -131,24 +133,47 @@ class DistributionTable extends React.Component {
             flag = parseFloat(item["SalaryReimbursed"]) > amount ? true : false;
         });
 
-        if (
-            flag ||
-            SalaryReimbursedTotal >
+        if (flag) return;
+
+        /*SalaryReimbursedTotal >
                 this.props.data.CUNYYTDPaid -
-                    this.props.data.PreviousReimbursement
-        ) {
-            console.log("error");
-        } else {
-            console.log("approve");
+                    this.props.data.PreviousReimbursement*/
+
+        let formData = {
+            EmployeeId: this.props.data.EmployeeId,
+            ReimbursementYear: this.props.data.ReimbursementYear,
+            PaymentNumber: this.props.data.PaymentNumber,
+            CollegeCode: this.props.data.CollegeCode,
+
+            Distributions: this.state.listDistribution.map(obj => ({
+                SalaryReimbursed: obj.SalaryReimbursed,
+                Comments: obj.Comments,
+                EmployeeId: obj.EmployeeId,
+                SummerYear: obj.SummerYear,
+                Prsy: obj.Prsy
+            }))
+        };
+
+        console.log(formData);
+
+        try {
+            await axios.post(
+                `${config.apiPath}/RecordNotFullyPaidReimbursements`,
+                formData
+            );
+        } catch (error) {
+            console.log(error.message);
         }
     };
 
     render() {
         const {
+            EmployeeId,
             FirstName,
             LastName,
             CUNYYTDPaid,
-            EffortCertStatus
+            EffortCertStatus,
+            isPending
         } = this.props.data;
 
         const disableApproveButton =
@@ -158,10 +183,10 @@ class DistributionTable extends React.Component {
             <div className='modal-common'>
                 <div className='mc-title'>
                     <div>
-                        Employee :{" "}
                         <strong>
-                            {LastName}, {FirstName}
+                            {LastName}, {FirstName}{" "}
                         </strong>
+                        ({EmployeeId.trim()})
                         <span className='pull-right'>
                             CUNY YTD Paid :{" "}
                             <strong>{utils.currency(CUNYYTDPaid)}</strong>
@@ -215,7 +240,9 @@ class DistributionTable extends React.Component {
                                                 <br />
                                                 Amount
                                             </th>
-                                            <th width='230'>Comments</th>
+                                            {isPending && (
+                                                <th width='230'>Comments</th>
+                                            )}
                                         </tr>
                                     </thead>
 
@@ -270,43 +297,51 @@ class DistributionTable extends React.Component {
                                                             )}
                                                         </td>
                                                         <td className='text-right'>
-                                                            <DistributionInput
-                                                                data-id={i}
-                                                                type='text'
-                                                                name='SalaryReimbursed'
-                                                                autoComplete='off'
-                                                                value={
-                                                                    item.DisableSalaryReimburse
-                                                                        ? item.SalaryReimbursed
-                                                                        : item.SalaryReimbursed ||
-                                                                          ""
-                                                                }
-                                                                disabled={
-                                                                    item.DisableSalaryReimburse
-                                                                }
-                                                                handleChange={
-                                                                    this
-                                                                        .handleChange
-                                                                }
-                                                            />
+                                                            {isPending ? (
+                                                                <DistributionInput
+                                                                    data-id={i}
+                                                                    type='text'
+                                                                    name='SalaryReimbursed'
+                                                                    autoComplete='off'
+                                                                    value={
+                                                                        item.DisableSalaryReimburse
+                                                                            ? item.SalaryReimbursed
+                                                                            : item.SalaryReimbursed ||
+                                                                              ""
+                                                                    }
+                                                                    disabled={
+                                                                        item.DisableSalaryReimburse
+                                                                    }
+                                                                    handleChange={
+                                                                        this
+                                                                            .handleChange
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                utils.currency(
+                                                                    item.SalaryReimbursed
+                                                                )
+                                                            )}
                                                         </td>
-                                                        <td>
-                                                            <textarea
-                                                                data-id={i}
-                                                                name='Comments'
-                                                                value={
-                                                                    item.Comments ||
-                                                                    ""
-                                                                }
-                                                                onChange={
-                                                                    this
-                                                                        .handleChange
-                                                                }
-                                                                disabled={
-                                                                    item.DisableComment
-                                                                }
-                                                            ></textarea>
-                                                        </td>
+                                                        {isPending && (
+                                                            <td>
+                                                                <textarea
+                                                                    data-id={i}
+                                                                    name='Comments'
+                                                                    value={
+                                                                        item.Comments ||
+                                                                        ""
+                                                                    }
+                                                                    onChange={
+                                                                        this
+                                                                            .handleChange
+                                                                    }
+                                                                    disabled={
+                                                                        item.DisableComment
+                                                                    }
+                                                                ></textarea>
+                                                            </td>
+                                                        )}
                                                     </tr>
                                                 </Fragment>
                                             )
@@ -349,7 +384,6 @@ class DistributionTable extends React.Component {
                                                         }
                                                     />
                                                 </td>
-                                                <td>&nbsp;</td>
                                             </tr>
                                         </tfoot>
                                     )}
@@ -377,12 +411,12 @@ class DistributionTable extends React.Component {
                     >
                         Cancel
                     </button>
-                    {this.state.listDistribution.length > 0 && (
+                    {this.state.listDistribution.length > 0 && isPending && (
                         <button
                             className={`new-btn pull-right ${
                                 disableApproveButton ? "disabled" : ""
                             }`}
-                            onClick={this.aprooveDistribution}
+                            onClick={this.approveDistribution}
                             disabled={disableApproveButton}
                         >
                             Approve

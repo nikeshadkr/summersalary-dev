@@ -199,9 +199,6 @@ class AppProvider extends React.Component {
                 obj.PaymentNumber == filters.paymentNumber ? obj.IsOpen : null
             );
 
-            //console.log(filters.listPaymentNumber);
-            //console.log(isPaymentNumberOpen);
-
             listReimbursement.data.forEach(item => {
                 item.isChecked = false;
 
@@ -212,6 +209,7 @@ class AppProvider extends React.Component {
 
                 item.enableDistributionModal =
                     item.EffortCertStatus === config.effortCertStatus.done &&
+                    item.SalaryAuthorized !== 0 &&
                     (item.NotYTDPaid !== 0 ||
                         (item.EligibleBalanceToReimburse > 0 &&
                             item.EligibleBalanceToReimburse !==
