@@ -47,6 +47,7 @@
     width: 100%;
     background: #fff;
     border-radius: 4px;
+    position: relative;
 
     -ms-word-break: break-all;
     word-break: break-all;
@@ -58,19 +59,24 @@
 
 /** modal loader **/
 .modal-loader {
-    height: 95px;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.75);
     text-align: center;
 
     .lds-ellipsis {
         display: inline-block;
+        margin-top: 10px;
         position: relative;
         width: 64px;
-        height: 64px;
-        margin: 18px;
+        height: 11px;
 
         div {
             position: absolute;
-            top: 27px;
+            top: 0px;
             width: 11px;
             height: 11px;
             border-radius: 50%;

@@ -15,6 +15,10 @@ export const AppContext = React.createContext({
     initModal: () => {},
     hideModal: () => {},
 
+    alert: {},
+    initAlert: () => {},
+    closeAlert: () => {},
+
     loadReimbursements: () => {},
     pagination: {},
     setPagination: () => {},
@@ -86,7 +90,15 @@ class AppProvider extends React.Component {
                 data: {},
                 type: "",
                 size: "",
-                showModal: false
+                showModal: false,
+                onClose: () => {}
+            },
+            alert: {
+                inModal: false,
+                isAlertOpen: false,
+                setTimeout: false,
+                type: "",
+                content: ""
             },
             pagination: {
                 pageIndex: 1,
@@ -121,14 +133,56 @@ class AppProvider extends React.Component {
         document.body.classList.add("modal-open");
         this.setState(state => ({ ...state, myModal }));
     };
-    hideModal = () => {
+    hideModal = cData => {
         document.body.classList.remove("modal-open");
+
+        if (cData !== undefined) this.state.myModal.onClose(cData);
+
         this.setState(state => ({
             ...state,
             myModal: {
                 showModal: false
             }
         }));
+    };
+
+    initAlert = option => {
+        // Default Options
+        const alertOptions = {
+            isAlertOpen: true,
+            inModal: false,
+            setTimeout: false,
+            type: "success",
+
+            ...option
+        };
+
+        this.setState(
+            state => ({ ...state, alert: alertOptions }),
+            () => {
+                if (option.setTimeout)
+                    setTimeout(() => {
+                        this.closeAlert();
+                    }, option.setTimeout);
+            }
+        );
+    };
+    closeAlert = callback => {
+        this.setState(
+            state => ({
+                ...state,
+                alert: {
+                    isAlertOpen: false,
+                    inModal: false,
+                    setTimeout: false,
+                    type: "success",
+                    content: ""
+                }
+            }),
+            () => {
+                callback && callback(this.state.alert);
+            }
+        );
     };
 
     setPagination = (pagination, callback) =>
@@ -200,6 +254,7 @@ class AppProvider extends React.Component {
             );
 
             listReimbursement.data.forEach(item => {
+                item.isPending = filters.isPending;
                 item.isChecked = false;
 
                 item.isDisabled =
@@ -268,7 +323,14 @@ class AppProvider extends React.Component {
     };
 
     render() {
-        const { pagination, filters, appData, isLoading, myModal } = this.state;
+        const {
+            pagination,
+            filters,
+            appData,
+            isLoading,
+            myModal,
+            alert
+        } = this.state;
 
         return (
             <AppContext.Provider
@@ -283,6 +345,10 @@ class AppProvider extends React.Component {
                     myModal,
                     initModal: this.initModal,
                     hideModal: this.hideModal,
+
+                    alert,
+                    initAlert: this.initAlert,
+                    closeAlert: this.closeAlert,
 
                     loadReimbursements: this.loadReimbursements,
                     pagination,
@@ -299,5 +365,28 @@ class AppProvider extends React.Component {
         );
     }
 }
+
+export const withAlert = Component => {
+    return class AlertConsumer extends React.Component {
+        constructor() {
+            super();
+        }
+
+        render() {
+            return (
+                <AppContext.Consumer>
+                    {values => (
+                        <Component
+                            {...this.props}
+                            alert={{ ...values.alert }}
+                            initAlert={values.initAlert}
+                            closeAlert={values.closeAlert}
+                        />
+                    )}
+                </AppContext.Consumer>
+            );
+        }
+    };
+};
 
 export default AppProvider;

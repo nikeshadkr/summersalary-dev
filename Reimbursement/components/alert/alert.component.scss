@@ -1,0 +1,52 @@
+﻿.alert {
+    position: relative;
+    padding: 10px 10px 10px 10px;
+    font-size: 13px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+
+    &.error {
+        border: 1px solid #cd0a0a;
+        background: #fef1ec;
+        color: #cd0a0a;
+    }
+
+    &.success {
+        border: 1px solid #2fcc66;
+        background-color: #c6ffc4;
+        color: #034b0e;
+    }
+
+    &.info {
+        border: 1px solid #8fdbe4;
+        background-color: #d6f8ff;
+        color: #0c5856;
+    }
+
+    &.warning {
+        border: 1px solid #dda969;
+        background-color: #ffe6c2;
+        color: #643f0c;
+    }
+
+    .alert-close {
+        cursor: pointer;
+        position: absolute;
+        right: 16px;
+        top: 17px;
+        background: #f00;
+        height: 16px;
+        width: 16px;
+        line-height: 16px;
+        margin: -8px;
+        border-radius: 50%;
+        text-align: center;
+        color: #fff;
+
+        &::before {
+            content: "x";
+        }
+    }
+}

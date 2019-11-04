@@ -26,11 +26,12 @@ export const utils = {
         } else return value;
     },
 
-    currency: amount => {
+    currency: val => {
         let decimalCount = 2,
             decimal = ".",
             thousands = ",",
-            currencySign = "$";
+            currencySign = "$",
+            [amount] = [val];
 
         if (amount || amount === 0) {
             decimalCount = Math.abs(decimalCount);

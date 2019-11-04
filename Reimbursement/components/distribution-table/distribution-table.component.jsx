@@ -4,6 +4,9 @@ import axios from "../../axios";
 import ColumnTotal from "../column-total/column-total.component";
 import DistributionInput from "../distribution-input/distribution-input.component";
 
+import { withAlert } from "../../app/app.provider";
+import Alert from "../alert/alert.component";
+
 import { utils, config } from "../../utilities/utils";
 
 class DistributionTable extends React.Component {
@@ -119,10 +122,10 @@ class DistributionTable extends React.Component {
     }
 
     approveDistribution = async () => {
-        /*let SalaryReimbursedTotal = utils.getColumnTotal(
+        let SalaryReimbursedTotal = utils.getColumnTotal(
             this.state.listDistribution,
             "SalaryReimbursed"
-        );*/
+        );
 
         let flag = false;
         this.state.listDistribution.forEach(item => {
@@ -135,34 +138,52 @@ class DistributionTable extends React.Component {
 
         if (flag) return;
 
-        /*SalaryReimbursedTotal >
-                this.props.data.CUNYYTDPaid -
-                    this.props.data.PreviousReimbursement*/
+        if (
+            SalaryReimbursedTotal >
+            this.props.data.CUNYYTDPaid - this.props.data.PreviousReimbursement
+        ) {
+            this.props.initAlert({
+                inModal: true,
+                type: "error",
+                content:
+                    "total reimbursements cannot be more than CUNYYTDPaid - PreviousReimbursement."
+            });
+            return;
+        }
 
-        let formData = {
-            EmployeeId: this.props.data.EmployeeId,
-            ReimbursementYear: this.props.data.ReimbursementYear,
-            PaymentNumber: this.props.data.PaymentNumber,
-            CollegeCode: this.props.data.CollegeCode,
-
-            Distributions: this.state.listDistribution.map(obj => ({
-                SalaryReimbursed: obj.SalaryReimbursed,
-                Comments: obj.Comments,
-                EmployeeId: obj.EmployeeId,
-                SummerYear: obj.SummerYear,
-                Prsy: obj.Prsy
-            }))
-        };
-
-        console.log(formData);
-
+        this.showLoader(true);
         try {
-            await axios.post(
+            let formData = {
+                EmployeeId: this.props.data.EmployeeId,
+                ReimbursementYear: this.props.data.ReimbursementYear,
+                PaymentNumber: this.props.data.PaymentNumber,
+                CollegeCode: this.props.data.CollegeCode,
+
+                Distributions: this.state.listDistribution.map(obj => ({
+                    SalaryReimbursed: obj.SalaryReimbursed,
+                    Comments: obj.Comments,
+                    EmployeeId: obj.EmployeeId,
+                    SummerYear: obj.SummerYear,
+                    Prsy: obj.Prsy
+                }))
+            };
+
+            let { data } = await axios.post(
                 `${config.apiPath}/RecordNotFullyPaidReimbursements`,
                 formData
             );
+
+            this.showLoader(false);
+            this.props.hideModal({ IndexKey: data }); // Closing modal with callback data
         } catch (error) {
-            console.log(error.message);
+            if (error.response)
+                this.props.initAlert({
+                    inModal: true,
+                    type: "error",
+                    content: error.response.data
+                });
+
+            this.showLoader(false);
         }
     };
 
@@ -194,9 +215,18 @@ class DistributionTable extends React.Component {
                     </div>
                 </div>
 
-                {!this.state.isLoading ? (
-                    <div className='mc-body'>
-                        {this.state.listDistribution.length > 0 ? (
+                <div className='mc-body'>
+                    {this.state.listDistribution.length > 0 ? (
+                        <>
+                            {this.props.alert.isAlertOpen &&
+                                this.props.alert.inModal && (
+                                    <Alert
+                                        type={this.props.alert.type}
+                                        content={this.props.alert.content}
+                                        closeAlert={this.props.closeAlert}
+                                    />
+                                )}
+
                             <div className='table-layout inside-modal'>
                                 <table>
                                     <thead>
@@ -240,9 +270,7 @@ class DistributionTable extends React.Component {
                                                 <br />
                                                 Amount
                                             </th>
-                                            {isPending && (
-                                                <th width='230'>Comments</th>
-                                            )}
+                                            <th width='230'>Comments</th>
                                         </tr>
                                     </thead>
 
@@ -323,25 +351,25 @@ class DistributionTable extends React.Component {
                                                                 )
                                                             )}
                                                         </td>
-                                                        {isPending && (
-                                                            <td>
-                                                                <textarea
-                                                                    data-id={i}
-                                                                    name='Comments'
-                                                                    value={
-                                                                        item.Comments ||
-                                                                        ""
-                                                                    }
-                                                                    onChange={
-                                                                        this
-                                                                            .handleChange
-                                                                    }
-                                                                    disabled={
-                                                                        item.DisableComment
-                                                                    }
-                                                                ></textarea>
-                                                            </td>
-                                                        )}
+
+                                                        <td>
+                                                            <textarea
+                                                                data-id={i}
+                                                                name='Comments'
+                                                                value={
+                                                                    item.Comments ||
+                                                                    ""
+                                                                }
+                                                                onChange={
+                                                                    this
+                                                                        .handleChange
+                                                                }
+                                                                disabled={
+                                                                    item.DisableComment ||
+                                                                    !isPending
+                                                                }
+                                                            ></textarea>
+                                                        </td>
                                                     </tr>
                                                 </Fragment>
                                             )
@@ -389,20 +417,22 @@ class DistributionTable extends React.Component {
                                     )}
                                 </table>
                             </div>
-                        ) : (
-                            <h2>No Records Found</h2>
-                        )}
-                    </div>
-                ) : (
-                    <div className='modal-loader'>
-                        <div className='lds-ellipsis'>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
+                        </>
+                    ) : (
+                        <h2>No Records Found</h2>
+                    )}
+
+                    {this.state.isLoading && (
+                        <div className='modal-loader'>
+                            <div className='lds-ellipsis'>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
 
                 <div className='mc-footer'>
                     <button
@@ -428,4 +458,4 @@ class DistributionTable extends React.Component {
     }
 }
 
-export default DistributionTable;
+export default withAlert(DistributionTable);

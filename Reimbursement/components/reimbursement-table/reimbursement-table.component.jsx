@@ -2,9 +2,10 @@ import React, { useContext, useEffect } from "react";
 import Pagination from "react-js-pagination";
 
 import ReimbursementData from "../reimbursement-data/reimbursement-data.component";
-import ColumnTotal from "../column-total/column-total.component";
 
 import { AppContext } from "../../app/app.provider";
+
+import Alert from "../alert/alert.component";
 import { utils } from "../../utilities/utils";
 
 const ReimbursementTable = () => {
@@ -12,6 +13,9 @@ const ReimbursementTable = () => {
         appData,
         setAppData,
         filters,
+
+        alert,
+        closeAlert,
 
         loadReimbursements,
         pagination,
@@ -26,18 +30,38 @@ const ReimbursementTable = () => {
 
     const { isPending } = filters;
 
-    let totalRecord =
-        listReimbursement && listReimbursement.length > 0
-            ? listReimbursement[0].TotalRecords
-            : 0;
+    let totalRecord = 0,
+        totalSalaryReimbursed = 0, // For Prosessed only
+        totalEligibleBalanceToReimburse = 0,
+        totalSalaryAuthorized = 0,
+        totalCUNYYTDPaid = 0,
+        totalNotYTDPaid = 0,
+        totalPrevReimbursement = 0;
+
+    if (listReimbursement && listReimbursement.length > 0) {
+        totalRecord = listReimbursement[0].TotalRecords;
+        totalSalaryReimbursed = listReimbursement[0].TotalSalaryReimbursed;
+        totalEligibleBalanceToReimburse =
+            listReimbursement[0].TotalEligibleBalanceToReimburse;
+        totalSalaryAuthorized = listReimbursement[0].TotalSalaryAuthorized;
+        totalCUNYYTDPaid = listReimbursement[0].TotalCUNYYTDPaid;
+        totalNotYTDPaid = listReimbursement[0].TotalNotYTDPaid;
+        totalPrevReimbursement = listReimbursement[0].TotalPrevReimbursement;
+    }
+
+    let showTotal = false;
+    if (listReimbursement.length > 0)
+        showTotal =
+            Math.ceil(totalRecord / pagination.pageSize) ===
+            pagination.pageIndex;
 
     const checkOne = e => {
         e.persist();
 
         let listReimbursement = [...appData.listReimbursement];
-        listReimbursement[e.target.dataset.id][
-            e.target.name
-        ] = utils.convertToBool(e.target.checked);
+        let item = { ...listReimbursement[e.target.dataset.id] };
+        item[e.target.name] = utils.convertToBool(e.target.checked);
+        listReimbursement[e.target.dataset.id] = item;
 
         setAppData({
             ...appData,
@@ -49,8 +73,10 @@ const ReimbursementTable = () => {
         e.persist();
 
         let listReimbursement = [...appData.listReimbursement];
-        listReimbursement.forEach(item => {
-            if (!item.isDisabled) item.isChecked = !item.isChecked;
+        listReimbursement = listReimbursement.map(item => {
+            let tempItem = { ...item };
+            if (!tempItem.isDisabled) tempItem.isChecked = !tempItem.isChecked;
+            return tempItem;
         });
 
         setAppData({
@@ -78,6 +104,14 @@ const ReimbursementTable = () => {
         <>
             {listReimbursement && listReimbursement.length > 0 ? (
                 <>
+                    {alert.isAlertOpen && !alert.inModal && (
+                        <Alert
+                            type={alert.type}
+                            content={alert.content}
+                            closeAlert={closeAlert}
+                        />
+                    )}
+
                     <div className='table-layout'>
                         <table>
                             <thead>
@@ -134,45 +168,38 @@ const ReimbursementTable = () => {
                                 ))}
                             </tbody>
 
-                            <tfoot>
-                                <tr>
-                                    <td colSpan='4'>&nbsp;</td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={"SalaryAuthorized"}
-                                        />
-                                    </td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={"CUNYYTDPaid"}
-                                        />
-                                    </td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={"NotYTDPaid"}
-                                        />
-                                    </td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={"PreviousReimbursement"}
-                                        />
-                                    </td>
-                                    <td className='with-bg text-right'>
-                                        <ColumnTotal
-                                            list={listReimbursement}
-                                            columnName={
-                                                isPending
-                                                    ? "EligibleBalanceToReimburse"
-                                                    : "SalaryReimbursed"
-                                            }
-                                        />
-                                    </td>
-                                </tr>
-                            </tfoot>
+                            {showTotal && (
+                                <tfoot>
+                                    <tr>
+                                        <td colSpan='4'>&nbsp;</td>
+                                        <td className='with-bg text-right'>
+                                            {utils.currency(
+                                                totalSalaryAuthorized
+                                            )}
+                                        </td>
+                                        <td className='with-bg text-right'>
+                                            {utils.currency(totalCUNYYTDPaid)}
+                                        </td>
+                                        <td className='with-bg text-right'>
+                                            {utils.currency(totalNotYTDPaid)}
+                                        </td>
+                                        <td className='with-bg text-right'>
+                                            {utils.currency(
+                                                totalPrevReimbursement
+                                            )}
+                                        </td>
+                                        <td className='with-bg text-right'>
+                                            {isPending
+                                                ? utils.currency(
+                                                      totalEligibleBalanceToReimburse
+                                                  )
+                                                : utils.currency(
+                                                      totalSalaryReimbursed
+                                                  )}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            )}
                         </table>
                     </div>
 

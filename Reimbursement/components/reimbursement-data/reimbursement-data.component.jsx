@@ -1,18 +1,47 @@
 import React, { useContext } from "react";
 
 import { AppContext } from "../../app/app.provider";
+
 import { utils, config } from "../../utilities/utils";
 
 const ReimbursementData = ({ item, checkOne, index, isPending }) => {
-    const { initModal } = useContext(AppContext);
+    const { appData, setAppData, initModal, initAlert } = useContext(
+        AppContext
+    );
 
     const openModal = (e, item) => {
         e.preventDefault();
         initModal({
-            data: { ...item, isPending },
+            data: { ...item, isPending: item.isPending },
             type: "eligible-balance",
             size: "large",
-            showModal: true
+            showModal: true,
+            onClose: approveCallback
+        });
+    };
+
+    const approveCallback = cData => {
+        let listReimbursement = [...appData.listReimbursement];
+        let updatedList = listReimbursement.map(o => {
+            let obj = { ...o };
+
+            // set isProcessed to true so that the item in pending behave as procesed
+            if (obj.EmployeeId === item.EmployeeId) {
+                obj.isPending = false;
+                obj.IndexKey = cData.IndexKey;
+            }
+
+            return obj;
+        });
+
+        setAppData({
+            ...appData,
+            listReimbursement: updatedList
+        });
+
+        initAlert({
+            content: "Distribution Successfully Approved",
+            setTimeout: 3000
         });
     };
 
