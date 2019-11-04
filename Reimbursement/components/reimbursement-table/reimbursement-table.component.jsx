@@ -116,7 +116,12 @@ const ReimbursementTable = () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th width='30' className='check'>
+                                    <th
+                                        width='30'
+                                        className={`check ${
+                                            isPending ? "" : "hidden"
+                                        }`}
+                                    >
                                         <input
                                             type='checkbox'
                                             name='checkAll'
@@ -126,9 +131,7 @@ const ReimbursementTable = () => {
                                         />
                                     </th>
                                     <th width='180'>Employee Name</th>
-                                    <th width='80'>
-                                        CUNY <br /> ID
-                                    </th>
+                                    <th width='80'>CUNY ID</th>
                                     <th width='80'>
                                         Effort <br /> Certification
                                     </th>
@@ -145,11 +148,11 @@ const ReimbursementTable = () => {
                                         Previous <br /> Reimbursement
                                     </th>
                                     {isPending ? (
-                                        <th width='120' className='text-right'>
+                                        <th width='140' className='text-right'>
                                             Eligible Balance <br /> to Reimburse
                                         </th>
                                     ) : (
-                                        <th width='120' className='text-right'>
+                                        <th width='140' className='text-right'>
                                             Salary <br /> Reimbursed
                                         </th>
                                     )}
@@ -171,7 +174,11 @@ const ReimbursementTable = () => {
                             {showTotal && (
                                 <tfoot>
                                     <tr>
-                                        <td colSpan='4'>&nbsp;</td>
+                                        <td
+                                            colSpan={`${isPending ? "4" : "3"}`}
+                                        >
+                                            &nbsp;
+                                        </td>
                                         <td className='with-bg text-right'>
                                             {utils.currency(
                                                 totalSalaryAuthorized

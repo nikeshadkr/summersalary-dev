@@ -146,7 +146,7 @@ class DistributionTable extends React.Component {
                 inModal: true,
                 type: "error",
                 content:
-                    "total reimbursements cannot be more than CUNYYTDPaid - PreviousReimbursement."
+                    'Total Reimbursement Amount" should not exceed difference of "Salary Authorized" and "Previously Reimbursed" Amount'
             });
             return;
         }
@@ -175,6 +175,11 @@ class DistributionTable extends React.Component {
 
             this.showLoader(false);
             this.props.hideModal({ IndexKey: data }); // Closing modal with callback data
+
+            this.props.initAlert({
+                content: "Distribution successfully approved",
+                setTimeout: 4000
+            });
         } catch (error) {
             if (error.response)
                 this.props.initAlert({
@@ -360,6 +365,7 @@ class DistributionTable extends React.Component {
                                                                     item.Comments ||
                                                                     ""
                                                                 }
+                                                                maxLength='500'
                                                                 onChange={
                                                                     this
                                                                         .handleChange

@@ -52,7 +52,7 @@ body.modal-open {
     }
 }
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .row {

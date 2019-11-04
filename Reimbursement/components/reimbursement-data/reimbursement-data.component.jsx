@@ -38,16 +38,11 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
             ...appData,
             listReimbursement: updatedList
         });
-
-        initAlert({
-            content: "Distribution Successfully Approved",
-            setTimeout: 3000
-        });
     };
 
     return (
         <tr>
-            <td className='check'>
+            <td className={`check ${isPending ? "" : "hidden"}`}>
                 <input
                     data-id={index}
                     name='isChecked'
