@@ -82,6 +82,14 @@ export const utils = {
             total += !isNaN(floatValue) ? floatValue : 0;
         });
         return total;
+    },
+
+    excerpt: (text, length) => {
+        let [string] = [text];
+        if (string.length > length)
+            string = `${string.substring(0, length).trim()}...`;
+
+        return string;
     }
 };
 

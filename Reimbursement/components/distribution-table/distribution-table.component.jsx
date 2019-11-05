@@ -36,6 +36,19 @@ class DistributionTable extends React.Component {
             }
         );
 
+    toggleExcerpt = index => {
+        let listDistribution = [...this.state.listDistribution];
+        let item = { ...listDistribution[index] };
+
+        item["showExcerpt"] = !item["showExcerpt"];
+        listDistribution[index] = item;
+
+        this.setState(state => ({
+            ...state,
+            listDistribution
+        }));
+    };
+
     handleChange = e => {
         e.persist();
 
@@ -96,6 +109,7 @@ class DistributionTable extends React.Component {
                     new Date()
                 );
 
+                obj.showExcerpt = true;
                 obj.Error = "";
 
                 if (data.EffortCertStatus !== config.effortCertStatus.done) {
@@ -128,14 +142,17 @@ class DistributionTable extends React.Component {
         );
 
         let flag = false;
-        this.state.listDistribution.forEach(item => {
+        let list = [...this.state.listDistribution];
+        for (let i = 0; i < list.length; i++) {
             let amount =
-                parseFloat(item["SalaryAuthorized"]) -
-                parseFloat(item["PreviousReimbursement"]);
+                parseFloat(list[i]["SalaryAuthorized"]) -
+                parseFloat(list[i]["PreviousReimbursement"]);
 
-            flag = parseFloat(item["SalaryReimbursed"]) > amount ? true : false;
-        });
-
+            if (parseFloat(list[i]["SalaryReimbursed"]) > amount) {
+                flag = true;
+                break;
+            }
+        }
         if (flag) return;
 
         if (
@@ -358,23 +375,57 @@ class DistributionTable extends React.Component {
                                                         </td>
 
                                                         <td>
-                                                            <textarea
-                                                                data-id={i}
-                                                                name='Comments'
-                                                                value={
-                                                                    item.Comments ||
-                                                                    ""
-                                                                }
-                                                                maxLength='500'
-                                                                onChange={
-                                                                    this
-                                                                        .handleChange
-                                                                }
-                                                                disabled={
-                                                                    item.DisableComment ||
-                                                                    !isPending
-                                                                }
-                                                            ></textarea>
+                                                            {isPending ? (
+                                                                <textarea
+                                                                    data-id={i}
+                                                                    name='Comments'
+                                                                    value={
+                                                                        item.Comments ||
+                                                                        ""
+                                                                    }
+                                                                    maxLength='500'
+                                                                    onChange={
+                                                                        this
+                                                                            .handleChange
+                                                                    }
+                                                                    disabled={
+                                                                        item.DisableComment
+                                                                    }
+                                                                ></textarea>
+                                                            ) : (
+                                                                <div>
+                                                                    {item.showExcerpt
+                                                                        ? utils.excerpt(
+                                                                              item.Comments,
+                                                                              80
+                                                                          )
+                                                                        : item.Comments}
+
+                                                                    {item
+                                                                        .Comments
+                                                                        .length >
+                                                                        80 && (
+                                                                        <a
+                                                                            style={{
+                                                                                display:
+                                                                                    "block"
+                                                                            }}
+                                                                            className='mtop-5'
+                                                                            href='#'
+                                                                            onClick={e => {
+                                                                                e.preventDefault();
+                                                                                this.toggleExcerpt(
+                                                                                    i
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            {item.showExcerpt
+                                                                                ? "Show more"
+                                                                                : "Show less"}
+                                                                        </a>
+                                                                    )}
+                                                                </div>
+                                                            )}
                                                         </td>
                                                     </tr>
                                                 </Fragment>
