@@ -130,9 +130,9 @@ const ReimbursementTable = () => {
                                             disabled={!isPaymentNumberOpen}
                                         />
                                     </th>
-                                    <th width='180'>Employee Name</th>
+                                    <th width='150'>Employee Name</th>
                                     <th width='80'>CUNY ID</th>
-                                    <th width='80'>
+                                    <th width='90'>
                                         Effort <br /> Certification
                                     </th>
                                     <th width='120' className='text-right'>
@@ -148,11 +148,11 @@ const ReimbursementTable = () => {
                                         Previous <br /> Reimbursement
                                     </th>
                                     {isPending ? (
-                                        <th width='140' className='text-right'>
+                                        <th width='120' className='text-right'>
                                             Eligible Balance <br /> to Reimburse
                                         </th>
                                     ) : (
-                                        <th width='140' className='text-right'>
+                                        <th width='120' className='text-right'>
                                             Salary <br /> Reimbursed
                                         </th>
                                     )}

@@ -5,9 +5,7 @@ import { AppContext } from "../../app/app.provider";
 import { utils, config } from "../../utilities/utils";
 
 const ReimbursementData = ({ item, checkOne, index, isPending }) => {
-    const { appData, setAppData, initModal, initAlert } = useContext(
-        AppContext
-    );
+    const { appData, setAppData, initModal } = useContext(AppContext);
 
     const openModal = (e, item) => {
         e.preventDefault();

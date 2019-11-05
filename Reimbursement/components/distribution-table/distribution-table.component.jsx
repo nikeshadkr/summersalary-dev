@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 import axios from "../../axios";
 
 import ColumnTotal from "../column-total/column-total.component";
-import DistributionInput from "../distribution-input/distribution-input.component";
+import DistributionData from "../distribution-data/distribution-data.component";
 
 import { withAlert } from "../../app/app.provider";
 import Alert from "../alert/alert.component";
@@ -136,13 +136,29 @@ class DistributionTable extends React.Component {
     }
 
     approveDistribution = async () => {
+        const {
+            data: {
+                EmployeeId,
+                ReimbursementYear,
+                PaymentNumber,
+                CollegeCode,
+                CUNYYTDPaid,
+                PreviousReimbursement
+            },
+
+            initAlert,
+            hideModal
+        } = this.props;
+
+        const { listDistribution } = this.state;
+
         let SalaryReimbursedTotal = utils.getColumnTotal(
-            this.state.listDistribution,
+            listDistribution,
             "SalaryReimbursed"
         );
 
         let flag = false;
-        let list = [...this.state.listDistribution];
+        let list = [...listDistribution];
         for (let i = 0; i < list.length; i++) {
             let amount =
                 parseFloat(list[i]["SalaryAuthorized"]) -
@@ -155,11 +171,8 @@ class DistributionTable extends React.Component {
         }
         if (flag) return;
 
-        if (
-            SalaryReimbursedTotal >
-            this.props.data.CUNYYTDPaid - this.props.data.PreviousReimbursement
-        ) {
-            this.props.initAlert({
+        if (SalaryReimbursedTotal > CUNYYTDPaid - PreviousReimbursement) {
+            initAlert({
                 inModal: true,
                 type: "error",
                 content:
@@ -171,12 +184,12 @@ class DistributionTable extends React.Component {
         this.showLoader(true);
         try {
             let formData = {
-                EmployeeId: this.props.data.EmployeeId,
-                ReimbursementYear: this.props.data.ReimbursementYear,
-                PaymentNumber: this.props.data.PaymentNumber,
-                CollegeCode: this.props.data.CollegeCode,
+                EmployeeId,
+                ReimbursementYear,
+                PaymentNumber,
+                CollegeCode,
 
-                Distributions: this.state.listDistribution.map(obj => ({
+                Distributions: listDistribution.map(obj => ({
                     SalaryReimbursed: obj.SalaryReimbursed,
                     Comments: obj.Comments,
                     EmployeeId: obj.EmployeeId,
@@ -191,15 +204,15 @@ class DistributionTable extends React.Component {
             );
 
             this.showLoader(false);
-            this.props.hideModal({ IndexKey: data }); // Closing modal with callback data
+            hideModal({ IndexKey: data }); // Closing modal with callback data
 
-            this.props.initAlert({
+            initAlert({
                 content: "Distribution successfully approved",
                 setTimeout: 4000
             });
         } catch (error) {
             if (error.response)
-                this.props.initAlert({
+                initAlert({
                     inModal: true,
                     type: "error",
                     content: error.response.data
@@ -210,20 +223,29 @@ class DistributionTable extends React.Component {
     };
 
     render() {
+        const { listDistribution, isLoading } = this.state;
+
         const {
-            EmployeeId,
-            FirstName,
-            LastName,
-            CUNYYTDPaid,
-            EffortCertStatus,
-            isPending
-        } = this.props.data;
+            data: {
+                EmployeeId,
+                FirstName,
+                LastName,
+                CUNYYTDPaid,
+                EffortCertStatus,
+                isPending
+            },
+
+            hideModal,
+            alert,
+            closeAlert
+        } = this.props;
 
         const disableApproveButton =
             EffortCertStatus !== config.effortCertStatus.done;
 
         return (
             <div className='modal-common'>
+                {/* Modal Title */}
                 <div className='mc-title'>
                     <div>
                         <strong>
@@ -237,23 +259,23 @@ class DistributionTable extends React.Component {
                     </div>
                 </div>
 
+                {/* Modal Body */}
                 <div className='mc-body'>
-                    {this.state.listDistribution.length > 0 ? (
+                    {listDistribution.length > 0 ? (
                         <>
-                            {this.props.alert.isAlertOpen &&
-                                this.props.alert.inModal && (
-                                    <Alert
-                                        type={this.props.alert.type}
-                                        content={this.props.alert.content}
-                                        closeAlert={this.props.closeAlert}
-                                    />
-                                )}
+                            {alert.isAlertOpen && alert.inModal && (
+                                <Alert
+                                    type={alert.type}
+                                    content={alert.content}
+                                    closeAlert={closeAlert}
+                                />
+                            )}
 
                             <div className='table-layout inside-modal'>
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th width='75'>
+                                            <th width='68'>
                                                 Summer
                                                 <br />
                                                 Year
@@ -296,152 +318,21 @@ class DistributionTable extends React.Component {
                                         </tr>
                                     </thead>
 
-                                    <tbody>
-                                        {this.state.listDistribution.map(
-                                            (item, i) => (
-                                                <Fragment key={i}>
-                                                    {/* Error row */}
-                                                    {item.Error.length > 0 && (
-                                                        <tr className='error-row'>
-                                                            <td colSpan='8'>
-                                                                {item.Error}
-                                                            </td>
-                                                        </tr>
-                                                    )}
+                                    {/* tbody */}
+                                    <DistributionData
+                                        listDistribution={listDistribution}
+                                        isPending={isPending}
+                                        handleChange={this.handleChange}
+                                        toggleExcerpt={this.toggleExcerpt}
+                                    />
 
-                                                    <tr
-                                                        className={`${
-                                                            item.Error.length >
-                                                            0
-                                                                ? "has-error"
-                                                                : ""
-                                                        }`}
-                                                    >
-                                                        <td>
-                                                            {item.SummerYear}
-                                                        </td>
-                                                        <td>
-                                                            {item.Prsy} |{" "}
-                                                            {item.PrsyName}
-                                                        </td>
-                                                        <td
-                                                            className={`${
-                                                                item.isBudgetEndDateBeforeToday
-                                                                    ? "red-text"
-                                                                    : ""
-                                                            }`}
-                                                        >
-                                                            {item.BudgetEndDate}
-                                                        </td>
-                                                        <td>
-                                                            {item.FundGroup}
-                                                        </td>
-                                                        <td className='text-right'>
-                                                            {utils.currency(
-                                                                item.SalaryAuthorized
-                                                            )}
-                                                        </td>
-                                                        <td className='text-right'>
-                                                            {utils.currency(
-                                                                item.PreviousReimbursement
-                                                            )}
-                                                        </td>
-                                                        <td className='text-right'>
-                                                            {isPending ? (
-                                                                <DistributionInput
-                                                                    data-id={i}
-                                                                    type='text'
-                                                                    name='SalaryReimbursed'
-                                                                    autoComplete='off'
-                                                                    value={
-                                                                        item.DisableSalaryReimburse
-                                                                            ? item.SalaryReimbursed
-                                                                            : item.SalaryReimbursed ||
-                                                                              ""
-                                                                    }
-                                                                    disabled={
-                                                                        item.DisableSalaryReimburse
-                                                                    }
-                                                                    handleChange={
-                                                                        this
-                                                                            .handleChange
-                                                                    }
-                                                                />
-                                                            ) : (
-                                                                utils.currency(
-                                                                    item.SalaryReimbursed
-                                                                )
-                                                            )}
-                                                        </td>
-
-                                                        <td>
-                                                            {isPending ? (
-                                                                <textarea
-                                                                    data-id={i}
-                                                                    name='Comments'
-                                                                    value={
-                                                                        item.Comments ||
-                                                                        ""
-                                                                    }
-                                                                    maxLength='500'
-                                                                    onChange={
-                                                                        this
-                                                                            .handleChange
-                                                                    }
-                                                                    disabled={
-                                                                        item.DisableComment
-                                                                    }
-                                                                ></textarea>
-                                                            ) : (
-                                                                <div>
-                                                                    {item.showExcerpt
-                                                                        ? utils.excerpt(
-                                                                              item.Comments,
-                                                                              80
-                                                                          )
-                                                                        : item.Comments}
-
-                                                                    {item
-                                                                        .Comments
-                                                                        .length >
-                                                                        80 && (
-                                                                        <a
-                                                                            style={{
-                                                                                display:
-                                                                                    "block"
-                                                                            }}
-                                                                            className='mtop-5'
-                                                                            href='#'
-                                                                            onClick={e => {
-                                                                                e.preventDefault();
-                                                                                this.toggleExcerpt(
-                                                                                    i
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            {item.showExcerpt
-                                                                                ? "Show more"
-                                                                                : "Show less"}
-                                                                        </a>
-                                                                    )}
-                                                                </div>
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                </Fragment>
-                                            )
-                                        )}
-                                    </tbody>
-                                    {this.state.listDistribution.length > 1 && (
+                                    {listDistribution.length > 1 && (
                                         <tfoot>
                                             <tr>
                                                 <td colSpan='4'>&nbsp;</td>
                                                 <td className='with-bg text-right'>
                                                     <ColumnTotal
-                                                        list={
-                                                            this.state
-                                                                .listDistribution
-                                                        }
+                                                        list={listDistribution}
                                                         columnName={
                                                             "SalaryAuthorized"
                                                         }
@@ -449,10 +340,7 @@ class DistributionTable extends React.Component {
                                                 </td>
                                                 <td className='with-bg text-right'>
                                                     <ColumnTotal
-                                                        list={
-                                                            this.state
-                                                                .listDistribution
-                                                        }
+                                                        list={listDistribution}
                                                         columnName={
                                                             "PreviousReimbursement"
                                                         }
@@ -460,10 +348,7 @@ class DistributionTable extends React.Component {
                                                 </td>
                                                 <td className='with-bg text-right'>
                                                     <ColumnTotal
-                                                        list={
-                                                            this.state
-                                                                .listDistribution
-                                                        }
+                                                        list={listDistribution}
                                                         columnName={
                                                             "SalaryReimbursed"
                                                         }
@@ -479,7 +364,8 @@ class DistributionTable extends React.Component {
                         <h2>No Records Found</h2>
                     )}
 
-                    {this.state.isLoading && (
+                    {/* Modal Loader */}
+                    {isLoading && (
                         <div className='modal-loader'>
                             <div className='lds-ellipsis'>
                                 <div></div>
@@ -491,24 +377,23 @@ class DistributionTable extends React.Component {
                     )}
                 </div>
 
+                {/* Modal Footer */}
                 <div className='mc-footer'>
                     <button
                         className='new-btn cancel'
-                        onClick={() => this.props.hideModal()}
+                        onClick={() => hideModal()}
                     >
                         Cancel
                     </button>
-                    {this.state.listDistribution.length > 0 && isPending && (
+                    {listDistribution.length > 0 && isPending && (
                         <button
                             className={`new-btn pull-right ${
-                                disableApproveButton || this.state.isLoading
+                                disableApproveButton || isLoading
                                     ? "disabled"
                                     : ""
                             }`}
                             onClick={this.approveDistribution}
-                            disabled={
-                                disableApproveButton || this.state.isLoading
-                            }
+                            disabled={disableApproveButton || isLoading}
                         >
                             Approve
                         </button>
