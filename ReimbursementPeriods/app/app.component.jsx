@@ -1,32 +1,47 @@
 ﻿import React, { useContext, useEffect } from "react";
 import axios from "../axios";
-import ReimbursementsPeriodsTable from "../components/reimbursement-periods-table/reimbursement-periods-table.component";
-import { AppContext } from "./app.provider";
+
 import Header from "../components/header/header.component";
+import Loader from "../components/loader/loader.component";
+import ReimbursementsPeriodsTable from "../components/reimbursement-periods-table/reimbursement-periods-table.component";
+
+import { AppContext } from "./app.provider";
+import { utils, config } from "../utilities/utils";
 
 const App = () => {
-    const {
-        listReimbursementPeriods,
-        setReimbursementPeriods,
-        isLoading,
-        toggleLoader
-    } = useContext(AppContext);
+    const { setReimbursementPeriods, isLoading, toggleLoader } = useContext(
+        AppContext
+    );
 
     const loadReimbursementPeriods = async () => {
         try {
             toggleLoader(true);
             let listPeriods = await axios.get(
-                window.applicationPath +
-                    "ReimbursementPeriod/GetReimbursementPeriods"
+                config.appPath + "ReimbursementPeriod/GetReimbursementPeriods"
             );
 
             listPeriods.data.forEach(item => {
                 item.IsEditing = false;
+                item.PayPeriodEndFromDate = utils.formatDate(
+                    item.PayPeriodEndFromDate,
+                    "MM/DD/YYYY"
+                );
+                item.PayPeriodEndToDate = utils.formatDate(
+                    item.PayPeriodEndToDate,
+                    "MM/DD/YYYY"
+                );
+                item.CUNYPayPeriodEndDate = utils.formatDate(
+                    item.CUNYPayPeriodEndDate,
+                    "MM/DD/YYYY"
+                );
+                item.GLPostingDate = utils.formatDate(
+                    item.GLPostingDate,
+                    "MM/DD/YYYY"
+                );
             });
-            //setReimbursementPeriods({...listReimbursementPeriods, listReimbursementPeriods: listPeriods.data});
-            setReimbursementPeriods(listPeriods.data, () =>
-                toggleLoader(false)
-            );
+
+            setReimbursementPeriods(listPeriods.data);
+            toggleLoader(false);
         } catch (error) {
             console.log(error.message);
         }
@@ -40,6 +55,7 @@ const App = () => {
         <>
             <Header></Header>
             <ReimbursementsPeriodsTable></ReimbursementsPeriodsTable>
+            {isLoading && <Loader />}
         </>
     );
 };

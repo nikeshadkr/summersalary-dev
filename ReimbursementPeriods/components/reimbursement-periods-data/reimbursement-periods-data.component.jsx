@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "../../axios";
+
+import { utils, config } from "../../utilities/utils";
 
 const ReimbursmentsPeriodsData = ({
     index,
@@ -9,19 +11,22 @@ const ReimbursmentsPeriodsData = ({
 }) => {
     const [listPayPeriodEndFrom, setPayPeriodEndFrom] = useState([]);
 
-    const onYearChange = (e, index) => {
-        updateYear(e.target.value, index);
-    };
-
-    const toggleEdit = (e, item, index) => {
+    const toggleEdit = (item, index) => {
         if (!item.IsEditing) {
-            let listPeriods = axios
+            axios
                 .get(
-                    window.applicationPath +
+                    config.appPath +
                         "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
                         item.ReimbursementYear
                 )
                 .then(res => {
+                    res.data.forEach(obj => {
+                        obj.PayPeriodEnding = utils.formatDate(
+                            obj.PayPeriodEnding,
+                            "MM/DD/YYYY"
+                        );
+                    });
+
                     setPayPeriodEndFrom(res.data);
                 });
         }
@@ -36,17 +41,16 @@ const ReimbursmentsPeriodsData = ({
                     <td>
                         <input
                             type='text'
-                            value={item.ReimbursementYear}
-                            onChange={e => onYearChange(e, index)}
+                            defaultValue={item.ReimbursementYear}
                         />
                     </td>
                     <td>{item.PaymentNumber}</td>
                     <td>
-                        <select value={item.IsOpen}>
-                            <option key='1' value='true'>
+                        <select defaultValue={item.IsOpen}>
+                            <option key='1' value={true}>
                                 Open
                             </option>
-                            <option key='2' value='false'>
+                            <option key='2' value={false}>
                                 Closed
                             </option>
                         </select>
@@ -54,7 +58,7 @@ const ReimbursmentsPeriodsData = ({
                     <td>
                         <select
                             name='payPeriodEndFrom'
-                            value={item.PayPeriodEndFromDate}
+                            defaultValue={item.PayPeriodEndFromDate}
                         >
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {
@@ -72,7 +76,7 @@ const ReimbursmentsPeriodsData = ({
                     <td>
                         <select
                             name='payPeriodEndTo'
-                            value={item.PayPeriodEndToDate}
+                            defaultValue={item.PayPeriodEndToDate}
                         >
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {
@@ -90,7 +94,7 @@ const ReimbursmentsPeriodsData = ({
                     <td>
                         <select
                             name='cunyPayPeriodEndDate'
-                            value={item.CUNYPayPeriodEndDate}
+                            defaultValue={item.CUNYPayPeriodEndDate}
                         >
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {
@@ -106,7 +110,10 @@ const ReimbursmentsPeriodsData = ({
                         </select>
                     </td>
                     <td>
-                        <select name='glPostingDate' value={item.GLPostingDate}>
+                        <select
+                            name='glPostingDate'
+                            defaultValue={item.GLPostingDate}
+                        >
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {
                                     return (
@@ -122,7 +129,7 @@ const ReimbursmentsPeriodsData = ({
                     </td>
                     <td>
                         <button>Save</button>
-                        <button onClick={e => toggleEdit(e, item, index)}>
+                        <button onClick={() => toggleEdit(item, index)}>
                             Cancel
                         </button>
                     </td>
@@ -137,7 +144,7 @@ const ReimbursmentsPeriodsData = ({
                     <td>{item.CUNYPayPeriodEndDate}</td>
                     <td>{item.GLPostingDate}</td>
                     <td>
-                        <button onClick={e => toggleEdit(e, item, index)}>
+                        <button onClick={() => toggleEdit(item, index)}>
                             Edit
                         </button>{" "}
                     </td>

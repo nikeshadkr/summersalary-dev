@@ -18,10 +18,9 @@ class AppProvider extends React.Component {
         };
     }
 
-    setReimbursementPeriods = (listReimbursementPeriods, callback) =>
+    setReimbursementPeriods = (updatedList, callback) =>
         this.setState(
-            state =>
-                (state.listReimbursementPeriods = listReimbursementPeriods),
+            state => ({ ...state, listReimbursementPeriods: updatedList }),
             () => {
                 callback && callback(this.state.listReimbursementPeriods);
             }
