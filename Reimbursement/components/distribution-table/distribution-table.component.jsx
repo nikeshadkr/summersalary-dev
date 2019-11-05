@@ -501,10 +501,14 @@ class DistributionTable extends React.Component {
                     {this.state.listDistribution.length > 0 && isPending && (
                         <button
                             className={`new-btn pull-right ${
-                                disableApproveButton ? "disabled" : ""
+                                disableApproveButton || this.state.isLoading
+                                    ? "disabled"
+                                    : ""
                             }`}
                             onClick={this.approveDistribution}
-                            disabled={disableApproveButton}
+                            disabled={
+                                disableApproveButton || this.state.isLoading
+                            }
                         >
                             Approve
                         </button>
