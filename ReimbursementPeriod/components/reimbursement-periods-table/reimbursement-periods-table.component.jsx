@@ -7,11 +7,11 @@ const ReimbursementsPeriodsTable = () => {
     const { listReimbursementPeriods, setReimbursementPeriods } = useContext(
         AppContext
     );
-    const updateYear = (e, index) => {
+    const handleChange = e => {
         let clonedList = [...listReimbursementPeriods];
-        let found = { ...clonedList[index] };
-        found.ReimbursementYear = e.target.value;
-        clonedList[index] = found;
+        let found = { ...clonedList[e.target.dataset.id] };
+        found[e.target.name] = e.target.value;
+        clonedList[e.target.dataset.id] = found;
 
         setReimbursementPeriods(clonedList);
     };
@@ -32,14 +32,17 @@ const ReimbursementsPeriodsTable = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Year</th>
-                                <th>Payment Number</th>
-                                <th>Status</th>
-                                <th>Pay Period End From Date</th>
-                                <th>Pay Period End To Date</th>
-                                <th>CUNY Pay Period End Date</th>
-                                <th>GL Posting Date</th>
-                                <th></th>
+                                <th width='90'>Year</th>
+                                <th width='80'>
+                                    Payment <br />
+                                    Number
+                                </th>
+                                <th width='80'>Status</th>
+                                <th width='120'>Pay Period End From Date</th>
+                                <th width='120'>Pay Period End To Date</th>
+                                <th width='120'>CUNY Pay Period End Date</th>
+                                <th width='120'>GL Posting Date</th>
+                                <th width='60'>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,7 +51,7 @@ const ReimbursementsPeriodsTable = () => {
                                     key={i}
                                     index={i}
                                     item={item}
-                                    updateYear={updateYear}
+                                    handleChange={handleChange}
                                     toggleEditMode={toggleEditMode}
                                 ></ReimbursementPeriodsData>
                             ))}

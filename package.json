@@ -15,8 +15,8 @@
     "scripts": {
         "reimbursement-dev": "webpack --config webpack.dev.js --config-name reimbursement --mode development --watch",
         "reimbursement-build": "webpack --config webpack.prod.js --config-name reimbursement --mode production",
-        "reimbursement-periods-dev": "webpack --config webpack.dev.js --config-name reimbursement-periods --mode development --watch",
-        "reimbursement-periods-build": "webpack --config webpack.prod.js --config-name reimbursement-periods --mode production"
+        "reimbursement-period-dev": "webpack --config webpack.dev.js --config-name reimbursement-period --mode development --watch",
+        "reimbursement-period-build": "webpack --config webpack.prod.js --config-name reimbursement-period --mode production"
     },
     "devDependencies": {
         "@babel/cli": "^7.6.2",

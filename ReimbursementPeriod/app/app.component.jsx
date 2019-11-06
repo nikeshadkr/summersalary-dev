@@ -53,7 +53,7 @@ const App = () => {
 
     return (
         <>
-            <Header></Header>
+            <Header />
             <ReimbursementsPeriodsTable></ReimbursementsPeriodsTable>
             {isLoading && <Loader />}
         </>

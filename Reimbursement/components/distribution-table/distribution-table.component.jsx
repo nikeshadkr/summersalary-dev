@@ -383,7 +383,7 @@ class DistributionTable extends React.Component {
                         className='new-btn cancel'
                         onClick={() => hideModal()}
                     >
-                        Cancel
+                        Close
                     </button>
                     {listDistribution.length > 0 && isPending && (
                         <button

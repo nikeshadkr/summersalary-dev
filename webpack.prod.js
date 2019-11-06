@@ -44,11 +44,11 @@ module.exports = [
 
     {
         mode: "production",
-        name: "reimbursement-periods",
-        entry: ["@babel/polyfill", "./ReimbursementPeriods/index.js"],
+        name: "reimbursement-period",
+        entry: ["@babel/polyfill", "./ReimbursementPeriod/index.js"],
         output: {
             path: path.resolve(__dirname, "./Build"),
-            filename: "reimbursement-periods.js"
+            filename: "reimbursement-period.js"
         },
         module: _module,
         resolve: _resolve,

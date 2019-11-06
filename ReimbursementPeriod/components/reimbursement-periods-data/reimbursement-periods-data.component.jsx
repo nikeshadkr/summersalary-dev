@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "../../axios";
 
 import { utils, config } from "../../utilities/utils";
@@ -6,29 +6,27 @@ import { utils, config } from "../../utilities/utils";
 const ReimbursmentsPeriodsData = ({
     index,
     item,
-    updateYear,
+    handleChange,
     toggleEditMode
 }) => {
     const [listPayPeriodEndFrom, setPayPeriodEndFrom] = useState([]);
 
-    const toggleEdit = (item, index) => {
+    const toggleEdit = async (item, index) => {
         if (!item.IsEditing) {
-            axios
-                .get(
-                    config.appPath +
-                        "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
-                        item.ReimbursementYear
-                )
-                .then(res => {
-                    res.data.forEach(obj => {
-                        obj.PayPeriodEnding = utils.formatDate(
-                            obj.PayPeriodEnding,
-                            "MM/DD/YYYY"
-                        );
-                    });
+            let listPayPeriodRes = await axios.get(
+                config.appPath +
+                    "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
+                    item.ReimbursementYear
+            );
 
-                    setPayPeriodEndFrom(res.data);
-                });
+            listPayPeriodRes.data.forEach(obj => {
+                obj.PayPeriodEnding = utils.formatDate(
+                    obj.PayPeriodEnding,
+                    "MM/DD/YYYY"
+                );
+            });
+
+            setPayPeriodEndFrom(listPayPeriodRes.data);
         }
 
         toggleEditMode(!item.IsEditing, index);
@@ -40,8 +38,11 @@ const ReimbursmentsPeriodsData = ({
                 <tr>
                     <td>
                         <input
+                            name='ReimbursementYear'
+                            data-id={index}
                             type='text'
-                            defaultValue={item.ReimbursementYear}
+                            value={item.ReimbursementYear}
+                            onChange={handleChange}
                         />
                     </td>
                     <td>{item.PaymentNumber}</td>
@@ -128,9 +129,21 @@ const ReimbursmentsPeriodsData = ({
                         </select>
                     </td>
                     <td>
-                        <button>Save</button>
-                        <button onClick={() => toggleEdit(item, index)}>
-                            Cancel
+                        <button className='inline-image-button'>
+                            <img
+                                alt='save'
+                                src={`${config.assetPath}/status-ok.png`}
+                            />
+                        </button>
+
+                        <button
+                            className='inline-image-button'
+                            onClick={() => toggleEdit(item, index)}
+                        >
+                            <img
+                                alt='cancel'
+                                src={`${config.assetPath}/status-notok.png`}
+                            />
                         </button>
                     </td>
                 </tr>
@@ -144,9 +157,16 @@ const ReimbursmentsPeriodsData = ({
                     <td>{item.CUNYPayPeriodEndDate}</td>
                     <td>{item.GLPostingDate}</td>
                     <td>
-                        <button onClick={() => toggleEdit(item, index)}>
-                            Edit
-                        </button>{" "}
+                        <button
+                            className='inline-image-button fixed'
+                            onClick={() => toggleEdit(item, index)}
+                        >
+                            <img
+                                style={{ width: "18px", height: "18px" }}
+                                alt='edit'
+                                src={`${config.assetPath}/edit.png`}
+                            />
+                        </button>
                     </td>
                 </tr>
             )}
