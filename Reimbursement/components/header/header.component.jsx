@@ -111,7 +111,7 @@ const Header = () => {
 
                     // Re-render List and checkbox
                     listReimbursement: [],
-                    selectAllCheckBox: false,
+                    isAllchecked: false,
                     isReimbursementLoaded: false
                 },
                 filters: {

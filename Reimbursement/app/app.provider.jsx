@@ -82,7 +82,7 @@ class AppProvider extends React.Component {
 
                 listReimbursement: [],
                 isReimbursementLoaded: false,
-                selectAllCheckBox: false,
+                isAllchecked: false,
                 isPaymentNumberOpen: false
             },
             isLoading: false,
@@ -275,7 +275,7 @@ class AppProvider extends React.Component {
                 ...appData,
                 listReimbursement: listReimbursement.data,
                 isReimbursementLoaded: true,
-                selectAllCheckBox: false,
+                isAllchecked: false,
                 isPaymentNumberOpen
             });
 

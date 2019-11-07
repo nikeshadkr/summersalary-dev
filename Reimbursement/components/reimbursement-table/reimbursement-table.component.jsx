@@ -14,6 +14,7 @@ const ReimbursementTable = () => {
         appData,
         setAppData,
         filters,
+        showHideLoader,
 
         alert,
         initAlert,
@@ -26,7 +27,7 @@ const ReimbursementTable = () => {
 
     const {
         listReimbursement,
-        selectAllCheckBox,
+        isAllchecked,
         isPaymentNumberOpen,
         isReimbursementLoaded
     } = appData;
@@ -63,15 +64,15 @@ const ReimbursementTable = () => {
     const checkOne = e => {
         e.persist();
 
-        let listReimbursement = [...appData.listReimbursement];
-        let item = { ...listReimbursement[e.target.dataset.id] };
+        let clonedList = [...listReimbursement];
+        let item = { ...clonedList[e.target.dataset.id] };
         item[e.target.name] = utils.convertToBool(e.target.checked);
-        listReimbursement[e.target.dataset.id] = item;
+        clonedList[e.target.dataset.id] = item;
 
         setAppData(
             {
                 ...appData,
-                listReimbursement
+                listReimbursement: clonedList
             },
             updatedState => {
                 enableActionMethods(updatedState);
@@ -82,18 +83,18 @@ const ReimbursementTable = () => {
     const checkAll = e => {
         e.persist();
 
-        let listReimbursement = [...appData.listReimbursement];
-        listReimbursement = listReimbursement.map(item => {
-            let tempItem = { ...item };
-            if (!tempItem.isDisabled) tempItem.isChecked = e.target.checked;
-            return tempItem;
+        let clonedList = [...listReimbursement];
+        clonedList = clonedList.map(item => {
+            let obj = { ...item };
+            if (!obj.isDisabled) obj.isChecked = e.target.checked;
+            return obj;
         });
 
         setAppData(
             {
                 ...appData,
-                listReimbursement,
-                selectAllCheckBox: e.target.checked
+                listReimbursement: clonedList,
+                isAllchecked: e.target.checked
             },
             updatedState => {
                 enableActionMethods(updatedState);
@@ -138,8 +139,8 @@ const ReimbursementTable = () => {
         let clonedList = [];
         let formData = [];
 
-        for (let i = 0; i < listReimbursement.length; i++) {
-            let obj = { ...listReimbursement[i] };
+        listReimbursement.forEach(item => {
+            let obj = { ...item };
             if (obj.isChecked === true) {
                 formData.push({
                     EmployeeId: obj.EmployeeId,
@@ -149,10 +150,12 @@ const ReimbursementTable = () => {
                 });
             }
             clonedList.push(obj);
-        }
+        });
 
         try {
             if (formData.length > 0) {
+                showHideLoader(true);
+
                 await axios.post(
                     `${config.apiPath}/RecordFullyPaidReimbursements`,
                     formData
@@ -168,13 +171,15 @@ const ReimbursementTable = () => {
                 setAppData({
                     ...appData,
                     listReimbursement: clonedList,
-                    selectAllCheckBox: false
+                    isAllchecked: false
                 });
 
                 initAlert({
                     content: "Successfully approved reimbursement records",
                     setTimeout: 4000
                 });
+
+                showHideLoader(false);
             }
         } catch (error) {
             if (error.response)
@@ -186,6 +191,7 @@ const ReimbursementTable = () => {
                 });
 
             console.log(error);
+            showHideLoader(false);
         }
     };
 
@@ -229,7 +235,7 @@ const ReimbursementTable = () => {
                                             type='checkbox'
                                             name='checkAll'
                                             onChange={checkAll}
-                                            checked={selectAllCheckBox}
+                                            checked={isAllchecked}
                                             disabled={!isPaymentNumberOpen}
                                         />
                                     </th>
