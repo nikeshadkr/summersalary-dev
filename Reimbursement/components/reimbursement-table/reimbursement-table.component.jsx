@@ -174,6 +174,8 @@ const ReimbursementTable = () => {
                     isAllchecked: false
                 });
 
+                setEnableApprove(false);
+
                 initAlert({
                     content: "Successfully approved reimbursement records",
                     setTimeout: 4000
