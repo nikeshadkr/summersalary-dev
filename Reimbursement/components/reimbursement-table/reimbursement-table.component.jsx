@@ -214,7 +214,7 @@ const ReimbursementTable = () => {
                         <button
                             type='button'
                             onClick={aproveAll}
-                            className={`new-btn ${
+                            className={`button colorize blue ${
                                 enableApprove ? "" : "disabled"
                             } mbottom-10`}
                             disabled={!enableApprove}

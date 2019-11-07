@@ -380,17 +380,17 @@ class DistributionTable extends React.Component {
                 {/* Modal Footer */}
                 <div className='mc-footer'>
                     <button
-                        className='new-btn cancel'
+                        className='button colorize red'
                         onClick={() => hideModal()}
                     >
                         Close
                     </button>
                     {listDistribution.length > 0 && isPending && (
                         <button
-                            className={`new-btn pull-right ${
+                            className={`button colorize pull-right ${
                                 disableApproveButton || isLoading
                                     ? "disabled"
-                                    : ""
+                                    : "blue"
                             }`}
                             onClick={this.approveDistribution}
                             disabled={disableApproveButton || isLoading}
