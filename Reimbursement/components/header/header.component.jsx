@@ -128,7 +128,8 @@ const Header = () => {
                 pagination: {
                     ...pagination,
                     pageIndex: 1 // Setting page no to 1
-                }
+                },
+                alert: {}
             },
             updatedState => {
                 if (updatedState.filters.isFilterValid) loadReimbursements();
@@ -233,7 +234,7 @@ const Header = () => {
                 </div>
 
                 {/* College */}
-                <div className='form-group' style={{ width: "430px" }}>
+                <div className='form-group' style={{ width: "415px" }}>
                     <label>College</label>
                     <select
                         name='college'

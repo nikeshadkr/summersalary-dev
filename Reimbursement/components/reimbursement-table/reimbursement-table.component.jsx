@@ -1,12 +1,13 @@
-import React, { useContext, useEffect } from "react";
-import Pagination from "react-js-pagination";
+import React, { useContext, useState } from "react";
+import axios from "../../axios";
 
+import Pagination from "react-js-pagination";
 import ReimbursementData from "../reimbursement-data/reimbursement-data.component";
 
 import { AppContext } from "../../app/app.provider";
 
 import Alert from "../alert/alert.component";
-import { utils } from "../../utilities/utils";
+import { config, utils } from "../../utilities/utils";
 
 const ReimbursementTable = () => {
     const {
@@ -15,6 +16,7 @@ const ReimbursementTable = () => {
         filters,
 
         alert,
+        initAlert,
         closeAlert,
 
         loadReimbursements,
@@ -25,10 +27,12 @@ const ReimbursementTable = () => {
     const {
         listReimbursement,
         selectAllCheckBox,
-        isPaymentNumberOpen
+        isPaymentNumberOpen,
+        isReimbursementLoaded
     } = appData;
 
     const { isPending } = filters;
+    const [enableApprove, setEnableApprove] = useState(false);
 
     let totalRecord = 0,
         totalSalaryReimbursed = 0, // For Prosessed only
@@ -50,10 +54,11 @@ const ReimbursementTable = () => {
     }
 
     let showTotal = false;
-    if (listReimbursement.length > 0)
+    if (listReimbursement.length > 0) {
         showTotal =
             Math.ceil(totalRecord / pagination.pageSize) ===
             pagination.pageIndex;
+    }
 
     const checkOne = e => {
         e.persist();
@@ -63,10 +68,15 @@ const ReimbursementTable = () => {
         item[e.target.name] = utils.convertToBool(e.target.checked);
         listReimbursement[e.target.dataset.id] = item;
 
-        setAppData({
-            ...appData,
-            listReimbursement
-        });
+        setAppData(
+            {
+                ...appData,
+                listReimbursement
+            },
+            updatedState => {
+                enableActionMethods(updatedState);
+            }
+        );
     };
 
     const checkAll = e => {
@@ -75,19 +85,40 @@ const ReimbursementTable = () => {
         let listReimbursement = [...appData.listReimbursement];
         listReimbursement = listReimbursement.map(item => {
             let tempItem = { ...item };
-            if (!tempItem.isDisabled) tempItem.isChecked = !tempItem.isChecked;
+            if (!tempItem.isDisabled) tempItem.isChecked = e.target.checked;
             return tempItem;
         });
 
-        setAppData({
-            ...appData,
-            listReimbursement,
-            selectAllCheckBox: e.target.checked
-        });
+        setAppData(
+            {
+                ...appData,
+                listReimbursement,
+                selectAllCheckBox: e.target.checked
+            },
+            updatedState => {
+                enableActionMethods(updatedState);
+            }
+        );
+    };
+
+    const enableActionMethods = newState => {
+        let list = newState.listReimbursement.filter(
+            obj => obj.isChecked === true
+        );
+        setEnableApprove(list.length > 0);
+
+        /*for (let i = 0; i < list.length; i++) {
+            if (list[i]["isChecked"] === true) {
+                setEnableApprove(true);
+                break;
+            }
+            if (i + 1 === list.length && list[i]["isChecked"] !== true)
+                setEnableApprove(false);
+        }*/
     };
 
     const handlePageChange = pageIndex => {
-        if (pageIndex != pagination.pageIndex)
+        if (pageIndex != pagination.pageIndex) {
             setPagination(
                 {
                     ...pagination,
@@ -98,6 +129,64 @@ const ReimbursementTable = () => {
                     loadReimbursements();
                 }
             );
+
+            setEnableApprove(false);
+        }
+    };
+
+    const aproveAll = async () => {
+        let clonedList = [];
+        let formData = [];
+
+        for (let i = 0; i < listReimbursement.length; i++) {
+            let obj = { ...listReimbursement[i] };
+            if (obj.isChecked === true) {
+                formData.push({
+                    EmployeeId: obj.EmployeeId,
+                    ReimbursementYear: obj.ReimbursementYear,
+                    PaymentNumber: obj.PaymentNumber,
+                    CollegeCode: obj.CollegeCode
+                });
+            }
+            clonedList.push(obj);
+        }
+
+        try {
+            if (formData.length > 0) {
+                await axios.post(
+                    `${config.apiPath}/RecordFullyPaidReimbursements`,
+                    formData
+                );
+
+                clonedList.forEach(o => {
+                    if (o.isChecked === true) {
+                        o.isDisabled = true;
+                        o.isChecked = false;
+                    }
+                });
+
+                setAppData({
+                    ...appData,
+                    listReimbursement: clonedList,
+                    selectAllCheckBox: false
+                });
+
+                initAlert({
+                    content: "Successfully approved reimbursement records",
+                    setTimeout: 4000
+                });
+            }
+        } catch (error) {
+            if (error.response)
+                initAlert({
+                    type: "error",
+                    content: error.response.data
+                        ? error.response.data
+                        : "Could not complete your request"
+                });
+
+            console.log(error);
+        }
     };
 
     return (
@@ -110,6 +199,20 @@ const ReimbursementTable = () => {
                             content={alert.content}
                             closeAlert={closeAlert}
                         />
+                    )}
+
+                    {/* Approve Button */
+                    isReimbursementLoaded && filters.isPending && (
+                        <button
+                            type='button'
+                            onClick={aproveAll}
+                            className={`new-btn ${
+                                enableApprove ? "" : "disabled"
+                            } mbottom-10`}
+                            disabled={!enableApprove}
+                        >
+                            Approve
+                        </button>
                     )}
 
                     <div className='table-layout'>
