@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useContext } from "react";
+
+import { AppContext } from "../../app/app.provider";
 
 const Header = () => {
+    const { initModal } = useContext(AppContext);
+
+    const addNew = e => {
+        e.preventDefault();
+        initModal({
+            data: { test: "test" },
+            type: "new-period",
+            size: "medium",
+            showModal: true,
+            onClose: cData => {
+                console.log(cData);
+            }
+        });
+    };
+
     return (
-        <div>
-            <button className='button colorize blue mbottom-15'>Add New</button>
-        </div>
+        <button className='button colorize blue mbottom-15' onClick={addNew}>
+            Add New
+        </button>
     );
 };
 

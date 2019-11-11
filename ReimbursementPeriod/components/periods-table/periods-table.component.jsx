@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 
-import ReimbursementPeriodsData from "../reimbursement-periods-data/reimbursement-periods-data.component";
+import PeriodsData from "../periods-data/periods-data.component";
 import { AppContext } from "../../app/app.provider";
 
-const ReimbursementsPeriodsTable = () => {
+const PeriodsTable = () => {
     const { listReimbursementPeriods, setReimbursementPeriods } = useContext(
         AppContext
     );
@@ -38,22 +38,31 @@ const ReimbursementsPeriodsTable = () => {
                                     Number
                                 </th>
                                 <th width='80'>Status</th>
-                                <th width='120'>Pay Period End From Date</th>
-                                <th width='120'>Pay Period End To Date</th>
-                                <th width='120'>CUNY Pay Period End Date</th>
+                                <th width='120'>
+                                    Pay Period <br />
+                                    End From Date
+                                </th>
+                                <th width='120'>
+                                    Pay Period <br />
+                                    End To Date
+                                </th>
+                                <th width='120'>
+                                    CUNY Pay Period <br />
+                                    End Date
+                                </th>
                                 <th width='120'>GL Posting Date</th>
                                 <th width='60'>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {listReimbursementPeriods.map((item, i) => (
-                                <ReimbursementPeriodsData
+                                <PeriodsData
                                     key={i}
                                     index={i}
                                     item={item}
-                                    handleStateChange={handleChange}
+                                    handleMainStateUpdate={handleChange}
                                     toggleEditMode={toggleEditMode}
-                                ></ReimbursementPeriodsData>
+                                ></PeriodsData>
                             ))}
                         </tbody>
                     </table>
@@ -65,4 +74,4 @@ const ReimbursementsPeriodsTable = () => {
     );
 };
 
-export default ReimbursementsPeriodsTable;
+export default PeriodsTable;

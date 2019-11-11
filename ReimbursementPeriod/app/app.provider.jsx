@@ -5,16 +5,28 @@ export const AppContext = React.createContext({
     setReimbursementPeriods: () => {},
 
     isLoading: false,
-    toggleLoader: () => {}
+    toggleLoader: () => {},
+
+    myModal: {},
+    initModal: () => {},
+    hideModal: () => {}
 });
 
 const AppProvider = ({ children }) => {
     const [appState, setAppState] = useState({
         listReimbursementPeriods: [],
-        isLoading: false
+        isLoading: false,
+
+        myModal: {
+            data: {},
+            type: "",
+            size: "",
+            showModal: false,
+            onClose: () => {}
+        }
     });
 
-    const { listReimbursementPeriods, isLoading } = appState;
+    const { listReimbursementPeriods, isLoading, myModal } = appState;
 
     const setReimbursementPeriods = updatedList =>
         setAppState(state => ({
@@ -28,11 +40,33 @@ const AppProvider = ({ children }) => {
             isLoading
         }));
 
-    let dataToPass = {
-        listReimbursementPeriods: listReimbursementPeriods,
-        setReimbursementPeriods: setReimbursementPeriods,
-        isLoading: isLoading,
-        toggleLoader: toggleLoader
+    const initModal = myModal => {
+        document.body.classList.add("modal-open");
+        setAppState(state => ({ ...state, myModal }));
+    };
+    const hideModal = cData => {
+        document.body.classList.remove("modal-open");
+
+        if (cData !== undefined) myModal.onClose(cData);
+
+        setAppState(state => ({
+            ...state,
+            myModal: {
+                showModal: false
+            }
+        }));
+    };
+
+    const dataToPass = {
+        listReimbursementPeriods,
+        setReimbursementPeriods,
+
+        isLoading,
+        toggleLoader,
+
+        myModal,
+        initModal,
+        hideModal
     };
 
     return (

@@ -1,93 +1,24 @@
-import React, { useState } from "react";
-import axios from "../../axios";
+import React, { useContext } from "react";
 
-import { utils, config, validationRules } from "../../utilities/utils";
+import { withPeriod } from "../../hoc/period.hoc";
+import { AppContext } from "../../app/app.provider";
 
-const ReimbursmentsPeriodsData = ({
+import { config } from "../../utilities/utils";
+
+const PeriodsData = ({
     index,
     item,
     toggleEditMode,
-    handleStateChange
+    handleMainStateUpdate,
+
+    listPayPeriodEndFrom,
+    loadDates,
+    handleChange,
+
+    validationSchema,
+    setValidationschema
 }) => {
-    const [listPayPeriodEndFrom, setPayPeriodEndFrom] = useState([]);
-
-    const [validationSchema, setValidationschema] = useState({
-        ReimbursementYear: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            rules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        },
-        IsOpen: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            rules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        },
-        PayPeriodEndFromDate: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            rules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        },
-        PayPeriodEndToDate: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            rules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        },
-        CUNYPayPeriodEndDate: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            rules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        },
-        GLPostingDate: {
-            value: "",
-            isTouched: false,
-            isValid: false,
-            errors: [],
-            rules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
-        }
-    });
-
     const {
-        ReimbursementYear,
         IsOpen,
         PayPeriodEndFromDate,
         PayPeriodEndToDate,
@@ -95,9 +26,12 @@ const ReimbursmentsPeriodsData = ({
         GLPostingDate
     } = validationSchema;
 
+    const { toggleLoader } = useContext(AppContext);
+
     const insertValues = () => {
+        // Populating Edit form with item state
         let newSchema = { ...validationSchema };
-        Object.keys(validationSchema).forEach(key => {
+        Object.keys(newSchema).forEach(key => {
             let o = { ...newSchema[key] };
             o.value = item[key];
             o.isTouched = false;
@@ -109,62 +43,14 @@ const ReimbursmentsPeriodsData = ({
         setValidationschema(newSchema);
     };
 
-    /*const validateForm = () => {
-        let isValid = true;
-
-        Object.keys(validationSchema).map(obj => {
-            validateField(validationSchema[obj]);
-
-            if (validationSchema[obj].isValid === false) isValid = false;
-
-            return null;
-        });
-
-        return isValid;
-    };*/
-
-    const validateField = field => {
-        field.errors = [];
-        field.isValid = true;
-
-        field.rules.map(o => {
-            if (!o.rule(field.value)) {
-                field.errors.push(o.message);
-                field.isValid = false;
-            }
-        });
-
-        return field;
-    };
-
-    const handleChange = e => {
-        e.persist();
-        let field = { ...validationSchema[e.target.name] };
-        field.value = e.target.value;
-
-        setValidationschema(prevState => ({
-            ...prevState,
-            [e.target.name]: validateField(field)
-        }));
-    };
-
     const toggleEdit = async (item, index) => {
         if (!item.IsEditing) {
-            let listPayPeriodRes = await axios.get(
-                config.appPath +
-                    "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
-                    item.ReimbursementYear
-            );
+            toggleLoader(true);
 
-            listPayPeriodRes.data.forEach(obj => {
-                obj.PayPeriodEnding = utils.formatDate(
-                    obj.PayPeriodEnding,
-                    "MM/DD/YYYY"
-                );
-            });
-
-            setPayPeriodEndFrom(listPayPeriodRes.data);
+            await loadDates(item.ReimbursementYear);
             insertValues();
+
+            toggleLoader(false);
         }
 
         toggleEditMode(!item.IsEditing, index);
@@ -174,22 +60,7 @@ const ReimbursmentsPeriodsData = ({
         <>
             {item.IsEditing ? (
                 <tr>
-                    <td>
-                        <input
-                            name='ReimbursementYear'
-                            data-id={index}
-                            type='text'
-                            value={ReimbursementYear.value}
-                            onChange={handleChange}
-                        />
-
-                        {!ReimbursementYear.isValid &&
-                            ReimbursementYear.errors.map((msg, i) => (
-                                <div className='error' key={i}>
-                                    {msg}
-                                </div>
-                            ))}
-                    </td>
+                    <td>{item.ReimbursementYear}</td>
                     <td>{item.PaymentNumber}</td>
                     <td>
                         <select
@@ -332,4 +203,4 @@ const ReimbursmentsPeriodsData = ({
     );
 };
 
-export default ReimbursmentsPeriodsData;
+export default withPeriod(PeriodsData);

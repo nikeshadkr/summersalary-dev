@@ -3,15 +3,20 @@ import axios from "../axios";
 
 import Header from "../components/header/header.component";
 import Loader from "../components/loader/loader.component";
-import ReimbursementsPeriodsTable from "../components/reimbursement-periods-table/reimbursement-periods-table.component";
+import Modal from "../components/modal/modal.component";
+
+import PeriodsTable from "../components/periods-table/periods-table.component";
 
 import { AppContext } from "./app.provider";
 import { utils, config } from "../utilities/utils";
 
 const App = () => {
-    const { setReimbursementPeriods, isLoading, toggleLoader } = useContext(
-        AppContext
-    );
+    const {
+        setReimbursementPeriods,
+        isLoading,
+        toggleLoader,
+        myModal
+    } = useContext(AppContext);
 
     const loadReimbursementPeriods = async () => {
         try {
@@ -54,8 +59,15 @@ const App = () => {
     return (
         <>
             <Header />
-            <ReimbursementsPeriodsTable></ReimbursementsPeriodsTable>
+            <PeriodsTable />
             {isLoading && <Loader />}
+            {myModal && myModal.showModal && (
+                <Modal
+                    data={myModal.data}
+                    type={myModal.type}
+                    size={myModal.size}
+                />
+            )}
         </>
     );
 };
