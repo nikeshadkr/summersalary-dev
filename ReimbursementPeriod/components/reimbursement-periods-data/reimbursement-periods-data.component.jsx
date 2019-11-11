@@ -1,15 +1,152 @@
 import React, { useState } from "react";
 import axios from "../../axios";
 
-import { utils, config } from "../../utilities/utils";
+import { utils, config, validationRules } from "../../utilities/utils";
 
 const ReimbursmentsPeriodsData = ({
     index,
     item,
-    handleChange,
-    toggleEditMode
+    toggleEditMode,
+    handleStateChange
 }) => {
     const [listPayPeriodEndFrom, setPayPeriodEndFrom] = useState([]);
+
+    const [validationSchema, setValidationschema] = useState({
+        ReimbursementYear: {
+            value: "",
+            isTouched: false,
+            isValid: false,
+            errors: [],
+            rules: [
+                {
+                    rule: validationRules.required,
+                    message: "This field is required"
+                }
+            ]
+        },
+        IsOpen: {
+            value: "",
+            isTouched: false,
+            isValid: false,
+            errors: [],
+            rules: [
+                {
+                    rule: validationRules.required,
+                    message: "This field is required"
+                }
+            ]
+        },
+        PayPeriodEndFromDate: {
+            value: "",
+            isTouched: false,
+            isValid: false,
+            errors: [],
+            rules: [
+                {
+                    rule: validationRules.required,
+                    message: "This field is required"
+                }
+            ]
+        },
+        PayPeriodEndToDate: {
+            value: "",
+            isTouched: false,
+            isValid: false,
+            errors: [],
+            rules: [
+                {
+                    rule: validationRules.required,
+                    message: "This field is required"
+                }
+            ]
+        },
+        CUNYPayPeriodEndDate: {
+            value: "",
+            isTouched: false,
+            isValid: false,
+            errors: [],
+            rules: [
+                {
+                    rule: validationRules.required,
+                    message: "This field is required"
+                }
+            ]
+        },
+        GLPostingDate: {
+            value: "",
+            isTouched: false,
+            isValid: false,
+            errors: [],
+            rules: [
+                {
+                    rule: validationRules.required,
+                    message: "This field is required"
+                }
+            ]
+        }
+    });
+
+    const {
+        ReimbursementYear,
+        IsOpen,
+        PayPeriodEndFromDate,
+        PayPeriodEndToDate,
+        CUNYPayPeriodEndDate,
+        GLPostingDate
+    } = validationSchema;
+
+    const insertValues = () => {
+        let newSchema = { ...validationSchema };
+        Object.keys(validationSchema).forEach(key => {
+            let o = { ...newSchema[key] };
+            o.value = item[key];
+            o.isTouched = false;
+            o.isValid = false;
+            o.errors = [];
+            newSchema[key] = o;
+        });
+
+        setValidationschema(newSchema);
+    };
+
+    /*const validateForm = () => {
+        let isValid = true;
+
+        Object.keys(validationSchema).map(obj => {
+            validateField(validationSchema[obj]);
+
+            if (validationSchema[obj].isValid === false) isValid = false;
+
+            return null;
+        });
+
+        return isValid;
+    };*/
+
+    const validateField = field => {
+        field.errors = [];
+        field.isValid = true;
+
+        field.rules.map(o => {
+            if (!o.rule(field.value)) {
+                field.errors.push(o.message);
+                field.isValid = false;
+            }
+        });
+
+        return field;
+    };
+
+    const handleChange = e => {
+        e.persist();
+        let field = { ...validationSchema[e.target.name] };
+        field.value = e.target.value;
+
+        setValidationschema(prevState => ({
+            ...prevState,
+            [e.target.name]: validateField(field)
+        }));
+    };
 
     const toggleEdit = async (item, index) => {
         if (!item.IsEditing) {
@@ -27,6 +164,7 @@ const ReimbursmentsPeriodsData = ({
             });
 
             setPayPeriodEndFrom(listPayPeriodRes.data);
+            insertValues();
         }
 
         toggleEditMode(!item.IsEditing, index);
@@ -41,13 +179,25 @@ const ReimbursmentsPeriodsData = ({
                             name='ReimbursementYear'
                             data-id={index}
                             type='text'
-                            value={item.ReimbursementYear}
+                            value={ReimbursementYear.value}
                             onChange={handleChange}
                         />
+
+                        {!ReimbursementYear.isValid &&
+                            ReimbursementYear.errors.map((msg, i) => (
+                                <div className='error' key={i}>
+                                    {msg}
+                                </div>
+                            ))}
                     </td>
                     <td>{item.PaymentNumber}</td>
                     <td>
-                        <select defaultValue={item.IsOpen}>
+                        <select
+                            data-id={index}
+                            name='IsOpen'
+                            value={IsOpen.value}
+                            onChange={handleChange}
+                        >
                             <option key='1' value={true}>
                                 Open
                             </option>
@@ -58,8 +208,10 @@ const ReimbursmentsPeriodsData = ({
                     </td>
                     <td>
                         <select
-                            name='payPeriodEndFrom'
-                            defaultValue={item.PayPeriodEndFromDate}
+                            data-id={index}
+                            name='PayPeriodEndFromDate'
+                            value={PayPeriodEndFromDate.value}
+                            onChange={handleChange}
                         >
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {
@@ -76,8 +228,10 @@ const ReimbursmentsPeriodsData = ({
                     </td>
                     <td>
                         <select
-                            name='payPeriodEndTo'
-                            defaultValue={item.PayPeriodEndToDate}
+                            data-id={index}
+                            name='PayPeriodEndToDate'
+                            value={PayPeriodEndToDate.value}
+                            onChange={handleChange}
                         >
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {
@@ -94,8 +248,10 @@ const ReimbursmentsPeriodsData = ({
                     </td>
                     <td>
                         <select
-                            name='cunyPayPeriodEndDate'
-                            defaultValue={item.CUNYPayPeriodEndDate}
+                            data-id={index}
+                            name='CUNYPayPeriodEndDate'
+                            value={CUNYPayPeriodEndDate.value}
+                            onChange={handleChange}
                         >
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {
@@ -112,8 +268,10 @@ const ReimbursmentsPeriodsData = ({
                     </td>
                     <td>
                         <select
-                            name='glPostingDate'
-                            defaultValue={item.GLPostingDate}
+                            data-id={index}
+                            name='GLPostingDate'
+                            value={GLPostingDate.value}
+                            onChange={handleChange}
                         >
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {

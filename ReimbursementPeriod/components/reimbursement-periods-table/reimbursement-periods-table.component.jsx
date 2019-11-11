@@ -51,7 +51,7 @@ const ReimbursementsPeriodsTable = () => {
                                     key={i}
                                     index={i}
                                     item={item}
-                                    handleChange={handleChange}
+                                    handleStateChange={handleChange}
                                     toggleEditMode={toggleEditMode}
                                 ></ReimbursementPeriodsData>
                             ))}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export const AppContext = React.createContext({
     listReimbursementPeriods: [],
@@ -8,43 +8,36 @@ export const AppContext = React.createContext({
     toggleLoader: () => {}
 });
 
-class AppProvider extends React.Component {
-    constructor() {
-        super();
+const AppProvider = ({ children }) => {
+    const [appState, setAppState] = useState({
+        listReimbursementPeriods: [],
+        isLoading: false
+    });
 
-        this.state = {
-            listReimbursementPeriods: [],
-            isLoading: false
-        };
-    }
+    const { listReimbursementPeriods, isLoading } = appState;
 
-    setReimbursementPeriods = (updatedList, callback) =>
-        this.setState(
-            state => ({ ...state, listReimbursementPeriods: updatedList }),
-            () => {
-                callback && callback(this.state.listReimbursementPeriods);
-            }
-        );
+    const setReimbursementPeriods = updatedList =>
+        setAppState(state => ({
+            ...state,
+            listReimbursementPeriods: updatedList
+        }));
 
-    toggleLoader = (isLoading, callback) =>
-        this.setState(
-            state => ({ ...state, isLoading }),
-            callback && callback(this.state.isLoading)
-        );
+    const toggleLoader = isLoading =>
+        setAppState(state => ({
+            ...state,
+            isLoading
+        }));
 
-    render() {
-        let dataToPass = {
-            listReimbursementPeriods: this.state.listReimbursementPeriods,
-            setReimbursementPeriods: this.setReimbursementPeriods,
-            isLoading: this.state.isLoading,
-            toggleLoader: this.toggleLoader
-        };
-        return (
-            <AppContext.Provider value={dataToPass}>
-                {this.props.children}
-            </AppContext.Provider>
-        );
-    }
-}
+    let dataToPass = {
+        listReimbursementPeriods: listReimbursementPeriods,
+        setReimbursementPeriods: setReimbursementPeriods,
+        isLoading: isLoading,
+        toggleLoader: toggleLoader
+    };
+
+    return (
+        <AppContext.Provider value={dataToPass}>{children}</AppContext.Provider>
+    );
+};
 
 export default AppProvider;

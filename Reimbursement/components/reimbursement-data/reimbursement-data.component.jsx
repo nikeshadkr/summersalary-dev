@@ -5,7 +5,7 @@ import { AppContext } from "../../app/app.provider";
 import { utils, config } from "../../utilities/utils";
 
 const ReimbursementData = ({ item, checkOne, index, isPending }) => {
-    const { appData, setAppData, initModal } = useContext(AppContext);
+    const { loadReimbursements, initModal } = useContext(AppContext);
 
     const openModal = (e, item) => {
         e.preventDefault();
@@ -14,11 +14,14 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
             type: "eligible-balance",
             size: "large",
             showModal: true,
-            onClose: approveCallback
+            onClose: cData => {
+                loadReimbursements();
+            }
         });
     };
 
-    const approveCallback = cData => {
+    /*const approveCallback = cData => {
+
         let listReimbursement = [...appData.listReimbursement];
         let updatedList = listReimbursement.map(o => {
             let obj = { ...o };
@@ -36,7 +39,7 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
             ...appData,
             listReimbursement: updatedList
         });
-    };
+    };*/
 
     return (
         <tr>

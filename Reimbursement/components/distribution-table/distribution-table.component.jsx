@@ -112,13 +112,17 @@ class DistributionTable extends React.Component {
                 obj.showExcerpt = true;
                 obj.Error = "";
 
-                if (data.EffortCertStatus !== config.effortCertStatus.done) {
-                    obj.SalaryReimbursed = 0;
-                    obj.DisableSalaryReimburse = true;
-                    obj.DisableComment = true;
-                } else
-                    obj.SalaryReimbursed =
-                        obj.SalaryAuthorized - obj.PreviousReimbursement;
+                if (data.isPending) {
+                    if (
+                        data.EffortCertStatus !== config.effortCertStatus.done
+                    ) {
+                        obj.SalaryReimbursed = 0;
+                        obj.DisableSalaryReimburse = true;
+                        obj.DisableComment = true;
+                    } else
+                        obj.SalaryReimbursed =
+                            obj.SalaryAuthorized - obj.PreviousReimbursement;
+                }
             });
 
             this.setDistribution({
@@ -310,9 +314,19 @@ class DistributionTable extends React.Component {
                                                 width='115'
                                                 className='text-right'
                                             >
-                                                Reimbursement
-                                                <br />
-                                                Amount
+                                                {isPending ? (
+                                                    <span>
+                                                        Reimbursement
+                                                        <br />
+                                                        Amount
+                                                    </span>
+                                                ) : (
+                                                    <span>
+                                                        Salary
+                                                        <br />
+                                                        Reimbursed
+                                                    </span>
+                                                )}
                                             </th>
                                             <th width='230'>Comments</th>
                                         </tr>

@@ -136,7 +136,6 @@ const ReimbursementTable = () => {
     };
 
     const aproveAll = async () => {
-        let clonedList = [];
         let formData = [];
 
         listReimbursement.forEach(item => {
@@ -149,7 +148,6 @@ const ReimbursementTable = () => {
                     CollegeCode: obj.CollegeCode
                 });
             }
-            clonedList.push(obj);
         });
 
         try {
@@ -161,18 +159,7 @@ const ReimbursementTable = () => {
                     formData
                 );
 
-                clonedList.forEach(o => {
-                    if (o.isChecked === true) {
-                        o.isDisabled = true;
-                        o.isChecked = false;
-                    }
-                });
-
-                setAppData({
-                    ...appData,
-                    listReimbursement: clonedList,
-                    isAllchecked: false
-                });
+                await loadReimbursements(); //Reloading list after successfull approve
 
                 setEnableApprove(false);
 
