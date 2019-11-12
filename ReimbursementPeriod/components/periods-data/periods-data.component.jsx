@@ -79,64 +79,76 @@ const PeriodsData = ({
                         </select>
                     </td>
                     <td>
-                        <select
-                            data-id={index}
-                            name='PayPeriodEndFromDate'
-                            value={PayPeriodEndFromDate.value}
-                            onChange={handleChange}
-                        >
-                            {listPayPeriodEndFrom &&
-                                listPayPeriodEndFrom.map((obj, key) => {
-                                    return (
-                                        <option
-                                            key={key}
-                                            value={obj.PayPeriodEnding}
-                                        >
-                                            {obj.PayPeriodEnding}
-                                        </option>
-                                    );
-                                })}
-                        </select>
+                        {item.IsOpen ? (
+                            <select
+                                data-id={index}
+                                name='PayPeriodEndFromDate'
+                                value={PayPeriodEndFromDate.value}
+                                onChange={handleChange}
+                            >
+                                {listPayPeriodEndFrom &&
+                                    listPayPeriodEndFrom.map((obj, key) => {
+                                        return (
+                                            <option
+                                                key={key}
+                                                value={obj.PayPeriodEnding}
+                                            >
+                                                {obj.PayPeriodEnding}
+                                            </option>
+                                        );
+                                    })}
+                            </select>
+                        ) : (
+                            item.PayPeriodEndFromDate
+                        )}
                     </td>
                     <td>
-                        <select
-                            data-id={index}
-                            name='PayPeriodEndToDate'
-                            value={PayPeriodEndToDate.value}
-                            onChange={handleChange}
-                        >
-                            {listPayPeriodEndFrom &&
-                                listPayPeriodEndFrom.map((obj, key) => {
-                                    return (
-                                        <option
-                                            key={key}
-                                            value={obj.PayPeriodEnding}
-                                        >
-                                            {obj.PayPeriodEnding}
-                                        </option>
-                                    );
-                                })}
-                        </select>
+                        {item.IsOpen ? (
+                            <select
+                                data-id={index}
+                                name='PayPeriodEndToDate'
+                                value={PayPeriodEndToDate.value}
+                                onChange={handleChange}
+                            >
+                                {listPayPeriodEndFrom &&
+                                    listPayPeriodEndFrom.map((obj, key) => {
+                                        return (
+                                            <option
+                                                key={key}
+                                                value={obj.PayPeriodEnding}
+                                            >
+                                                {obj.PayPeriodEnding}
+                                            </option>
+                                        );
+                                    })}
+                            </select>
+                        ) : (
+                            item.PayPeriodEndToDate
+                        )}
                     </td>
                     <td>
-                        <select
-                            data-id={index}
-                            name='CUNYPayPeriodEndDate'
-                            value={CUNYPayPeriodEndDate.value}
-                            onChange={handleChange}
-                        >
-                            {listPayPeriodEndFrom &&
-                                listPayPeriodEndFrom.map((obj, key) => {
-                                    return (
-                                        <option
-                                            key={key}
-                                            value={obj.PayPeriodEnding}
-                                        >
-                                            {obj.PayPeriodEnding}
-                                        </option>
-                                    );
-                                })}
-                        </select>
+                        {item.IsOpen ? (
+                            <select
+                                data-id={index}
+                                name='CUNYPayPeriodEndDate'
+                                value={CUNYPayPeriodEndDate.value}
+                                onChange={handleChange}
+                            >
+                                {listPayPeriodEndFrom &&
+                                    listPayPeriodEndFrom.map((obj, key) => {
+                                        return (
+                                            <option
+                                                key={key}
+                                                value={obj.PayPeriodEnding}
+                                            >
+                                                {obj.PayPeriodEnding}
+                                            </option>
+                                        );
+                                    })}
+                            </select>
+                        ) : (
+                            item.CUNYPayPeriodEndDate
+                        )}
                     </td>
                     <td>
                         <select

@@ -1,6 +1,6 @@
 ﻿import React, { useState } from "react";
 
-import { validationRules } from "../utilities/utils";
+import { utils, validationRules } from "../utilities/utils";
 
 export const withPeriod = Component => {
     return props => {
@@ -70,7 +70,10 @@ export const withPeriod = Component => {
         const handleChange = e => {
             e.persist();
             let field = { ...validationSchema[e.target.name] };
-            field.value = e.target.value;
+            field.value =
+                e.target.name === "IsOpen"
+                    ? utils.convertToBool(e.target.value)
+                    : e.target.value;
 
             setValidationschema(prevState => ({
                 ...prevState,
