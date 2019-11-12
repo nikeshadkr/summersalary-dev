@@ -9,12 +9,10 @@ const PeriodsData = ({
     index,
     item,
     toggleEditMode,
+    removeItem,
     handleMainStateUpdate,
 
-    listPayPeriodEndFrom,
-    loadDates,
     handleChange,
-
     validationSchema,
     setValidationschema
 }) => {
@@ -26,7 +24,11 @@ const PeriodsData = ({
         GLPostingDate
     } = validationSchema;
 
-    const { toggleLoader } = useContext(AppContext);
+    const {
+        appState: { summerYear, listPayPeriodEndFrom },
+        toggleLoader,
+        getPayPeriodEndFrom
+    } = useContext(AppContext);
 
     const insertValues = () => {
         // Populating Edit form with item state
@@ -44,14 +46,13 @@ const PeriodsData = ({
     };
 
     const toggleEdit = async (item, index) => {
-        if (!item.IsEditing) {
+        if (summerYear === "") {
             toggleLoader(true);
-
-            await loadDates(item.ReimbursementYear);
-            insertValues();
-
+            await getPayPeriodEndFrom(item.ReimbursementYear);
             toggleLoader(false);
         }
+
+        if (!item.IsEditing) insertValues();
 
         toggleEditMode(!item.IsEditing, index);
     };
@@ -187,13 +188,24 @@ const PeriodsData = ({
                     <td>{item.GLPostingDate}</td>
                     <td>
                         <button
-                            className='inline-image-button fixed'
+                            className='inline-image-button fixed no-border'
                             onClick={() => toggleEdit(item, index)}
                         >
                             <img
                                 style={{ width: "18px", height: "18px" }}
                                 alt='edit'
                                 src={`${config.assetPath}/edit.png`}
+                            />
+                        </button>
+
+                        <button
+                            className='inline-image-button fixed no-border'
+                            onClick={() => removeItem(item, index)}
+                        >
+                            <img
+                                style={{ width: "18px", height: "18px" }}
+                                alt='delete'
+                                src={`${config.assetPath}/icon-trash.png`}
                             />
                         </button>
                     </td>

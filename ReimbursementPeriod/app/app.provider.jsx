@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import axios from "../axios";
+
+import { config, utils } from "../utilities/utils";
 
 export const AppContext = React.createContext({
-    listReimbursementPeriods: [],
-    setReimbursementPeriods: () => {},
+    appState: {},
+    setAppState: () => {},
+    getPayPeriodEndFrom: () => {},
 
     isLoading: false,
     toggleLoader: () => {},
@@ -14,52 +18,63 @@ export const AppContext = React.createContext({
 
 const AppProvider = ({ children }) => {
     const [appState, setAppState] = useState({
+        summerYear: "",
         listReimbursementPeriods: [],
-        isLoading: false,
-
-        myModal: {
-            data: {},
-            type: "",
-            size: "",
-            showModal: false,
-            onClose: () => {}
-        }
+        listSummerYear: [],
+        listPayPeriodEndFrom: []
     });
 
-    const { listReimbursementPeriods, isLoading, myModal } = appState;
-
-    const setReimbursementPeriods = updatedList =>
-        setAppState(state => ({
-            ...state,
-            listReimbursementPeriods: updatedList
-        }));
-
-    const toggleLoader = isLoading =>
-        setAppState(state => ({
-            ...state,
-            isLoading
-        }));
+    const [myModal, setMyModal] = useState({
+        data: {},
+        type: "",
+        size: "",
+        showModal: false,
+        onClose: () => {}
+    });
 
     const initModal = myModal => {
         document.body.classList.add("modal-open");
-        setAppState(state => ({ ...state, myModal }));
+        setMyModal({ ...myModal });
     };
+
     const hideModal = cData => {
         document.body.classList.remove("modal-open");
 
         if (cData !== undefined) myModal.onClose(cData);
 
-        setAppState(state => ({
-            ...state,
-            myModal: {
-                showModal: false
-            }
+        setMyModal(myModal => ({
+            ...myModal,
+            showModal: false
+        }));
+    };
+
+    const [isLoading, setLoading] = useState(false);
+    const toggleLoader = isLoading => setLoading(isLoading);
+
+    const getPayPeriodEndFrom = async ReimbursementYear => {
+        let listPayPeriodRes = await axios.get(
+            config.appPath +
+                "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
+                ReimbursementYear
+        );
+
+        listPayPeriodRes.data.forEach(obj => {
+            obj.PayPeriodEnding = utils.formatDate(
+                obj.PayPeriodEnding,
+                "MM/DD/YYYY"
+            );
+        });
+
+        setAppState(prevState => ({
+            ...prevState,
+            listPayPeriodEndFrom: listPayPeriodRes.data
         }));
     };
 
     const dataToPass = {
-        listReimbursementPeriods,
-        setReimbursementPeriods,
+        appState,
+        setAppState,
+        getPayPeriodEndFrom,
 
         isLoading,
         toggleLoader,

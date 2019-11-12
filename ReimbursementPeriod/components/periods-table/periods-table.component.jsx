@@ -4,16 +4,21 @@ import PeriodsData from "../periods-data/periods-data.component";
 import { AppContext } from "../../app/app.provider";
 
 const PeriodsTable = () => {
-    const { listReimbursementPeriods, setReimbursementPeriods } = useContext(
-        AppContext
-    );
+    const {
+        appState: { listReimbursementPeriods, listPayPeriodEndFrom },
+        setAppState
+    } = useContext(AppContext);
+
     const handleChange = e => {
         let clonedList = [...listReimbursementPeriods];
         let found = { ...clonedList[e.target.dataset.id] };
         found[e.target.name] = e.target.value;
         clonedList[e.target.dataset.id] = found;
 
-        setReimbursementPeriods(clonedList);
+        setAppState(prevState => ({
+            ...prevState,
+            listReimbursementPeriods: clonedList
+        }));
     };
 
     const toggleEditMode = (value, index) => {
@@ -22,7 +27,20 @@ const PeriodsTable = () => {
         found.IsEditing = value;
         clonedList[index] = found;
 
-        setReimbursementPeriods(clonedList);
+        setAppState(prevState => ({
+            ...prevState,
+            listReimbursementPeriods: clonedList
+        }));
+    };
+
+    const removeItem = (item, index) => {
+        console.log(item);
+        let clonedList = [...listReimbursementPeriods];
+
+        setAppState(prevState => ({
+            ...prevState,
+            listReimbursementPeriods: clonedList.filter((obj, i) => i != index)
+        }));
     };
 
     return (
@@ -62,6 +80,7 @@ const PeriodsTable = () => {
                                     item={item}
                                     handleMainStateUpdate={handleChange}
                                     toggleEditMode={toggleEditMode}
+                                    removeItem={removeItem}
                                 ></PeriodsData>
                             ))}
                         </tbody>

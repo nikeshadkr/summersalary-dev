@@ -1,11 +1,10 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import React from "react";
 
 import { withPeriod } from "../../hoc/period.hoc";
 
 const PeriodAdd = ({
+    data: { summerYear, listPayPeriodEndFrom },
     hideModal,
-    listPayPeriodEndFrom,
-    loadDates,
 
     validationSchema,
     validateForm,
@@ -19,20 +18,6 @@ const PeriodAdd = ({
         GLPostingDate
     } = validationSchema;
 
-    const [isLoading, showHideLoader] = useState(false);
-
-    const init = async () => {
-        showHideLoader(true);
-
-        await loadDates("2018");
-
-        showHideLoader(false);
-    };
-
-    useEffect(() => {
-        init();
-    }, []);
-
     const createPeriod = () => {
         validateForm();
     };
@@ -43,35 +28,15 @@ const PeriodAdd = ({
             <div className='mc-title'>
                 <div>
                     <strong>Add New Reimbursement Period</strong>
+                    <span className='pull-right'>
+                        Summer Year : <strong>{summerYear}</strong>
+                    </span>
                 </div>
             </div>
 
             {/* Modal Body */}
             <div className='mc-body'>
                 <div className='bg-box'>
-                    <div className='form-row'>
-                        <div className='form-group col-4 text-right'>
-                            <label className='ptop-5'>Year</label>
-                        </div>
-                        <div className='form-group col-2'>
-                            {/* <input
-                                name='ReimbursementYear'
-                                type='text'
-                                value={ReimbursementYear.value}
-                                onChange={handleChange}
-                            /> */}
-                            2018 - static
-                        </div>
-                        {/* <div className='form-group col-8 col-offset-4'>
-                            {!ReimbursementYear.isValid &&
-                                ReimbursementYear.errors.map((msg, i) => (
-                                    <div className='error' key={i}>
-                                        {msg}
-                                    </div>
-                                ))}
-                        </div> */}
-                    </div>
-
                     <div className='form-row'>
                         <div className='form-group col-4 text-right'>
                             <label className='ptop-5'>Status</label>
@@ -253,18 +218,6 @@ const PeriodAdd = ({
                         </div>
                     </div>
                 </div>
-
-                {/* Modal Loader */}
-                {isLoading && (
-                    <div className='modal-loader'>
-                        <div className='lds-ellipsis'>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                    </div>
-                )}
             </div>
 
             {/* Modal Footer */}

@@ -1,23 +1,10 @@
 ﻿import React, { useState } from "react";
-import axios from "../axios";
 
-import { config, utils, validationRules } from "../utilities/utils";
+import { validationRules } from "../utilities/utils";
 
 export const withPeriod = Component => {
     return props => {
         const [validationSchema, setValidationschema] = useState({
-            /*ReimbursementYear: {
-                value: "",
-                isTouched: false,
-                isValid: false,
-                errors: [],
-                rules: [
-                    {
-                        rule: validationRules.required,
-                        message: "This field is required"
-                    }
-                ]
-            },*/
             IsOpen: {
                 value: "",
                 isTouched: false,
@@ -80,25 +67,6 @@ export const withPeriod = Component => {
             }
         });
 
-        const [listPayPeriodEndFrom, setPayPeriodEndFrom] = useState([]);
-
-        const loadDates = async ReimbursementYear => {
-            let listPayPeriodRes = await axios.get(
-                config.appPath +
-                    "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
-                    ReimbursementYear
-            );
-
-            listPayPeriodRes.data.forEach(obj => {
-                obj.PayPeriodEnding = utils.formatDate(
-                    obj.PayPeriodEnding,
-                    "MM/DD/YYYY"
-                );
-            });
-
-            setPayPeriodEndFrom(listPayPeriodRes.data);
-        };
-
         const handleChange = e => {
             e.persist();
             let field = { ...validationSchema[e.target.name] };
@@ -145,8 +113,6 @@ export const withPeriod = Component => {
         return (
             <Component
                 {...props}
-                loadDates={loadDates}
-                listPayPeriodEndFrom={listPayPeriodEndFrom}
                 handleChange={handleChange}
                 validationSchema={validationSchema}
                 setValidationschema={setValidationschema}

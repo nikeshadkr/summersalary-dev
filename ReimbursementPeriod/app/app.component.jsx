@@ -11,41 +11,57 @@ import { AppContext } from "./app.provider";
 import { utils, config } from "../utilities/utils";
 
 const App = () => {
-    const {
-        setReimbursementPeriods,
-        isLoading,
-        toggleLoader,
-        myModal
-    } = useContext(AppContext);
+    const { setAppState, isLoading, toggleLoader, myModal } = useContext(
+        AppContext
+    );
 
     const loadReimbursementPeriods = async () => {
+        let listPeriods = await axios.get(
+            config.appPath + "ReimbursementPeriod/GetReimbursementPeriods"
+        );
+
+        listPeriods.data.forEach(item => {
+            item.IsEditing = false;
+            item.PayPeriodEndFromDate = utils.formatDate(
+                item.PayPeriodEndFromDate,
+                "MM/DD/YYYY"
+            );
+            item.PayPeriodEndToDate = utils.formatDate(
+                item.PayPeriodEndToDate,
+                "MM/DD/YYYY"
+            );
+            item.CUNYPayPeriodEndDate = utils.formatDate(
+                item.CUNYPayPeriodEndDate,
+                "MM/DD/YYYY"
+            );
+            item.GLPostingDate = utils.formatDate(
+                item.GLPostingDate,
+                "MM/DD/YYYY"
+            );
+        });
+
+        setAppState(prevState => ({
+            ...prevState,
+            listReimbursementPeriods: listPeriods.data
+        }));
+    };
+
+    const loadSummerYears = async () => {
+        let listSummerYears = await axios.get(
+            config.appPath + "ReimbursementPeriod/GetSummerSalaryYears"
+        );
+
+        setAppState(prevState => ({
+            ...prevState,
+            listSummerYear: listSummerYears.data
+        }));
+    };
+
+    const initialize = async () => {
         try {
             toggleLoader(true);
-            let listPeriods = await axios.get(
-                config.appPath + "ReimbursementPeriod/GetReimbursementPeriods"
-            );
+            await axios.all([loadReimbursementPeriods(), loadSummerYears()]);
 
-            listPeriods.data.forEach(item => {
-                item.IsEditing = false;
-                item.PayPeriodEndFromDate = utils.formatDate(
-                    item.PayPeriodEndFromDate,
-                    "MM/DD/YYYY"
-                );
-                item.PayPeriodEndToDate = utils.formatDate(
-                    item.PayPeriodEndToDate,
-                    "MM/DD/YYYY"
-                );
-                item.CUNYPayPeriodEndDate = utils.formatDate(
-                    item.CUNYPayPeriodEndDate,
-                    "MM/DD/YYYY"
-                );
-                item.GLPostingDate = utils.formatDate(
-                    item.GLPostingDate,
-                    "MM/DD/YYYY"
-                );
-            });
-
-            setReimbursementPeriods(listPeriods.data);
             toggleLoader(false);
         } catch (error) {
             console.log(error.message);
@@ -53,7 +69,7 @@ const App = () => {
     };
 
     useEffect(() => {
-        loadReimbursementPeriods();
+        initialize();
     }, []);
 
     return (
