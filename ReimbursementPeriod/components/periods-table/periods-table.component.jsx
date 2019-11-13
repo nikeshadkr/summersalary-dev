@@ -8,7 +8,9 @@ const PeriodsTable = () => {
         appState: { listReimbursementPeriods },
         setAppState,
         initModal,
-        toggleLoader
+        toggleLoader,
+
+        initAlert
     } = useContext(AppContext);
 
     const handleChange = e => {
@@ -45,7 +47,7 @@ const PeriodsTable = () => {
             size: "small",
             showModal: true,
             onClose: cData => {
-                console.log(item);
+                // console.log(item);
                 let clonedList = [...listReimbursementPeriods];
 
                 setAppState(prevState => ({
@@ -54,6 +56,11 @@ const PeriodsTable = () => {
                         (obj, i) => i != index
                     )
                 }));
+
+                initAlert({
+                    content: "Successfully Deleted",
+                    setTimeout: 5000
+                });
             }
         });
     };

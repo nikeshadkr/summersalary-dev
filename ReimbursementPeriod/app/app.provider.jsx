@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const AppContext = React.createContext({
     appState: {},
@@ -9,7 +9,11 @@ export const AppContext = React.createContext({
 
     myModal: {},
     initModal: () => {},
-    hideModal: () => {}
+    hideModal: () => {},
+
+    alert: {},
+    initAlert: () => {},
+    closeAlert: () => {}
 });
 
 const AppProvider = ({ children }) => {
@@ -41,10 +45,51 @@ const AppProvider = ({ children }) => {
             ...myModal,
             showModal: false
         }));
+
+        if (alert && alert.inModal) closeAlert();
     };
 
     const [isLoading, setLoading] = useState(false);
     const toggleLoader = isLoading => setLoading(isLoading);
+
+    const [alert, setAlert] = useState({
+        inModal: false,
+        isAlertOpen: false,
+        setTimeout: false,
+        type: "",
+        content: ""
+    });
+
+    const initAlert = option => {
+        // Default Options
+        const alertOptions = {
+            isAlertOpen: true,
+            inModal: false,
+            setTimeout: false,
+            type: "success",
+
+            ...option
+        };
+
+        setAlert(alertOptions);
+    };
+
+    useEffect(() => {
+        if (alert.setTimeout)
+            setTimeout(() => {
+                closeAlert();
+            }, alert.setTimeout);
+    }, [alert]);
+
+    const closeAlert = () => {
+        setAlert({
+            isAlertOpen: false,
+            inModal: false,
+            setTimeout: false,
+            type: "success",
+            content: ""
+        });
+    };
 
     const dataToPass = {
         appState,
@@ -55,7 +100,11 @@ const AppProvider = ({ children }) => {
 
         myModal,
         initModal,
-        hideModal
+        hideModal,
+
+        alert,
+        initAlert,
+        closeAlert
     };
 
     return (

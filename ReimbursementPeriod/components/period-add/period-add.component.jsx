@@ -1,5 +1,8 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useContext, useState, useEffect } from "react";
 
+import Alert from "../alert/alert.component";
+
+import { AppContext } from "../../app/app.provider";
 import { withPeriod } from "../../hoc/period.hoc";
 
 const PeriodAdd = ({
@@ -22,9 +25,17 @@ const PeriodAdd = ({
         GLPostingDate
     } = validationSchema;
 
+    const { alert, initAlert, closeAlert } = useContext(AppContext);
+
     const [isLoading, showHideLoader] = useState(false);
 
     const createPeriod = () => {
+        initAlert({
+            inModal: true,
+            type: "error",
+            content: "Error Occured"
+        });
+
         validateForm();
     };
 
@@ -55,6 +66,14 @@ const PeriodAdd = ({
 
             {/* Modal Body */}
             <div className='mc-body'>
+                {alert.isAlertOpen && alert.inModal && (
+                    <Alert
+                        type={alert.type}
+                        content={alert.content}
+                        closeAlert={closeAlert}
+                    />
+                )}
+
                 <div className='bg-box'>
                     <div className='form-row'>
                         <div className='form-group col-4 text-right'>
