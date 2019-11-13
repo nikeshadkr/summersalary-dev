@@ -5,8 +5,10 @@ import { AppContext } from "../../app/app.provider";
 
 const PeriodsTable = () => {
     const {
-        appState: { listReimbursementPeriods, listPayPeriodEndFrom },
-        setAppState
+        appState: { listReimbursementPeriods },
+        setAppState,
+        initModal,
+        toggleLoader
     } = useContext(AppContext);
 
     const handleChange = e => {
@@ -34,13 +36,26 @@ const PeriodsTable = () => {
     };
 
     const removeItem = (item, index) => {
-        console.log(item);
-        let clonedList = [...listReimbursementPeriods];
+        initModal({
+            data: {
+                title: "Confirm !!",
+                message: "Are you sure you want to delete ?"
+            },
+            type: "",
+            size: "small",
+            showModal: true,
+            onClose: cData => {
+                console.log(item);
+                let clonedList = [...listReimbursementPeriods];
 
-        setAppState(prevState => ({
-            ...prevState,
-            listReimbursementPeriods: clonedList.filter((obj, i) => i != index)
-        }));
+                setAppState(prevState => ({
+                    ...prevState,
+                    listReimbursementPeriods: clonedList.filter(
+                        (obj, i) => i != index
+                    )
+                }));
+            }
+        });
     };
 
     return (
@@ -81,6 +96,7 @@ const PeriodsTable = () => {
                                     handleMainStateUpdate={handleChange}
                                     toggleEditMode={toggleEditMode}
                                     removeItem={removeItem}
+                                    toggleLoader={toggleLoader}
                                 ></PeriodsData>
                             ))}
                         </tbody>

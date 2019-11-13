@@ -2,31 +2,36 @@ import React, { useContext } from "react";
 
 import { AppContext } from "../../app/app.provider";
 
-const Header = () => {
-    const {
-        appState,
-        setAppState,
-        getPayPeriodEndFrom,
-        initModal
-    } = useContext(AppContext);
+const Header = ({ loadReimbursementPeriods }) => {
+    const { appState, setAppState, initModal, toggleLoader } = useContext(
+        AppContext
+    );
 
-    const { summerYear, listSummerYear, listPayPeriodEndFrom } = appState;
+    const { summerYear, listSummerYear } = appState;
 
-    const handleChange = e => {
+    const handleChange = async e => {
         e.persist();
-
-        getPayPeriodEndFrom(e.target.value);
 
         setAppState(prevState => ({
             ...prevState,
             [e.target.name]: e.target.value
         }));
+
+        try {
+            toggleLoader(true);
+
+            await loadReimbursementPeriods(e.target.value);
+
+            toggleLoader(false);
+        } catch (error) {
+            console.log(error.response);
+        }
     };
 
     const addNew = e => {
         e.preventDefault();
         initModal({
-            data: { summerYear, listPayPeriodEndFrom },
+            data: { summerYear },
             type: "new-period",
             size: "medium",
             showModal: true,

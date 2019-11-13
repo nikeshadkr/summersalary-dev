@@ -14,6 +14,10 @@ export const config = {
         fullyPaid: "0",
         notFullyPaid: "1",
         all: ""
+    },
+    modalTypes:{
+        eligibleBalance: "eligible-balance",
+        employeeInfo: "employee-info"
     }
 };
 

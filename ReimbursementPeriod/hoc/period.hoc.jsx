@@ -1,6 +1,7 @@
 ﻿import React, { useState } from "react";
+import axios from "../axios";
 
-import { utils, validationRules } from "../utilities/utils";
+import { config, utils, validationRules } from "../utilities/utils";
 
 export const withPeriod = Component => {
     return props => {
@@ -113,9 +114,31 @@ export const withPeriod = Component => {
             return field;
         };
 
+        const [listPayPeriodEndFrom, setPayPeriodEndFrom] = useState([]);
+
+        const getPayPeriodEndFrom = async ReimbursementYear => {
+            let listPayPeriodRes = await axios.get(
+                config.appPath +
+                    "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
+                    ReimbursementYear
+            );
+
+            listPayPeriodRes.data.forEach(obj => {
+                obj.PayPeriodEnding = utils.formatDate(
+                    obj.PayPeriodEnding,
+                    "MM/DD/YYYY"
+                );
+            });
+
+            return listPayPeriodRes.data;
+        };
+
         return (
             <Component
                 {...props}
+                getPayPeriodEndFrom={getPayPeriodEndFrom}
+                listPayPeriodEndFrom={listPayPeriodEndFrom}
+                setPayPeriodEndFrom={setPayPeriodEndFrom}
                 handleChange={handleChange}
                 validationSchema={validationSchema}
                 setValidationschema={setValidationschema}

@@ -1,14 +1,18 @@
-﻿import React from "react";
+﻿import React, { useState, useEffect } from "react";
 
 import { withPeriod } from "../../hoc/period.hoc";
 
 const PeriodAdd = ({
-    data: { summerYear, listPayPeriodEndFrom },
+    data: { summerYear },
     hideModal,
 
     validationSchema,
     validateForm,
-    handleChange
+    handleChange,
+
+    listPayPeriodEndFrom,
+    setPayPeriodEndFrom,
+    getPayPeriodEndFrom
 }) => {
     const {
         IsOpen,
@@ -18,9 +22,24 @@ const PeriodAdd = ({
         GLPostingDate
     } = validationSchema;
 
+    const [isLoading, showHideLoader] = useState(false);
+
     const createPeriod = () => {
         validateForm();
     };
+
+    const fetchListPayPeriodEndFrom = async () => {
+        showHideLoader(true);
+
+        let list = await getPayPeriodEndFrom(summerYear);
+        setPayPeriodEndFrom(list);
+
+        showHideLoader(false);
+    };
+
+    useEffect(() => {
+        fetchListPayPeriodEndFrom();
+    }, []);
 
     return (
         <div className='modal-common'>
@@ -218,6 +237,18 @@ const PeriodAdd = ({
                         </div>
                     </div>
                 </div>
+
+                {/* Modal Loader */}
+                {isLoading && (
+                    <div className='modal-loader'>
+                        <div className='lds-ellipsis'>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Modal Footer */}

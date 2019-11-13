@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import axios from "../axios";
-
-import { config, utils } from "../utilities/utils";
 
 export const AppContext = React.createContext({
     appState: {},
     setAppState: () => {},
-    getPayPeriodEndFrom: () => {},
 
     isLoading: false,
     toggleLoader: () => {},
@@ -20,8 +16,7 @@ const AppProvider = ({ children }) => {
     const [appState, setAppState] = useState({
         summerYear: "",
         listReimbursementPeriods: [],
-        listSummerYear: [],
-        listPayPeriodEndFrom: []
+        listSummerYear: []
     });
 
     const [myModal, setMyModal] = useState({
@@ -51,30 +46,9 @@ const AppProvider = ({ children }) => {
     const [isLoading, setLoading] = useState(false);
     const toggleLoader = isLoading => setLoading(isLoading);
 
-    const getPayPeriodEndFrom = async ReimbursementYear => {
-        let listPayPeriodRes = await axios.get(
-            config.appPath +
-                "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
-                ReimbursementYear
-        );
-
-        listPayPeriodRes.data.forEach(obj => {
-            obj.PayPeriodEnding = utils.formatDate(
-                obj.PayPeriodEnding,
-                "MM/DD/YYYY"
-            );
-        });
-
-        setAppState(prevState => ({
-            ...prevState,
-            listPayPeriodEndFrom: listPayPeriodRes.data
-        }));
-    };
-
     const dataToPass = {
         appState,
         setAppState,
-        getPayPeriodEndFrom,
 
         isLoading,
         toggleLoader,

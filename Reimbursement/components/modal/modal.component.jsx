@@ -4,19 +4,25 @@ import PropTypes from "prop-types";
 import { AppContext } from "../../app/app.provider";
 
 import DistributionTable from "../distribution-table/distribution-table.component";
+import EmployeeTable from "../employee-table/employee-table.component";
 
 import "./modal.component.scss";
+import { config } from "../../utilities/utils";
 
 const Modal = ({ data, type, size }) => {
     const { hideModal } = useContext(AppContext);
 
     let Component;
     switch (type) {
-        case "eligible-balance":
+        case config.modalTypes.eligibleBalance:
             Component = DistributionTable;
-
+            break;
+        case config.modalTypes.employeeInfo:
+            Component = EmployeeTable;
+            break;
         default:
             Component = DistributionTable;
+            break;
     }
 
     return (

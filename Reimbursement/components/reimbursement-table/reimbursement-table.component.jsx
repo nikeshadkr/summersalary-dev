@@ -174,9 +174,7 @@ const ReimbursementTable = () => {
             if (error.response)
                 initAlert({
                     type: "error",
-                    content: error.response.data
-                        ? error.response.data
-                        : "Could not complete your request"
+                    content: error.response.statusText
                 });
 
             console.log(error);

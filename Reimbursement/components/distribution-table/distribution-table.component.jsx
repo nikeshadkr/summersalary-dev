@@ -219,7 +219,7 @@ class DistributionTable extends React.Component {
                 initAlert({
                     inModal: true,
                     type: "error",
-                    content: error.response.data
+                    content: error.response.statusText
                 });
 
             this.showLoader(false);

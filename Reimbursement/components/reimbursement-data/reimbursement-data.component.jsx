@@ -7,15 +7,16 @@ import { utils, config } from "../../utilities/utils";
 const ReimbursementData = ({ item, checkOne, index, isPending }) => {
     const { loadReimbursements, initModal } = useContext(AppContext);
 
-    const openModal = (e, item) => {
+    const openModal = (e, item, type) => {
         e.preventDefault();
         initModal({
             data: { ...item, isPending: item.isPending },
-            type: "eligible-balance",
+            type: type,
             size: "large",
             showModal: true,
-            onClose: cData => {
-                loadReimbursements();
+            onClose: cData => {   
+                if(type == config.modalTypes.eligibleBalance)             
+                    loadReimbursements();
             }
         });
     };
@@ -55,7 +56,9 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
                 />
             </td>
             <td>
-                {item.LastName}, {item.FirstName}
+                <a href='#' onClick={e => openModal(e, item, config.modalTypes.employeeInfo)}>
+                    {item.LastName}, {item.FirstName}
+                </a>                
             </td>
             <td>{item.EmployeeId}</td>
             <td>
@@ -73,7 +76,7 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
             </td>
             <td className='text-right'>
                 {item.enableDistributionModal ? (
-                    <a href='#' onClick={e => openModal(e, item)}>
+                    <a href='#' onClick={e => openModal(e, item, config.modalTypes.eligibleBalance)}>
                         {utils.currency(
                             isPending
                                 ? item.EligibleBalanceToReimburse

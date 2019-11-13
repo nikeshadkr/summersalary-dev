@@ -15,9 +15,11 @@ const App = () => {
         AppContext
     );
 
-    const loadReimbursementPeriods = async () => {
+    const loadReimbursementPeriods = async year => {
         let listPeriods = await axios.get(
-            config.appPath + "ReimbursementPeriod/GetReimbursementPeriods"
+            `${config.appPath}ReimbursementPeriod/GetReimbursementPeriods${
+                year ? "?year=" + year : ""
+            }`
         );
 
         listPeriods.data.forEach(item => {
@@ -74,7 +76,7 @@ const App = () => {
 
     return (
         <>
-            <Header />
+            <Header loadReimbursementPeriods={loadReimbursementPeriods} />
             <PeriodsTable />
             {isLoading && <Loader />}
             {myModal && myModal.showModal && (

@@ -2,7 +2,9 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 
 import { AppContext } from "../../app/app.provider";
-import PeriodAdd from "../../components/period-add/period-add.component";
+
+import ConfirmDialog from "../confirm-dialog/confirm-dialog.component";
+import PeriodAdd from "../period-add/period-add.component";
 
 import "./modal.component.scss";
 
@@ -13,9 +15,11 @@ const Modal = ({ data, type, size }) => {
     switch (type) {
         case "new-period":
             Component = PeriodAdd;
+            break;
 
         default:
-            Component = PeriodAdd;
+            Component = ConfirmDialog;
+            break;
     }
 
     return (

@@ -1,8 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 
 import { withPeriod } from "../../hoc/period.hoc";
-import { AppContext } from "../../app/app.provider";
-
 import { config } from "../../utilities/utils";
 
 const PeriodsData = ({
@@ -11,10 +9,15 @@ const PeriodsData = ({
     toggleEditMode,
     removeItem,
     handleMainStateUpdate,
+    toggleLoader,
 
     handleChange,
     validationSchema,
-    setValidationschema
+    setValidationschema,
+
+    listPayPeriodEndFrom,
+    setPayPeriodEndFrom,
+    getPayPeriodEndFrom
 }) => {
     const {
         IsOpen,
@@ -23,12 +26,6 @@ const PeriodsData = ({
         CUNYPayPeriodEndDate,
         GLPostingDate
     } = validationSchema;
-
-    const {
-        appState: { summerYear, listPayPeriodEndFrom },
-        toggleLoader,
-        getPayPeriodEndFrom
-    } = useContext(AppContext);
 
     const insertValues = () => {
         // Populating Edit form with item state
@@ -46,13 +43,15 @@ const PeriodsData = ({
     };
 
     const toggleEdit = async (item, index) => {
-        if (summerYear === "") {
+        if (!item.IsEditing) {
             toggleLoader(true);
-            await getPayPeriodEndFrom(item.ReimbursementYear);
+
+            let response = await getPayPeriodEndFrom(item.ReimbursementYear);
+            setPayPeriodEndFrom(response);
+            insertValues();
+
             toggleLoader(false);
         }
-
-        if (!item.IsEditing) insertValues();
 
         toggleEditMode(!item.IsEditing, index);
     };
