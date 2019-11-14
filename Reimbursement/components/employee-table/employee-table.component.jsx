@@ -119,6 +119,10 @@ export default class EmployeeTable extends React.Component {
                                                                 )}
                                                                 <td>
                                                                     {utils.formatDate(
+                                                                        item.PayPeriodStart
+                                                                    )}{" "}
+                                                                    -{" "}
+                                                                    {utils.formatDate(
                                                                         item.PayPeriodEnd
                                                                     )}
                                                                 </td>
