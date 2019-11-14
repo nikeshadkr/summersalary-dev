@@ -265,10 +265,10 @@ class AppProvider extends React.Component {
                 item.enableDistributionModal =
                     item.EffortCertStatus === config.effortCertStatus.done &&
                     item.SalaryAuthorized !== 0 &&
+                    item.EligibleBalanceToReimburse !== 0 &&
                     (item.NotYTDPaid !== 0 ||
-                        (item.EligibleBalanceToReimburse > 0 &&
-                            item.EligibleBalanceToReimburse !==
-                                item.SalaryAuthorized));
+                        item.EligibleBalanceToReimburse !==
+                            item.SalaryAuthorized);
             });
 
             this.setAppData({
