@@ -3,7 +3,7 @@
 import Alert from "../alert/alert.component";
 
 import { AppContext } from "../../app/app.provider";
-import { withPeriod } from "../../hoc/period.hoc";
+import { withPeriod } from "../period-wrapper/period-wrapper";
 
 const PeriodAdd = ({
     data: { summerYear },

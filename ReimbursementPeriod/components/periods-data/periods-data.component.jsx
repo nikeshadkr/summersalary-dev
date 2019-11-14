@@ -1,6 +1,6 @@
 import React from "react";
 
-import { withPeriod } from "../../hoc/period.hoc";
+import { withPeriod } from "../period-wrapper/period-wrapper";
 import { config } from "../../utilities/utils";
 
 const PeriodsData = ({

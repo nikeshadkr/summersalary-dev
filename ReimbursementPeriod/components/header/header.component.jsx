@@ -55,9 +55,7 @@ const Header = ({ loadReimbursementPeriods }) => {
                         value={summerYear}
                         onChange={handleChange}
                     >
-                        <option value='' disabled>
-                            Select
-                        </option>
+                        <option value=''>All</option>
                         {listSummerYear &&
                             listSummerYear.map((obj, i) => {
                                 return (

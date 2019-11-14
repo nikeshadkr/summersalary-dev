@@ -1,7 +1,7 @@
 ﻿import React, { useState } from "react";
-import axios from "../axios";
+import axios from "../../axios";
 
-import { config, utils, validationRules } from "../utilities/utils";
+import { config, utils, validationRules } from "../../utilities/utils";
 
 export const withPeriod = Component => {
     return props => {
