@@ -375,7 +375,7 @@ class DistributionTable extends React.Component {
                             </div>
                         </>
                     ) : (
-                        <h2>No Records Found</h2>
+                        <h2>No Records found</h2>
                     )}
 
                     {/* Modal Loader */}

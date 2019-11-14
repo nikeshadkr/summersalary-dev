@@ -9,6 +9,7 @@ import Loader from "../components/loader/loader.component";
 
 // For Testing
 import DistributionTable from "../components/distribution-table/distribution-table.component";
+import EmployeeTable from "../components/employee-table/employee-table.component";
 
 import { AppContext } from "./app.provider";
 import { config } from "../utilities/utils";
@@ -81,6 +82,16 @@ const App = () => {
                     hideModal={() => console.log("this is dummy Modal")}
                 />
             </div>
+            
+            <EmployeeTable
+                hideModal={() => console.log("this is dummy Modal")}
+                data={{
+                    EmployeeId: "23348326",
+                    ReimbursementYear: 2018,
+                    FirstName: "LOUIS-PIERRE",
+                    LastName: "ARGUIN"
+                }}
+            />
             */}
         </>
     );

@@ -15,7 +15,7 @@ export const config = {
         notFullyPaid: "1",
         all: ""
     },
-    modalTypes:{
+    modalTypes: {
         eligibleBalance: "eligible-balance",
         employeeInfo: "employee-info"
     }
@@ -62,7 +62,7 @@ export const utils = {
     },
 
     formatDate: (date, format) => {
-        return moment(date).format(format);
+        return moment(date).format(format ? format : "MM/DD/YYYY");
     },
 
     isBefore: (date, date2) => {
