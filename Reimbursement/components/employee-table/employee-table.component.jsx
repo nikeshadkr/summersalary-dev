@@ -131,7 +131,16 @@ export default class EmployeeTable extends React.Component {
                                                                         item.ProjectName
                                                                     }
                                                                 </td>
-                                                                <td>
+                                                                <td
+                                                                    className={`${
+                                                                        utils.isBefore(
+                                                                            item.ProjectBudgetEndDate,
+                                                                            new Date()
+                                                                        )
+                                                                            ? "red-text"
+                                                                            : ""
+                                                                    }`}
+                                                                >
                                                                     {utils.formatDate(
                                                                         item.ProjectBudgetEndDate
                                                                     )}
