@@ -185,8 +185,7 @@ class DistributionTable extends React.Component {
             initAlert({
                 inModal: true,
                 type: "error",
-                content:
-                    '"Total Reimbursement Amount" should not exceed difference of "Salary Authorized" and "Previously Reimbursed" Amount'
+                content: "Reimbursement Amount cannot exceed the CUNY YTD Paid"
             });
             return;
         }

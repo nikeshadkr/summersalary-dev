@@ -1,25 +1,21 @@
 import React from "react";
 
 const DistributionInput = ({ handleChange, value, ...otherProps }) => {
-    const decimal = new RegExp("^([0-9]+([.][0-9]*)?|[.][0-9]+)$");
-
     const handleBlur = e => {
-        e.target.value =
-            e.target.value !== ""
-                ? parseFloat(e.target.value).toFixed(2)
-                : e.target.value;
+        let fValue = parseFloat(e.target.value).toFixed(2);
+        e.target.value = !isNaN(fValue) ? fValue : "";
 
         handleChange(e);
     };
 
     const numberOnly = e => {
         var charCode = e.which ? e.which : e.keyCode;
-        if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+        if (
+            (charCode != 45 || e.target.value.indexOf("-") != -1) &&
+            (charCode != 46 || e.target.value.indexOf(".") != -1) &&
+            (charCode < 48 || charCode > 57)
+        )
             e.preventDefault();
-
-        if (!decimal.test(e.target.value)) {
-            e.target.value = "";
-        }
     };
 
     let [modifiedValue] = [value];
@@ -34,8 +30,11 @@ const DistributionInput = ({ handleChange, value, ...otherProps }) => {
                 }
                 className='text-right'
                 onBlur={handleBlur}
-                onKeyUp={numberOnly}
                 onKeyPress={numberOnly}
+                onPaste={e => {
+                    e.preventDefault();
+                    return false;
+                }}
                 {...otherProps}
             />
         </>
