@@ -60,9 +60,10 @@ class DistributionTable extends React.Component {
 
         // Set Error
         if (e.target.name === "SalaryReimbursed") {
-            let amount =
+            let amount = utils.roundDecimal(
                 parseFloat(changeField["SalaryAuthorized"]) -
-                parseFloat(changeField["PreviousReimbursement"]);
+                    parseFloat(changeField["PreviousReimbursement"])
+            );
 
             changeField["Error"] =
                 parseFloat(e.target.value) > amount
@@ -120,8 +121,9 @@ class DistributionTable extends React.Component {
                         obj.DisableSalaryReimburse = true;
                         obj.DisableComment = true;
                     } else
-                        obj.SalaryReimbursed =
-                            obj.SalaryAuthorized - obj.PreviousReimbursement;
+                        obj.SalaryReimbursed = utils.roundDecimal(
+                            obj.SalaryAuthorized - obj.PreviousReimbursement
+                        );
                 }
             });
 
@@ -164,9 +166,10 @@ class DistributionTable extends React.Component {
         let flag = false;
         let list = [...listDistribution];
         for (let i = 0; i < list.length; i++) {
-            let amount =
+            let amount = utils.roundDecimal(
                 parseFloat(list[i]["SalaryAuthorized"]) -
-                parseFloat(list[i]["PreviousReimbursement"]);
+                    parseFloat(list[i]["PreviousReimbursement"])
+            );
 
             if (parseFloat(list[i]["SalaryReimbursed"]) > amount) {
                 flag = true;
@@ -175,12 +178,15 @@ class DistributionTable extends React.Component {
         }
         if (flag) return;
 
-        if (SalaryReimbursedTotal > CUNYYTDPaid - PreviousReimbursement) {
+        if (
+            SalaryReimbursedTotal >
+            utils.roundDecimal(CUNYYTDPaid - PreviousReimbursement)
+        ) {
             initAlert({
                 inModal: true,
                 type: "error",
                 content:
-                    'Total Reimbursement Amount" should not exceed difference of "Salary Authorized" and "Previously Reimbursed" Amount'
+                    '"Total Reimbursement Amount" should not exceed difference of "Salary Authorized" and "Previously Reimbursed" Amount'
             });
             return;
         }

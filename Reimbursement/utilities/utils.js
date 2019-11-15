@@ -94,6 +94,25 @@ export const utils = {
             string = `${string.substring(0, length).trim()}...`;
 
         return string;
+    },
+
+    roundDecimal: (val, decimals) => {
+        if (typeof val === "string") val = parseFloat(val);
+        if (typeof val === "NaN" || isNaN(val)) val = 0;
+
+        let d;
+        switch (decimals) {
+            case 3:
+                d = 1000;
+                break;
+            case 4:
+                d = 10000;
+                break;
+            default:
+                d = 100;
+        }
+
+        return Math.round(val * d) / d;
     }
 };
 
