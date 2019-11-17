@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { AppContext } from "../../app/app.provider";
 
 import ConfirmDialog from "../confirm-dialog/confirm-dialog.component";
+import PeriodWrapper from "../period-wrapper/period-wrapper.component";
 import PeriodAdd from "../period-add/period-add.component";
 
 import "./modal.component.scss";
@@ -24,7 +25,19 @@ const Modal = ({ data, type, size }) => {
 
     return (
         <ModalOuter size={size}>
-            <Component data={data} hideModal={hideModal} />
+            {type === "new-period" ? (
+                <PeriodWrapper
+                    period={periodProps => (
+                        <Component
+                            data={data}
+                            hideModal={hideModal}
+                            {...periodProps}
+                        />
+                    )}
+                />
+            ) : (
+                <Component data={data} hideModal={hideModal} />
+            )}
         </ModalOuter>
     );
 };

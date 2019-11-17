@@ -1,6 +1,4 @@
 import React from "react";
-
-import { withPeriod } from "../period-wrapper/period-wrapper";
 import { config } from "../../utilities/utils";
 
 const PeriodsData = ({
@@ -226,4 +224,4 @@ const PeriodsData = ({
     );
 };
 
-export default withPeriod(PeriodsData);
+export default PeriodsData;

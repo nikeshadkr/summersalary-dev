@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 
+import PeriodWrapper from "../period-wrapper/period-wrapper.component";
 import PeriodsData from "../periods-data/periods-data.component";
+
 import { AppContext } from "../../app/app.provider";
 
 const PeriodsTable = () => {
@@ -96,15 +98,20 @@ const PeriodsTable = () => {
                         </thead>
                         <tbody>
                             {listReimbursementPeriods.map((item, i) => (
-                                <PeriodsData
+                                <PeriodWrapper
                                     key={i}
-                                    index={i}
-                                    item={item}
-                                    handleMainStateUpdate={handleChange}
-                                    toggleEditMode={toggleEditMode}
-                                    removeItem={removeItem}
-                                    toggleLoader={toggleLoader}
-                                ></PeriodsData>
+                                    period={periodProps => (
+                                        <PeriodsData
+                                            index={i}
+                                            item={item}
+                                            handleMainStateUpdate={handleChange}
+                                            toggleEditMode={toggleEditMode}
+                                            removeItem={removeItem}
+                                            toggleLoader={toggleLoader}
+                                            {...periodProps}
+                                        ></PeriodsData>
+                                    )}
+                                />
                             ))}
                         </tbody>
                     </table>

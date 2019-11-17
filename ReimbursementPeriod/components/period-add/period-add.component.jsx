@@ -1,9 +1,7 @@
 ﻿import React, { useContext, useState, useEffect } from "react";
 
 import Alert from "../alert/alert.component";
-
 import { AppContext } from "../../app/app.provider";
-import { withPeriod } from "../period-wrapper/period-wrapper";
 
 const PeriodAdd = ({
     data: { summerYear },
@@ -290,4 +288,4 @@ const PeriodAdd = ({
     );
 };
 
-export default withPeriod(PeriodAdd);
+export default PeriodAdd;
