@@ -17,7 +17,8 @@ export const config = {
     },
     modalTypes: {
         eligibleBalance: "eligible-balance",
-        employeeInfo: "employee-info"
+        employeeInfo: "employee-info",
+        previousPayments: "prev-payments"
     }
 };
 
@@ -61,17 +62,11 @@ export const utils = {
         } else return `$${amount}`;
     },
 
-    formatDate: (date, format) => {
-        return moment(date).format(format ? format : "MM/DD/YYYY");
+    formatDate: (date, format) => {        
+        return moment(date).isAfter("1900-01-01") ? moment(date).format(format ? format : "MM/DD/YYYY") : '';
     },
 
-    isBefore: (date, date2) => {
-        /*console.log(utils.formatDate(new Date(date), "MM/DD/YYYY"));
-        console.log(utils.formatDate(date2, "MM/DD/YYYY"));
-        console.log(
-            "isBefore :",
-            moment(new Date(date)).isBefore(new Date(date2), "day")
-        );*/
+    isBefore: (date, date2) => {      
         return moment(new Date(date)).isBefore(new Date(date2), "day");
     },
 

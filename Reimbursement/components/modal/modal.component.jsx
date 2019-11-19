@@ -5,6 +5,7 @@ import { AppContext } from "../../app/app.provider";
 
 import DistributionTable from "../distribution-table/distribution-table.component";
 import EmployeeTable from "../employee-table/employee-table.component";
+import PreviousPaymentsTable from "../previous-payment-table/previous-payment-table";
 
 import "./modal.component.scss";
 import { config } from "../../utilities/utils";
@@ -19,6 +20,9 @@ const Modal = ({ data, type, size }) => {
             break;
         case config.modalTypes.employeeInfo:
             Component = EmployeeTable;
+            break;
+        case config.modalTypes.previousPayments:
+            Component = PreviousPaymentsTable;
             break;
         default:
             Component = DistributionTable;

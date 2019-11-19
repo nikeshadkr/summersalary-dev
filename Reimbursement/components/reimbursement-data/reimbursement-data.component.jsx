@@ -72,7 +72,19 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
             <td className='text-right'>{utils.currency(item.CUNYYTDPaid)}</td>
             <td className='text-right'>{utils.currency(item.NotYTDPaid)}</td>
             <td className='text-right'>
-                {utils.currency(item.PreviousReimbursement)}
+                {
+                    item.PaymentNumber > 1 && item.PreviousReimbursement > 0? 
+                    (
+                        <a href='#' onClick={e => openModal(e, item, config.modalTypes.previousPayments)}>
+                            {utils.currency(item.PreviousReimbursement)}
+                        </a>
+                    ) : 
+                    (
+                        <> 
+                            {utils.currency(item.PreviousReimbursement)}
+                        </>
+                    )
+                }                
             </td>
             <td className='text-right'>
                 {item.enableDistributionModal ? (
