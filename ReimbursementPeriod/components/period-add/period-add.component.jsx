@@ -10,6 +10,7 @@ const PeriodAdd = ({
     validationSchema,
     validateForm,
     handleChange,
+    setValidationschema,
 
     listPayPeriodEndFrom,
     setPayPeriodEndFrom,
@@ -42,8 +43,28 @@ const PeriodAdd = ({
 
         let list = await getPayPeriodEndFrom(summerYear);
         setPayPeriodEndFrom(list);
+        initDefaultValues(list);
 
         showHideLoader(false);
+    };
+
+    const initDefaultValues = listYears => {
+        if (listYears.length > 0) {
+            let min = listYears[0].PayPeriodEnding;
+            let max = listYears[listYears.length - 1].PayPeriodEnding;
+
+            let newSchema = { ...validationSchema };
+            Object.keys(newSchema).forEach(key => {
+                let o = { ...newSchema[key] };
+
+                if (key === "PayPeriodEndFromDate") o.value = min;
+                if (key === "PayPeriodEndToDate") o.value = max;
+
+                newSchema[key] = o;
+            });
+
+            setValidationschema(newSchema);
+        }
     };
 
     useEffect(() => {
