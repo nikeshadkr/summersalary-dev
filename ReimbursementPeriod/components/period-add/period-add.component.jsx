@@ -14,7 +14,8 @@ const PeriodAdd = ({
 
     listPayPeriodEndFrom,
     setPayPeriodEndFrom,
-    getPayPeriodEndFrom
+    getPayPeriodEndFrom,
+    savePayPeriod
 }) => {
     const {
         IsOpen,
@@ -27,16 +28,6 @@ const PeriodAdd = ({
     const { alert, initAlert, closeAlert } = useContext(AppContext);
 
     const [isLoading, showHideLoader] = useState(false);
-
-    const createPeriod = () => {
-        initAlert({
-            inModal: true,
-            type: "error",
-            content: "Error Occured"
-        });
-
-        validateForm();
-    };
 
     const fetchListPayPeriodEndFrom = async () => {
         showHideLoader(true);
@@ -70,6 +61,45 @@ const PeriodAdd = ({
     useEffect(() => {
         fetchListPayPeriodEndFrom();
     }, []);
+
+    const createPeriod = async () => {
+        if (!validateForm()) return;
+        else {
+            showHideLoader(true);
+
+            try {
+                await savePayPeriod({
+                    PaymentNumber: -1,
+                    ReimbursementYear: summerYear,
+                    IsOpen: IsOpen.value,
+                    PayPeriodEndFromDate: PayPeriodEndFromDate.value,
+                    PayPeriodEndToDate: PayPeriodEndToDate.value,
+                    CUNYPayPeriodEndDate: CUNYPayPeriodEndDate.value,
+                    GLPostingDate: GLPostingDate.value
+                });
+
+                showHideLoader(false);
+
+                initAlert({
+                    content: "Reimbursement pay period successfully created.",
+                    setTimeout: 3000
+                });
+
+                hideModal(true);
+            } catch (error) {
+                showHideLoader(false);
+
+                if (error.response)
+                    initAlert({
+                        inModal: true,
+                        type: "error",
+                        content: error.response.statusText
+                    });
+
+                console.log(error.message);
+            }
+        }
+    };
 
     return (
         <div className='modal-common'>

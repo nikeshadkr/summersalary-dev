@@ -23,7 +23,7 @@ const App = () => {
 
     const loadReimbursementPeriods = async year => {
         let listPeriods = await axios.get(
-            `${config.appPath}ReimbursementPeriod/GetReimbursementPeriods${
+            `${config.apiPath}/GetReimbursementPeriods${
                 year ? "?year=" + year : ""
             }`
         );
@@ -56,7 +56,7 @@ const App = () => {
 
     const loadSummerYears = async () => {
         let listSummerYears = await axios.get(
-            config.appPath + "ReimbursementPeriod/GetSummerSalaryYears"
+            config.apiPath + "/GetSummerSalaryYears"
         );
 
         setAppState(prevState => ({

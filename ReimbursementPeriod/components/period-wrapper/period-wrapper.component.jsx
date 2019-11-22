@@ -58,12 +58,7 @@ const PeriodWrapper = props => {
             isTouched: false,
             isValid: false,
             errors: [],
-            rules: [
-                {
-                    rule: validationRules.required,
-                    message: "This field is required"
-                }
-            ]
+            rules: []
         }
     });
 
@@ -117,9 +112,7 @@ const PeriodWrapper = props => {
 
     const getPayPeriodEndFrom = async ReimbursementYear => {
         let listPayPeriodRes = await axios.get(
-            config.appPath +
-                "ReimbursementPeriod/GetPayrollCalendarCollection?year=" +
-                ReimbursementYear
+            `${config.apiPath}/GetPayrollCalendarCollection?year=${ReimbursementYear}`
         );
 
         listPayPeriodRes.data.forEach(obj => {
@@ -132,10 +125,15 @@ const PeriodWrapper = props => {
         return listPayPeriodRes.data;
     };
 
+    const savePayPeriod = async formData => {
+        await axios.post(`${config.apiPath}/SaveReimbursementPeriod`, formData);
+    };
+
     return props.period({
         getPayPeriodEndFrom,
         listPayPeriodEndFrom,
         setPayPeriodEndFrom,
+        savePayPeriod,
         handleChange,
         validationSchema,
         setValidationschema,

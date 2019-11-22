@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
+import axios from "../../axios";
+
+import { AppContext } from "../../app/app.provider";
 import { config } from "../../utilities/utils";
 
 const PeriodsData = ({
     index,
     item,
-    toggleEditMode,
-    removeItem,
-    handleMainStateUpdate,
-    toggleLoader,
+    listReimbursementPeriods,
 
     handleChange,
     validationSchema,
     setValidationschema,
+    savePayPeriod,
 
     listPayPeriodEndFrom,
     setPayPeriodEndFrom,
@@ -24,6 +25,14 @@ const PeriodsData = ({
         CUNYPayPeriodEndDate,
         GLPostingDate
     } = validationSchema;
+
+    const {
+        setAppState,
+        initModal,
+        toggleLoader,
+
+        initAlert
+    } = useContext(AppContext);
 
     const insertValues = () => {
         // Populating Edit form with item state
@@ -40,6 +49,25 @@ const PeriodsData = ({
         setValidationschema(newSchema);
     };
 
+    const handleMainStateUpdate = index => {
+        let clonedList = [...listReimbursementPeriods];
+        let found = { ...clonedList[index] };
+
+        found["IsOpen"] = IsOpen.value;
+        found["PayPeriodEndFromDate"] = PayPeriodEndFromDate.value;
+        found["PayPeriodEndToDate"] = PayPeriodEndToDate.value;
+        found["CUNYPayPeriodEndDate"] = CUNYPayPeriodEndDate.value;
+        found["GLPostingDate"] = GLPostingDate.value;
+        found["IsEditing"] = false;
+
+        clonedList[index] = found;
+
+        setAppState(prevState => ({
+            ...prevState,
+            listReimbursementPeriods: clonedList
+        }));
+    };
+
     const toggleEdit = async (item, index) => {
         if (!item.IsEditing) {
             toggleLoader(true);
@@ -51,7 +79,102 @@ const PeriodsData = ({
             toggleLoader(false);
         }
 
-        toggleEditMode(!item.IsEditing, index);
+        togglePartial(!item.IsEditing, index);
+    };
+
+    const togglePartial = (value, index) => {
+        let clonedList = [...listReimbursementPeriods];
+        let found = { ...clonedList[index] };
+        found.IsEditing = value;
+        clonedList[index] = found;
+
+        setAppState(prevState => ({
+            ...prevState,
+            listReimbursementPeriods: clonedList
+        }));
+    };
+
+    const removeItem = (item, index) => {
+        initModal({
+            data: {
+                title: "Confirm !!",
+                message: "Are you sure you want to delete ?"
+            },
+            type: "",
+            size: "small",
+            showModal: true,
+            onClose: async cData => {
+                if (cData) {
+                    let clonedList = [...listReimbursementPeriods];
+
+                    setAppState(prevState => ({
+                        ...prevState,
+                        listReimbursementPeriods: clonedList.filter(
+                            (obj, i) => i != index
+                        )
+                    }));
+
+                    toggleLoader(true);
+                    try {
+                        await axios.delete(
+                            `${config.apiPath}/DeleteSummerSalaryReimbursementPeriod?ssReimbursementYear=${item.ReimbursementYear}&paymentNumber=${item.PaymentNumber}`
+                        );
+
+                        initAlert({
+                            content: "Successfully Deleted",
+                            setTimeout: 3000
+                        });
+
+                        toggleLoader(false);
+                    } catch (error) {
+                        toggleLoader(false);
+
+                        if (error.response)
+                            initAlert({
+                                type: "error",
+                                content: error.response.statusText
+                            });
+
+                        console.log(error.message);
+                    }
+                }
+            }
+        });
+    };
+
+    const updatePayPeriod = async (item, index) => {
+        toggleLoader(true);
+        try {
+            await savePayPeriod({
+                PaymentNumber: item.PaymentNumber,
+                ReimbursementYear: item.ReimbursementYear,
+                IsOpen: IsOpen.value,
+                PayPeriodEndFromDate: PayPeriodEndFromDate.value,
+                PayPeriodEndToDate: PayPeriodEndToDate.value,
+                CUNYPayPeriodEndDate: CUNYPayPeriodEndDate.value,
+                GLPostingDate: GLPostingDate.value
+            });
+
+            toggleLoader(false);
+
+            initAlert({
+                content: "Reimbursement pay period successfully updated.",
+                setTimeout: 3000
+            });
+
+            handleMainStateUpdate(index);
+        } catch (error) {
+            toggleLoader(false);
+
+            if (error.response)
+                initAlert({
+                    inModal: true,
+                    type: "error",
+                    content: error.response.statusText
+                });
+
+            console.log(error.message);
+        }
     };
 
     return (
@@ -154,6 +277,7 @@ const PeriodsData = ({
                             value={GLPostingDate.value}
                             onChange={handleChange}
                         >
+                            <option value=''>Select</option>
                             {listPayPeriodEndFrom &&
                                 listPayPeriodEndFrom.map((obj, key) => {
                                     return (
@@ -168,7 +292,10 @@ const PeriodsData = ({
                         </select>
                     </td>
                     <td>
-                        <button className='inline-image-button'>
+                        <button
+                            className='inline-image-button'
+                            onClick={() => updatePayPeriod(item, index)}
+                        >
                             <img
                                 alt='save'
                                 src={`${config.assetPath}/status-ok.png`}

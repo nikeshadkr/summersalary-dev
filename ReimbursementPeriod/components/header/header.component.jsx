@@ -9,18 +9,11 @@ const Header = ({ loadReimbursementPeriods }) => {
 
     const { summerYear, listSummerYear } = appState;
 
-    const handleChange = async e => {
-        e.persist();
-
-        setAppState(prevState => ({
-            ...prevState,
-            [e.target.name]: e.target.value
-        }));
-
+    const loadAgain = async year => {
         try {
             toggleLoader(true);
 
-            await loadReimbursementPeriods(e.target.value);
+            await loadReimbursementPeriods(year);
 
             toggleLoader(false);
         } catch (error) {
@@ -28,7 +21,18 @@ const Header = ({ loadReimbursementPeriods }) => {
         }
     };
 
-    const addNew = e => {
+    const handleChange = e => {
+        e.persist();
+
+        setAppState(prevState => ({
+            ...prevState,
+            [e.target.name]: e.target.value
+        }));
+
+        loadAgain(e.target.value);
+    };
+
+    const addNewModal = e => {
         e.preventDefault();
         initModal({
             data: { summerYear },
@@ -36,7 +40,10 @@ const Header = ({ loadReimbursementPeriods }) => {
             size: "medium",
             showModal: true,
             onClose: cData => {
-                console.log(cData);
+                if (cData) {
+                    // Refreshing list after item is added.
+                    loadAgain(summerYear);
+                }
             }
         });
     };
@@ -74,7 +81,7 @@ const Header = ({ loadReimbursementPeriods }) => {
                             summerYear ? "" : "disabled"
                         }`}
                         disabled={summerYear === "" || !summerYear}
-                        onClick={addNew}
+                        onClick={addNewModal}
                     >
                         Add New
                     </button>

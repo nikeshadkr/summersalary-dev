@@ -7,65 +7,8 @@ import { AppContext } from "../../app/app.provider";
 
 const PeriodsTable = () => {
     const {
-        appState: { listReimbursementPeriods },
-        setAppState,
-        initModal,
-        toggleLoader,
-
-        initAlert
+        appState: { listReimbursementPeriods }
     } = useContext(AppContext);
-
-    const handleChange = e => {
-        let clonedList = [...listReimbursementPeriods];
-        let found = { ...clonedList[e.target.dataset.id] };
-        found[e.target.name] = e.target.value;
-        clonedList[e.target.dataset.id] = found;
-
-        setAppState(prevState => ({
-            ...prevState,
-            listReimbursementPeriods: clonedList
-        }));
-    };
-
-    const toggleEditMode = (value, index) => {
-        let clonedList = [...listReimbursementPeriods];
-        let found = { ...clonedList[index] };
-        found.IsEditing = value;
-        clonedList[index] = found;
-
-        setAppState(prevState => ({
-            ...prevState,
-            listReimbursementPeriods: clonedList
-        }));
-    };
-
-    const removeItem = (item, index) => {
-        initModal({
-            data: {
-                title: "Confirm !!",
-                message: "Are you sure you want to delete ?"
-            },
-            type: "",
-            size: "small",
-            showModal: true,
-            onClose: cData => {
-                // console.log(item);
-                let clonedList = [...listReimbursementPeriods];
-
-                setAppState(prevState => ({
-                    ...prevState,
-                    listReimbursementPeriods: clonedList.filter(
-                        (obj, i) => i != index
-                    )
-                }));
-
-                initAlert({
-                    content: "Successfully Deleted",
-                    setTimeout: 5000
-                });
-            }
-        });
-    };
 
     return (
         <>
@@ -104,10 +47,9 @@ const PeriodsTable = () => {
                                         <PeriodsData
                                             index={i}
                                             item={item}
-                                            handleMainStateUpdate={handleChange}
-                                            toggleEditMode={toggleEditMode}
-                                            removeItem={removeItem}
-                                            toggleLoader={toggleLoader}
+                                            listReimbursementPeriods={
+                                                listReimbursementPeriods
+                                            }
                                             {...periodProps}
                                         ></PeriodsData>
                                     )}

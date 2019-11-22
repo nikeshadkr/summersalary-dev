@@ -3,7 +3,7 @@ import moment from "moment";
 export const config = {
     appPath: window.applicationPath,
     assetPath: window.assetPath,
-    apiPath: window.applicationPath + "Reimbursement",
+    apiPath: window.applicationPath + "ReimbursementPeriod",
     pageSize: 15
 };
 
@@ -48,7 +48,9 @@ export const utils = {
     },
 
     formatDate: (date, format) => {
-        return moment(date).format(format);
+        return moment(date).isAfter("1900-01-01")
+            ? moment(date).format(format ? format : "MM/DD/YYYY")
+            : "";
     },
 
     isBefore: (date, date2) => {
