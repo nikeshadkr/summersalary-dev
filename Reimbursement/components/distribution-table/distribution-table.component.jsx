@@ -293,9 +293,9 @@ class DistributionTable extends React.Component {
                                                 <br />
                                                 Year
                                             </th>
-                                            <th width='170'>Project</th>
-                                            <th width='50'>
-                                                Effort <br /> Cert
+                                            <th width='160'>Project</th>
+                                            <th width='90'>
+                                                Effort <br /> Certification
                                             </th>
                                             <th width='85'>
                                                 Budget <br />

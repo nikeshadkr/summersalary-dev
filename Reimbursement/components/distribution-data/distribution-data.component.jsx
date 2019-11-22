@@ -32,11 +32,9 @@ const DistributionData = ({
                         </td>
                         <td>
                             {item.EffortCertStatus ===
-                            config.effortCertStatus.done ? (
-                                "Done"
-                            ) : (
-                                <span className='red-text'>Not Done</span>
-                            )}
+                            config.effortCertStatus.done
+                                ? "Done"
+                                : "Not Done"}
                         </td>
                         <td
                             className={`${
