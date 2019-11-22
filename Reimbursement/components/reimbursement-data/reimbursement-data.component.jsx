@@ -9,13 +9,29 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
 
     const openModal = (e, item, type) => {
         e.preventDefault();
+
+        let classValue;
+        switch (type) {
+            case config.modalTypes.salaryAuthorized:
+                classValue = "medium";
+                break;
+
+            case config.modalTypes.eligibleBalance:
+            case config.modalTypes.previousPayments:
+                classValue = "x-large";
+                break;
+
+            default:
+                classValue = "large";
+        }
+
         initModal({
             data: { ...item, isPending: item.isPending },
             type: type,
-            size: "large",
+            size: classValue,
             showModal: true,
-            onClose: cData => {   
-                if(type == config.modalTypes.eligibleBalance)             
+            onClose: cData => {
+                if (type == config.modalTypes.eligibleBalance)
                     loadReimbursements();
             }
         });
@@ -56,9 +72,14 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
                 />
             </td>
             <td>
-                <a href='#' onClick={e => openModal(e, item, config.modalTypes.employeeInfo)}>
+                <a
+                    href='#'
+                    onClick={e =>
+                        openModal(e, item, config.modalTypes.employeeInfo)
+                    }
+                >
                     {item.LastName}, {item.FirstName}
-                </a>                
+                </a>
             </td>
             <td>{item.EmployeeId}</td>
             <td>
@@ -67,28 +88,47 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
                     : "Not Done"}
             </td>
             <td className='text-right'>
-                {utils.currency(item.SalaryAuthorized)}
+                <a
+                    href='#'
+                    onClick={e =>
+                        openModal(e, item, config.modalTypes.salaryAuthorized)
+                    }
+                >
+                    {utils.currency(item.SalaryAuthorized)}
+                </a>
             </td>
             <td className='text-right'>{utils.currency(item.CUNYYTDPaid)}</td>
             <td className='text-right'>{utils.currency(item.NotYTDPaid)}</td>
             <td className='text-right'>
-                {
-                    item.PaymentNumber > 1 && item.PreviousReimbursement > 0? 
-                    (
-                        <a href='#' onClick={e => openModal(e, item, config.modalTypes.previousPayments)}>
-                            {utils.currency(item.PreviousReimbursement)}
-                        </a>
-                    ) : 
-                    (
-                        <> 
-                            {utils.currency(item.PreviousReimbursement)}
-                        </>
-                    )
-                }                
+                {item.PaymentNumber > 1 && item.PreviousReimbursement > 0 ? (
+                    <a
+                        href='#'
+                        onClick={e =>
+                            openModal(
+                                e,
+                                item,
+                                config.modalTypes.previousPayments
+                            )
+                        }
+                    >
+                        {utils.currency(item.PreviousReimbursement)}
+                    </a>
+                ) : (
+                    <>{utils.currency(item.PreviousReimbursement)}</>
+                )}
             </td>
             <td className='text-right'>
                 {item.enableDistributionModal ? (
-                    <a href='#' onClick={e => openModal(e, item, config.modalTypes.eligibleBalance)}>
+                    <a
+                        href='#'
+                        onClick={e =>
+                            openModal(
+                                e,
+                                item,
+                                config.modalTypes.eligibleBalance
+                            )
+                        }
+                    >
                         {utils.currency(
                             isPending
                                 ? item.EligibleBalanceToReimburse

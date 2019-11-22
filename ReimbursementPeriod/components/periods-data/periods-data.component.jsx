@@ -168,7 +168,6 @@ const PeriodsData = ({
 
             if (error.response)
                 initAlert({
-                    inModal: true,
                     type: "error",
                     content: error.response.statusText
                 });

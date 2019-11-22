@@ -245,12 +245,16 @@ class DistributionTable extends React.Component {
             },
 
             hideModal,
+            modalType,
             alert,
             closeAlert
         } = this.props;
 
         const disableApproveButton =
             EffortCertStatus !== config.effortCertStatus.done;
+
+        const isSalaryAuthorized =
+            config.modalTypes.salaryAuthorized === modalType;
 
         return (
             <div className='modal-common'>
@@ -289,7 +293,10 @@ class DistributionTable extends React.Component {
                                                 <br />
                                                 Year
                                             </th>
-                                            <th width='180'>Project</th>
+                                            <th width='170'>Project</th>
+                                            <th width='50'>
+                                                Effort <br /> Cert
+                                            </th>
                                             <th width='85'>
                                                 Budget <br />
                                                 End Date
@@ -300,40 +307,47 @@ class DistributionTable extends React.Component {
                                                 Group
                                             </th>
                                             <th
-                                                width='115'
+                                                width='90'
                                                 className='text-right'
                                             >
                                                 Salary
                                                 <br />
                                                 Authorized
                                             </th>
-                                            <th
-                                                width='115'
-                                                className='text-right'
-                                            >
-                                                Previously
-                                                <br />
-                                                Reimbursed
-                                            </th>
-                                            <th
-                                                width='115'
-                                                className='text-right'
-                                            >
-                                                {isPending ? (
-                                                    <span>
-                                                        Reimbursement
-                                                        <br />
-                                                        Amount
-                                                    </span>
-                                                ) : (
-                                                    <span>
-                                                        Salary
+
+                                            {!isSalaryAuthorized && (
+                                                <>
+                                                    <th
+                                                        width='90'
+                                                        className='text-right'
+                                                    >
+                                                        Previously
                                                         <br />
                                                         Reimbursed
-                                                    </span>
-                                                )}
-                                            </th>
-                                            <th width='230'>Comments</th>
+                                                    </th>
+                                                    <th
+                                                        width='110'
+                                                        className='text-right'
+                                                    >
+                                                        {isPending ? (
+                                                            <span>
+                                                                Reimbursement
+                                                                <br />
+                                                                Amount
+                                                            </span>
+                                                        ) : (
+                                                            <span>
+                                                                Salary
+                                                                <br />
+                                                                Reimbursed
+                                                            </span>
+                                                        )}
+                                                    </th>
+                                                    <th width='230'>
+                                                        Comments
+                                                    </th>
+                                                </>
+                                            )}
                                         </tr>
                                     </thead>
 
@@ -343,12 +357,13 @@ class DistributionTable extends React.Component {
                                         isPending={isPending}
                                         handleChange={this.handleChange}
                                         toggleExcerpt={this.toggleExcerpt}
+                                        isSalaryAuthorized={isSalaryAuthorized}
                                     />
 
                                     {listDistribution.length > 1 && (
                                         <tfoot>
                                             <tr>
-                                                <td colSpan='4'>&nbsp;</td>
+                                                <td colSpan='5'>&nbsp;</td>
                                                 <td className='with-bg text-right'>
                                                     <ColumnTotal
                                                         list={listDistribution}
@@ -357,22 +372,30 @@ class DistributionTable extends React.Component {
                                                         }
                                                     />
                                                 </td>
-                                                <td className='with-bg text-right'>
-                                                    <ColumnTotal
-                                                        list={listDistribution}
-                                                        columnName={
-                                                            "PreviousReimbursement"
-                                                        }
-                                                    />
-                                                </td>
-                                                <td className='with-bg text-right'>
-                                                    <ColumnTotal
-                                                        list={listDistribution}
-                                                        columnName={
-                                                            "SalaryReimbursed"
-                                                        }
-                                                    />
-                                                </td>
+                                                {!isSalaryAuthorized && (
+                                                    <>
+                                                        <td className='with-bg text-right'>
+                                                            <ColumnTotal
+                                                                list={
+                                                                    listDistribution
+                                                                }
+                                                                columnName={
+                                                                    "PreviousReimbursement"
+                                                                }
+                                                            />
+                                                        </td>
+                                                        <td className='with-bg text-right'>
+                                                            <ColumnTotal
+                                                                list={
+                                                                    listDistribution
+                                                                }
+                                                                columnName={
+                                                                    "SalaryReimbursed"
+                                                                }
+                                                            />
+                                                        </td>
+                                                    </>
+                                                )}
                                             </tr>
                                         </tfoot>
                                     )}
@@ -404,19 +427,21 @@ class DistributionTable extends React.Component {
                     >
                         Close
                     </button>
-                    {listDistribution.length > 0 && isPending && (
-                        <button
-                            className={`button colorize pull-right ${
-                                disableApproveButton || isLoading
-                                    ? "disabled"
-                                    : "blue"
-                            }`}
-                            onClick={this.approveDistribution}
-                            disabled={disableApproveButton || isLoading}
-                        >
-                            Approve
-                        </button>
-                    )}
+                    {listDistribution.length > 0 &&
+                        isPending &&
+                        !isSalaryAuthorized && (
+                            <button
+                                className={`button colorize pull-right ${
+                                    disableApproveButton || isLoading
+                                        ? "disabled"
+                                        : "blue"
+                                }`}
+                                onClick={this.approveDistribution}
+                                disabled={disableApproveButton || isLoading}
+                            >
+                                Approve
+                            </button>
+                        )}
                 </div>
             </div>
         );

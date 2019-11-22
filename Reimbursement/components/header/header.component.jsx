@@ -285,7 +285,7 @@ const Header = () => {
 
                 {/* Cuny Pasyment Status */}
                 <div className='form-group' style={{ width: "180px" }}>
-                    <label>Cuny Payment Status</label>
+                    <label>CUNY Payment Status</label>
                     <select
                         name='paymentStatus'
                         value={paymentStatus}

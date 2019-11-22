@@ -16,6 +16,7 @@ const Modal = ({ data, type, size }) => {
     let Component;
     switch (type) {
         case config.modalTypes.eligibleBalance:
+        case config.modalTypes.salaryAuthorized:
             Component = DistributionTable;
             break;
         case config.modalTypes.employeeInfo:
@@ -31,7 +32,7 @@ const Modal = ({ data, type, size }) => {
 
     return (
         <ModalOuter size={size}>
-            <Component data={data} hideModal={hideModal} />
+            <Component data={data} hideModal={hideModal} modalType={type} />
         </ModalOuter>
     );
 };
