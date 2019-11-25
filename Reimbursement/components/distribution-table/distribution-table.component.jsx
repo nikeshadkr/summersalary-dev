@@ -114,6 +114,7 @@ class DistributionTable extends React.Component {
                 obj.Error = "";
 
                 if (data.isPending) {
+                    // Current Certification Status
                     if (
                         data.EffortCertStatus !== config.effortCertStatus.done
                     ) {
@@ -124,6 +125,13 @@ class DistributionTable extends React.Component {
                         obj.SalaryReimbursed = utils.roundDecimal(
                             obj.SalaryAuthorized - obj.PreviousReimbursement
                         );
+
+                    // Individual Certification Status
+                    if (obj.EffortCertStatus !== config.effortCertStatus.done) {
+                        obj.SalaryReimbursed = 0;
+                        obj.DisableSalaryReimburse = true;
+                        obj.DisableComment = true;
+                    }
                 }
             });
 

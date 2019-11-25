@@ -279,9 +279,7 @@ const PeriodAdd = ({
                                 value={GLPostingDate.value}
                                 onChange={handleChange}
                             >
-                                <option value='' disabled>
-                                    Select
-                                </option>
+                                <option value=''>Select</option>
                                 {listPayPeriodEndFrom &&
                                     listPayPeriodEndFrom.map((obj, key) => {
                                         return (

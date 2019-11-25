@@ -64,25 +64,25 @@ const App = () => {
             <div className='mtop-30'>
                 <DistributionTable
                     data={{
-                        CUNYYTDPaid: 12734,
-                        CollegeCode: "BM",
+                        isPending: true,
+                        CUNYYTDPaid: 35566.67,
+                        CollegeCode: "CC",
                         EffortCertStatus: "F",
-                        EligibleBalanceToReimburse: 0,
-                        EmployeeId: "10898356 ",
-                        FirstName: "DAVID",
-                        LastName: "ALLEN",
-                        NotYTDPaid: 0,
-                        PaymentNumber: 1,
+                        EligibleBalanceToReimburse: 23711.12,
+                        EmployeeId: "23359223 ",
+                        FirstName: "MARIA",
+                        LastName: "TZORTZIOU",
+                        NotYTDPaid: -11855.55,
+                        PaymentNumber: 2,
                         PreviousReimbursement: 0,
                         ReimbursementYear: 2018,
-                        SalaryAuthorized: 12734,
-                        TotalRecords: 110,
-                        isPending: true
+                        SalaryAuthorized: 23711.12
                     }}
                     hideModal={() => console.log("this is dummy Modal")}
                 />
-            </div>
-            
+            </div>*/}
+
+            {/* For Testing 
             <EmployeeTable
                 hideModal={() => console.log("this is dummy Modal")}
                 data={{
