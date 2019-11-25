@@ -17,6 +17,8 @@ class DistributionTable extends React.Component {
             listDistribution: [],
             isLoading: false
         };
+
+        this.isAllNotDone = true;
     }
 
     showLoader = val =>
@@ -133,6 +135,9 @@ class DistributionTable extends React.Component {
                         obj.DisableComment = true;
                     }
                 }
+
+                if (obj.EffortCertStatus === config.effortCertStatus.done)
+                    this.isAllNotDone = false;
             });
 
             this.setDistribution({
@@ -206,13 +211,20 @@ class DistributionTable extends React.Component {
                 PaymentNumber,
                 CollegeCode,
 
-                Distributions: listDistribution.map(obj => ({
-                    SalaryReimbursed: obj.SalaryReimbursed,
-                    Comments: obj.Comments,
-                    EmployeeId: obj.EmployeeId,
-                    SummerYear: obj.SummerYear,
-                    Prsy: obj.Prsy
-                }))
+                Distributions: listDistribution
+                    .filter(
+                        // only send distribution with effort certification done.
+                        obj =>
+                            obj.EffortCertStatus ===
+                            config.effortCertStatus.done
+                    )
+                    .map(obj => ({
+                        SalaryReimbursed: obj.SalaryReimbursed,
+                        Comments: obj.Comments,
+                        EmployeeId: obj.EmployeeId,
+                        SummerYear: obj.SummerYear,
+                        Prsy: obj.Prsy
+                    }))
             };
 
             let { data } = await axios.post(
@@ -440,12 +452,18 @@ class DistributionTable extends React.Component {
                         !isSalaryAuthorized && (
                             <button
                                 className={`button colorize pull-right ${
-                                    disableApproveButton || isLoading
+                                    disableApproveButton ||
+                                    isLoading ||
+                                    this.isAllNotDone
                                         ? "disabled"
                                         : "blue"
                                 }`}
                                 onClick={this.approveDistribution}
-                                disabled={disableApproveButton || isLoading}
+                                disabled={
+                                    disableApproveButton ||
+                                    isLoading ||
+                                    this.isAllNotDone
+                                }
                             >
                                 Approve
                             </button>
