@@ -280,7 +280,7 @@ const PeriodsData = ({
                             name='GLPostingDate'
                             value={GLPostingDate.value}
                             onChange={handleChange}
-                            placeholder='MM/DD/YYYY'
+                            placeholderText='MM/DD/YYYY'
                         />
 
                         {!GLPostingDate.isValid &&

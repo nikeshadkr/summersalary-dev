@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
 
 import { utils } from "../../utilities/utils";
+
+import "react-datepicker/dist/react-datepicker.css";
+import "./date-input.component.scss";
 
 const DateInput = props => {
     const _DateFormatLoose = /^([1-9]|0[1-9]|1[012])\/((0[1-9]|[1-9])|1\d|2\d|3[01])\/((19|20)\d{2}|(\d{2})|(\d{3}))/;
@@ -44,18 +48,41 @@ const DateInput = props => {
         else e.preventDefault();
     };
 
+    const [date, setDate] = useState(value ? new Date(value) : null);
+
     return (
-        <input
+        /*<input
+             {...rest}
+             defaultValue={value}
+             onChange={onChange}
+             onBlur={onBlur}
+             onKeyPress={dateOnly}
+             onPaste={e => {
+                 e.preventDefault();
+                 return false;
+             }}
+             maxLength='10'
+         />*/
+
+        <DatePicker
             {...rest}
-            defaultValue={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            onKeyPress={dateOnly}
-            onPaste={e => {
-                e.preventDefault();
-                return false;
-            }}
+            showMonthDropdown
+            showYearDropdown
+            autoComplete='off'
             maxLength='10'
+            selected={date}
+            onChange={date => {
+                setDate(date);
+            }}
+            onChangeRaw={e => {
+                console.log(e.target.value);
+                setDate(null);
+                onChange(e);
+            }}
+            onBlur={e => {
+                console.log(e.target.value);
+                onBlur(e);
+            }}
         />
     );
 };

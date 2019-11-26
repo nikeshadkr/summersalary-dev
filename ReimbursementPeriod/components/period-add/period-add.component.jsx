@@ -280,7 +280,7 @@ const PeriodAdd = ({
                                 name='GLPostingDate'
                                 value={GLPostingDate.value}
                                 onChange={handleChange}
-                                placeholder='MM/DD/YYYY'
+                                placeholderText='MM/DD/YYYY'
                             />
                         </div>
                         <div className='form-group col-8 col-offset-4'>
