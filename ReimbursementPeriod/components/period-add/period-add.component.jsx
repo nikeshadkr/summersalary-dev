@@ -1,5 +1,7 @@
 ﻿import React, { useContext, useState, useEffect } from "react";
 
+import DateInput from "../date-input/date-input.component";
+
 import Alert from "../alert/alert.component";
 import { AppContext } from "../../app/app.provider";
 
@@ -274,24 +276,12 @@ const PeriodAdd = ({
                             <label className='ptop-5'>GL Posting Date</label>
                         </div>
                         <div className='form-group col-3'>
-                            <select
+                            <DateInput
                                 name='GLPostingDate'
                                 value={GLPostingDate.value}
                                 onChange={handleChange}
-                            >
-                                <option value=''>Select</option>
-                                {listPayPeriodEndFrom &&
-                                    listPayPeriodEndFrom.map((obj, key) => {
-                                        return (
-                                            <option
-                                                key={key}
-                                                value={obj.PayPeriodEnding}
-                                            >
-                                                {obj.PayPeriodEnding}
-                                            </option>
-                                        );
-                                    })}
-                            </select>
+                                placeholder='MM/DD/YYYY'
+                            />
                         </div>
                         <div className='form-group col-8 col-offset-4'>
                             {!GLPostingDate.isValid &&

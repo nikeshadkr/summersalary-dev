@@ -58,7 +58,12 @@ const PeriodWrapper = props => {
             isTouched: false,
             isValid: false,
             errors: [],
-            rules: []
+            rules: [
+                {
+                    rule: validationRules.dateFormat,
+                    message: "Invalid date"
+                }
+            ]
         }
     });
 

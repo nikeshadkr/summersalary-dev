@@ -104,6 +104,15 @@ export const utils = {
     }
 };
 
+export const _DateFormat = /(^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$)/;
+
 export const validationRules = {
-    required: val => val !== null && val !== undefined && val !== ""
+    required: val => val !== null && val !== undefined && val !== "",
+    dateFormat: val => {
+        if (val === null || val === undefined || val === "") return true;
+        else {
+            if (_DateFormat.test(val)) return true;
+            else return false;
+        }
+    }
 };

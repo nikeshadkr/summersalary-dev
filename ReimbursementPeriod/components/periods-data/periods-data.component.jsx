@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import axios from "../../axios";
 
+import DateInput from "../date-input/date-input.component";
+
 import { AppContext } from "../../app/app.provider";
 import { config } from "../../utilities/utils";
 
@@ -270,25 +272,20 @@ const PeriodsData = ({
                         )}
                     </td>
                     <td>
-                        <select
+                        <DateInput
                             data-id={index}
                             name='GLPostingDate'
                             value={GLPostingDate.value}
                             onChange={handleChange}
-                        >
-                            <option value=''>Select</option>
-                            {listPayPeriodEndFrom &&
-                                listPayPeriodEndFrom.map((obj, key) => {
-                                    return (
-                                        <option
-                                            key={key}
-                                            value={obj.PayPeriodEnding}
-                                        >
-                                            {obj.PayPeriodEnding}
-                                        </option>
-                                    );
-                                })}
-                        </select>
+                            placeholder='MM/DD/YYYY'
+                        />
+
+                        {!GLPostingDate.isValid &&
+                            GLPostingDate.errors.map((msg, i) => (
+                                <div className='error' key={i}>
+                                    {msg}
+                                </div>
+                            ))}
                     </td>
                     <td>
                         <button
