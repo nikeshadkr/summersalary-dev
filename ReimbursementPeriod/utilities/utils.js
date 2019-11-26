@@ -114,5 +114,10 @@ export const validationRules = {
             if (_DateFormat.test(val)) return true;
             else return false;
         }
+    },
+    isAfter: (val, val2) => {
+        if (val === null || val === undefined || val === "") return true;
+        if (_DateFormat.test(val)) return utils.isAfter(val, val2);
+        else return true;
     }
 };

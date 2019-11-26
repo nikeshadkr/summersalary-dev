@@ -34,7 +34,7 @@ const DateInput = props => {
             );
         } else e.target.value = "";
 
-        onChange(e);
+        onChange(e, true); // True sets the touched property of field
     };
 
     const dateOnly = e => {

@@ -12,6 +12,7 @@ const PeriodsData = ({
     listReimbursementPeriods,
 
     handleChange,
+    validateForm,
     validationSchema,
     setValidationschema,
     savePayPeriod,
@@ -145,6 +146,8 @@ const PeriodsData = ({
     };
 
     const updatePayPeriod = async (item, index) => {
+        if (!validateForm()) return;
+
         toggleLoader(true);
         try {
             await savePayPeriod({
@@ -281,9 +284,12 @@ const PeriodsData = ({
                         />
 
                         {!GLPostingDate.isValid &&
+                            GLPostingDate.isTouched &&
                             GLPostingDate.errors.map((msg, i) => (
                                 <div className='error' key={i}>
-                                    {msg}
+                                    {msg === "Compare Failed"
+                                        ? '"GL Posting Date" should be after "Pay Period End From Date."'
+                                        : msg}
                                 </div>
                             ))}
                     </td>
