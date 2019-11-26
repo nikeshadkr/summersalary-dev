@@ -55,7 +55,6 @@ const PeriodWrapper = props => {
         },
         GLPostingDate: {
             value: "",
-            compareField: "PayPeriodEndFromDate",
             isTouched: false,
             isValid: false,
             errors: [],
@@ -63,10 +62,6 @@ const PeriodWrapper = props => {
                 {
                     rule: validationRules.dateFormat,
                     message: "Invalid date"
-                },
-                {
-                    rule: validationRules.isAfter,
-                    message: "Compare Failed"
                 }
             ]
         }
@@ -111,11 +106,7 @@ const PeriodWrapper = props => {
         field.isValid = true;
 
         field.rules.map(o => {
-            let compareValue;
-            if (field.compareField)
-                compareValue = validationSchema[field.compareField].value;
-
-            if (!o.rule(field.value, compareValue)) {
+            if (!o.rule(field.value)) {
                 field.errors.push(o.message);
                 field.isValid = false;
             }

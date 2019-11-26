@@ -287,9 +287,7 @@ const PeriodsData = ({
                             GLPostingDate.isTouched &&
                             GLPostingDate.errors.map((msg, i) => (
                                 <div className='error' key={i}>
-                                    {msg === "Compare Failed"
-                                        ? '"GL Posting Date" should be after "Pay Period End From Date."'
-                                        : msg}
+                                    {msg}
                                 </div>
                             ))}
                     </td>
