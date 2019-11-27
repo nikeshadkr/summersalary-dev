@@ -1,5 +1,8 @@
 import React from "react";
 import axios from "../../axios";
+
+import ColumnTotal from "../column-total/column-total.component";
+
 import { utils, config } from "../../utilities/utils";
 
 export default class PreviousPaymentTable extends React.Component {
@@ -70,7 +73,7 @@ export default class PreviousPaymentTable extends React.Component {
                 </div>
                 <div className='mc-body'>
                     {listPreviousPayments && listPreviousPayments.length > 0 ? (
-                        <div className='table-layout subtotal-bg'>
+                        <div className='table-layout inside-modal'>
                             <table>
                                 <thead>
                                     <tr>
@@ -126,6 +129,34 @@ export default class PreviousPaymentTable extends React.Component {
                                         </tr>
                                     ))}
                                 </tbody>
+
+                                {listPreviousPayments.length > 1 && (
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan='4'>&nbsp;</td>
+                                            <td className='with-bg text-right'>
+                                                <ColumnTotal
+                                                    list={listPreviousPayments}
+                                                    columnName={"YTDPaid"}
+                                                />
+                                            </td>
+                                            <td className='with-bg text-right'>
+                                                <ColumnTotal
+                                                    list={listPreviousPayments}
+                                                    columnName={"YTDDiff"}
+                                                />
+                                            </td>
+                                            <td className='with-bg text-right'>
+                                                <ColumnTotal
+                                                    list={listPreviousPayments}
+                                                    columnName={
+                                                        "SalaryReimbursed"
+                                                    }
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                )}
                             </table>
                         </div>
                     ) : (

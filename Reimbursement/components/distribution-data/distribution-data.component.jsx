@@ -17,7 +17,7 @@ const DistributionData = ({
                     {/* Error row */}
                     {item.Error.length > 0 && (
                         <tr className='error-row'>
-                            <td colSpan='8'>{item.Error}</td>
+                            <td colSpan='9'>{item.Error}</td>
                         </tr>
                     )}
 

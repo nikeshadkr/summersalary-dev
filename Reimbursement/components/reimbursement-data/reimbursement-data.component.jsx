@@ -17,7 +17,6 @@ const ReimbursementData = ({ item, checkOne, index, isPending }) => {
                 break;
 
             case config.modalTypes.eligibleBalance:
-            case config.modalTypes.previousPayments:
                 classValue = "x-large";
                 break;
 
