@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./loader.component.scss";
+import "./loader.styles.scss";
 
 const Loader = () => (
     <div className='loader-outer'>

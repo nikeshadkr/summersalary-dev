@@ -7,7 +7,7 @@ import DistributionTable from "../distribution-table/distribution-table.componen
 import EmployeeTable from "../employee-table/employee-table.component";
 import PreviousPaymentsTable from "../previous-payment-table/previous-payment-table";
 
-import "./modal.component.scss";
+import "./modal.styles.scss";
 import { config } from "../../utilities/utils";
 
 const Modal = ({ data, type, size }) => {

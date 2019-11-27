@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import { utils } from "../../utilities/utils";
 
 import "react-datepicker/dist/react-datepicker.css";
-import "./date-input.component.scss";
+import "./date-input.styles.scss";
 
 const DateInput = props => {
     const _DateFormatLoose = /^([1-9]|0[1-9]|1[012])\/((0[1-9]|[1-9])|1\d|2\d|3[01])\/((19|20)\d{2}|(\d{2})|(\d{3}))/;

@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import "./alert.component.scss";
+import "./alert.styles.scss";
 
 const Alert = ({ type, content, closeAlert }) => {
     let AlertContent;

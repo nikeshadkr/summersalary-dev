@@ -7,7 +7,7 @@ import ConfirmDialog from "../confirm-dialog/confirm-dialog.component";
 import PeriodWrapper from "../period-wrapper/period-wrapper.component";
 import PeriodAdd from "../period-add/period-add.component";
 
-import "./modal.component.scss";
+import "./modal.styles.scss";
 
 const Modal = ({ data, type, size }) => {
     const { hideModal } = useContext(AppContext);
