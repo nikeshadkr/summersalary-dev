@@ -144,6 +144,8 @@ class AppProvider extends React.Component {
                 showModal: false
             }
         }));
+
+        if (this.state.alert && this.state.alert.inModal) this.closeAlert();
     };
 
     initAlert = option => {
