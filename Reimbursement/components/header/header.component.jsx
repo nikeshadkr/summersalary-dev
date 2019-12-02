@@ -57,12 +57,10 @@ const Header = () => {
             let field = { ...appData[e.target.name] };
             field.value = e.target.value;
 
-            //let newValidatedField = validateField(field);
-
             setAppData(
                 {
                     ...appData,
-                    [e.target.name]: field
+                    [e.target.name]: validateField(field)
                 },
                 updatedState => {
                     if (e.target.name === "summerYear")
@@ -196,12 +194,9 @@ const Header = () => {
                             })}
                     </select>
 
-                    {!summerYear.isValid &&
-                        summerYear.errors.map((msg, i) => (
-                            <div className='error' key={i}>
-                                {msg}
-                            </div>
-                        ))}
+                    {summerYear.errors.required && (
+                        <div className='error'>This field is required.</div>
+                    )}
                 </div>
 
                 {/* Payment Number */}
@@ -225,12 +220,9 @@ const Header = () => {
                             })}
                     </select>
 
-                    {!paymentNumber.isValid &&
-                        paymentNumber.errors.map((msg, i) => (
-                            <div className='error' key={i}>
-                                {msg}
-                            </div>
-                        ))}
+                    {paymentNumber.errors.required && (
+                        <div className='error'>This field is required.</div>
+                    )}
                 </div>
 
                 {/* College */}
@@ -254,12 +246,9 @@ const Header = () => {
                             })}
                     </select>
 
-                    {!college.isValid &&
-                        college.errors.map((msg, i) => (
-                            <div className='error' key={i}>
-                                {msg}
-                            </div>
-                        ))}
+                    {college.errors.required && (
+                        <div className='error'>This field is required.</div>
+                    )}
                 </div>
             </div>
 

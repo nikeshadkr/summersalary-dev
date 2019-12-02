@@ -148,12 +148,11 @@ const PeriodAdd = ({
                             </select>
                         </div>
                         <div className='form-group col-8 col-offset-4'>
-                            {!IsOpen.isValid &&
-                                IsOpen.errors.map((msg, i) => (
-                                    <div className='error' key={i}>
-                                        {msg}
-                                    </div>
-                                ))}
+                            {IsOpen.errors.required && (
+                                <div className='error'>
+                                    This field is required.
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -186,12 +185,11 @@ const PeriodAdd = ({
                             </select>
                         </div>
                         <div className='form-group col-8 col-offset-4'>
-                            {!PayPeriodEndFromDate.isValid &&
-                                PayPeriodEndFromDate.errors.map((msg, i) => (
-                                    <div className='error' key={i}>
-                                        {msg}
-                                    </div>
-                                ))}
+                            {PayPeriodEndFromDate.errors.required && (
+                                <div className='error'>
+                                    This field is required.
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -224,12 +222,11 @@ const PeriodAdd = ({
                             </select>
                         </div>
                         <div className='form-group col-8 col-offset-4'>
-                            {!PayPeriodEndToDate.isValid &&
-                                PayPeriodEndToDate.errors.map((msg, i) => (
-                                    <div className='error' key={i}>
-                                        {msg}
-                                    </div>
-                                ))}
+                            {PayPeriodEndToDate.errors.required && (
+                                <div className='error'>
+                                    This field is required.
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -262,12 +259,11 @@ const PeriodAdd = ({
                             </select>
                         </div>
                         <div className='form-group col-8 col-offset-4'>
-                            {!CUNYPayPeriodEndDate.isValid &&
-                                CUNYPayPeriodEndDate.errors.map((msg, i) => (
-                                    <div className='error' key={i}>
-                                        {msg}
-                                    </div>
-                                ))}
+                            {CUNYPayPeriodEndDate.errors.required && (
+                                <div className='error'>
+                                    This field is required.
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -284,13 +280,10 @@ const PeriodAdd = ({
                             />
                         </div>
                         <div className='form-group col-8 col-offset-4'>
-                            {!GLPostingDate.isValid &&
-                                GLPostingDate.isTouched &&
-                                GLPostingDate.errors.map((msg, i) => (
-                                    <div className='error' key={i}>
-                                        {msg}
-                                    </div>
-                                ))}
+                            {GLPostingDate.isTouched &&
+                                GLPostingDate.errors.dateFormat && (
+                                    <div className='error'>Invalid Date.</div>
+                                )}
                         </div>
                     </div>
                 </div>

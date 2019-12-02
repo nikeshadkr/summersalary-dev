@@ -45,7 +45,7 @@ const PeriodsData = ({
             o.value = item[key];
             o.isTouched = false;
             o.isValid = false;
-            o.errors = [];
+            o.errors = {};
             newSchema[key] = o;
         });
 
@@ -283,13 +283,10 @@ const PeriodsData = ({
                             placeholderText='MM/DD/YYYY'
                         />
 
-                        {!GLPostingDate.isValid &&
-                            GLPostingDate.isTouched &&
-                            GLPostingDate.errors.map((msg, i) => (
-                                <div className='error' key={i}>
-                                    {msg}
-                                </div>
-                            ))}
+                        {GLPostingDate.isTouched &&
+                            GLPostingDate.errors.dateFormat && (
+                                <div className='error'>Invalid Date</div>
+                            )}
                     </td>
                     <td>
                         <button

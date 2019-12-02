@@ -39,11 +39,11 @@ class AppProvider extends React.Component {
                     value: "",
                     isTouched: false,
                     isValid: false,
-                    errors: [],
+                    errors: {},
                     rules: [
                         {
-                            rule: validationRules.required,
-                            message: "This field is required"
+                            name: "required",
+                            rule: validationRules.required
                         }
                     ]
                 },
@@ -51,11 +51,11 @@ class AppProvider extends React.Component {
                     value: "",
                     isTouched: false,
                     isValid: false,
-                    errors: [],
+                    errors: {},
                     rules: [
                         {
-                            rule: validationRules.required,
-                            message: "This field is required"
+                            name: "required",
+                            rule: validationRules.required
                         }
                     ]
                 },
@@ -63,11 +63,11 @@ class AppProvider extends React.Component {
                     value: "",
                     isTouched: false,
                     isValid: false,
-                    errors: [],
+                    errors: {},
                     rules: [
                         {
-                            rule: validationRules.required,
-                            message: "This field is required"
+                            name: "required",
+                            rule: validationRules.required
                         }
                     ]
                 },
@@ -311,12 +311,13 @@ class AppProvider extends React.Component {
     };
 
     validateField = field => {
-        field.errors = [];
+        field.errors = {};
         field.isValid = true;
 
+        // Rules have name and rule props
         field.rules.map(o => {
             if (!o.rule(field.value)) {
-                field.errors.push(o.message);
+                field.errors[o.name] = true;
                 field.isValid = false;
             }
         });
