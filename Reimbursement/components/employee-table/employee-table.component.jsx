@@ -32,13 +32,13 @@ export default class EmployeeTable extends React.Component {
 
     loadEmployeeReimbursement = async () => {
         const {
-            data: { EmployeeId, ReimbursementYear }
+            data: { EmployeeId, ReimbursementYear, PaymentNumber, CollegeCode }
         } = this.props;
         this.showLoader(true);
 
         try {
             let response = await axios.get(
-                `${config.apiPath}/GetEmployeeCertificationDetailsForReimbursements?empId=${EmployeeId}&year=${ReimbursementYear}`
+                `${config.apiPath}/GetEmployeeCertificationDetailsForReimbursements?employeeId=${EmployeeId}&reimbursementYear=${ReimbursementYear}&paymentNumber=${PaymentNumber}&collegeCode=${CollegeCode}`
             );
 
             this.setEmpReimbursement({ ...response.data });
