@@ -251,9 +251,11 @@ class AppProvider extends React.Component {
                 }&pageSize=${pagination.pageSize}`
             );
 
-            let [isPaymentNumberOpen] = filters.listPaymentNumber.map(obj =>
-                obj.PaymentNumber == filters.paymentNumber ? obj.IsOpen : null
-            );
+            let isPaymentNumberOpen = false;
+            filters.listPaymentNumber.forEach(item => {
+                if (item.PaymentNumber == filters.paymentNumber)
+                    isPaymentNumberOpen = item.IsOpen;
+            });
 
             listReimbursement.data.forEach(item => {
                 item.isPending = filters.isPending;
