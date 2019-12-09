@@ -261,11 +261,6 @@ class AppProvider extends React.Component {
                 item.isPending = filters.isPending;
                 item.isChecked = false;
 
-                item.isDisabled =
-                    !isPaymentNumberOpen ||
-                    item.EffortCertStatus !== config.effortCertStatus.done ||
-                    item.NotYTDPaid !== 0;
-
                 item.enableDistributionModal =
                     item.EffortCertStatus === config.effortCertStatus.done &&
                     item.SalaryAuthorized !== 0 &&
@@ -273,6 +268,12 @@ class AppProvider extends React.Component {
                     (item.NotYTDPaid !== 0 ||
                         item.EligibleBalanceToReimburse !==
                             item.SalaryAuthorized);
+
+                item.isDisabled =
+                    !isPaymentNumberOpen ||
+                    item.EffortCertStatus !== config.effortCertStatus.done ||
+                    item.NotYTDPaid !== 0 ||
+                    item.enableDistributionModal;
             });
 
             this.setAppData({
